@@ -20,9 +20,8 @@ return new class extends Migration
             $table->integer('total_orders');
             $table->float('total_revenue');
             $table->string('report_month');
-            $table->foreign('restaurant_id')->references('id')->on('restaurnats');
+            $table->foreign('restaurant_id')->references('id')->on('restaurants');
             $table->foreign('branch_id')->references('id')->on('branches');
-
             $table->timestamps();
         });
     }
