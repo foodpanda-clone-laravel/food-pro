@@ -20,7 +20,10 @@ return new class extends Migration
             $table->unsignedBigInteger('branch_id')->nullable()->default(null);
             
             $table->float('discount')->nullable();
-            $table->foreign('branch_id')->references('id')->on('branches');
+            $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');
+            $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

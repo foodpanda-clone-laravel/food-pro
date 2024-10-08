@@ -13,13 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('branches', function (Blueprint $table) {
+        Schema::create('error_logs', function (Blueprint $table) {
             $table->id();
-            $table->string('address');
-            $table->string('postal_code');
-            $table->string('city');
-            $table->unsignedBigInteger('restaurant_id');
-            $table->foreign('restaurant_id')->references('id')->on('restaurant_owners')->onDelete('cascade');
+            $table->longText('function_name');
+            $table->String('line_number');
+            $table->String('file_name');
+            $table->longText('exception');
+            $table->integer('code');
+            $table->unsignedBigInteger('request_id');
+            $table->foreign('request_id')->references('id')->on('api_request_logs');
             $table->timestamps();
         });
     }
@@ -31,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('branches');
+        Schema::dropIfExists('error_logs');
     }
 };

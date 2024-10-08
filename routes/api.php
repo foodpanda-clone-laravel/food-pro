@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use \App\Http\Middleware\APIRequestLogsMiddleware;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -13,7 +13,8 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('request.logs')->group(function(){
+    Route::get('/hi', function(){
+        return "hello";
+    });
 });

@@ -19,7 +19,8 @@ return new class extends Migration
             $table->string('address');
             $table->string('delivery_address');
             $table->string('favorites');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

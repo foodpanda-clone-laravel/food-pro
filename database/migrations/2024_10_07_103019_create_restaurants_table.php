@@ -27,6 +27,8 @@ return new class extends Migration
             $table->string('cuisine');
             $table->string('logo_path')->nullable()->default(null);
             $table->string('business_type');
+            $table->softDeletes();
+            $table->foreign('owner_id')->references('id')->on('restaurant_owners')->onDelete('cascade');
             $table->timestamps();
         });
     }

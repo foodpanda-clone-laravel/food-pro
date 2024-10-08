@@ -16,10 +16,11 @@ return new class extends Migration
         Schema::create('deal_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('deal_id');
-            $table->foreign('deal_id')->references('id')->on('deals');
+            $table->foreign('deal_id')->references('id')->on('deals')->onDelete('cascade');
             $table->unsignedBigInteger('menu_item_id');
             $table->foreign('menu_item_id')->references('id')->on('menu_items');
             
+            $table->softDeletes();
             $table->timestamps();
         });
     }

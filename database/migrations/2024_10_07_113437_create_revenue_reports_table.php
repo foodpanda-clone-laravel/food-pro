@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('report_month');
             $table->foreign('restaurant_id')->references('id')->on('restaurants');
             $table->foreign('branch_id')->references('id')->on('branches');
+            
             $table->timestamps();
         });
     }
