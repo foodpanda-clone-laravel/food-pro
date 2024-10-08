@@ -16,8 +16,10 @@ use App\Models\ApiRequestLog;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 Route::middleware('request.logs')->group(function(){
     Route::get('/hi', function(){
+        throw new Error(400, 'dslfjlksdf');
         ApiRequestLog::create();
 
     });

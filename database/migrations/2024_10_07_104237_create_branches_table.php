@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('city');
             $table->unsignedBigInteger('restaurant_id');
             $table->foreign('restaurant_id')->references('id')->on('restaurant_owners')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

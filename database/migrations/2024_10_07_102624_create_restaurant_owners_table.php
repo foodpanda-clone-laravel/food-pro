@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('bank_name');
             $table->string('iban');
             $table->string('account_owner_title');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
