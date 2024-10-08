@@ -2,28 +2,22 @@
 
 namespace App\DTO;
 
-class RestaurantOwnerDTO extends BaseDTO
+class MenuDTO extends BaseDTO
 {
-    public string $cnic;
-    public int $user_id;
-    public string $bank_name;
-    public string $iban;
-    public string $account_owner_title;
-   
+    public int $restaurant_id;
+    public string $name;
+    public string $description;
+    public int $branch_id;
 
     public function __construct(
-        string $cnic,
-        int $user_id,
-        string $bank_name,
-        string $iban,
-        string $account_owner_title,
-        
+        int $restaurant_id,
+        string $name,
+        string $description,
+        int $branch_id 
     ) {
-        $this->cnic = $cnic;
-        $this->user_id = $user_id;
-        $this->bank_name = $bank_name;
-        $this->iban = $iban;
-        $this->account_owner_title = $account_owner_title;
- 
+        $this->restaurant_id = $restaurant_id;
+        $this->name = $name;
+        $this->description = $description;
+        $this->branch_id = $branch_id;
     }
 }

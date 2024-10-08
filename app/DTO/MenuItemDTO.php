@@ -19,7 +19,7 @@ class MenuItemDTO extends BaseDTO
         string $category,
         string $serving_size,
         string $image_path,
-        ?float $discount 
+        ?float $discount =0
     ) {
         $this->menu_id = $menu_id;
         $this->name = $name;

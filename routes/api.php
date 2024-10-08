@@ -17,8 +17,11 @@ use App\Models\ApiRequestLog;
 |
 */
 
-Route::middleware(['request.logs'])->group(function() {
-    Route::controller(ForgotPasswordController::class)->group(function() {
-        Route::post('/forgot-password', 'submitForgotPasswordForm');
+Route::middleware(['jwt'])->group(function () {
+    Route::get('/user', function (Request $request) {
+        return response()->json($request->auth);
     });
+});
+Route::middleware('request.logs')->group(function(){
+     
 });
