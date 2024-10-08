@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
-    public function createMenu(Request $request)
+    public function createMenu(Request $request,$branch_id)
     {
         $user = auth()->user();
 
@@ -27,7 +27,7 @@ class MenuController extends Controller
 
         // Check if the specified branch belongs to the restaurant
         $branch = Branch::where('restaurant_id', $restaurant->id)
-                        ->where('id', $request->branch_id)
+                        ->where('id', $branch_id)
                         ->firstOrFail(); // Throws an exception if branch is not found
 
         // Create a new MenuDTO instance
