@@ -11,7 +11,10 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;  // Add SoftDeletes trait
+    use Notifiable;
+    use HasApiTokens; 
+    use HasFactory;
+    use SoftDeletes;  // Add SoftDeletes trait
 
     /**
      * The attributes that are mass assignable.
@@ -48,5 +51,19 @@ class User extends Authenticatable
     public function restaurantOwner()
     {
         return $this->hasOne(RestaurantOwner::class);
+    }
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [];
     }
 }

@@ -56,14 +56,23 @@ class Handler extends ExceptionHandler
         $this->renderable(function(JWTException $exception, $request){
             return response()->json(['error'=>'Unauthorized access'], 401);
         });
+
+        $this->renderable(function(QueryException $exception, $request){
+            Helpers::createErrorLogs($exception, $request->request_id);
+            return response()->json(['error'=>'internal server error'], 500);
+        });
+        // $this->renderable(function(Exception $exception, $request){
+        //     Helpers::createErrorLogs($exception, $request->request_id);
+        //     return response()->json(['error'=>'internal server error'], 500);
+        // });
+        // $this->renderable(function(Error $error, $request){
+        
+        //     Helpers::createErrorLogs($error, $request->request_id);
+        //     return response()->json(['error'=>'internal server error'], 500);
+        // });
+       
     }
     
-    public function render($request, Throwable $exception)
-    {
-            // Helpers::createErrorLogs($exception, $request->request_id);
-            // return response()->json(['error' => $exception], 500);
-
-        }
     }
 
     

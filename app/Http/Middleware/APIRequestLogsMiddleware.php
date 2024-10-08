@@ -39,6 +39,7 @@ class APIRequestLogsMiddleware
     }
     public function terminate(Request $request, $response): void
     {
+
         $duration = microtime(true)-$request->start_time;
 
         $status = $response->status();
