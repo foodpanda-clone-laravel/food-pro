@@ -4,18 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Badge extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'name',
-    ];
+    protected $guarded = [];
 
     // Relationships
-    public function rewards()
+    public function reward()
     {
-        return $this->hasMany(Reward::class);
+        return $this->belongsTo(Reward::class);
     }
 }

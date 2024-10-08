@@ -9,11 +9,7 @@ class ShoppingSession extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'user_id',
-        'total',
-        'expired_at',
-    ];
+    protected $guarded = [];
 
     // Relationships
     public function user()
