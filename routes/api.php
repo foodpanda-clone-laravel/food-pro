@@ -43,6 +43,21 @@ Route::prefix('customers')->group(function () {
 
     // Update delivery address for a specific customer
     Route::patch('{customerId}/update-address', [CustomerController::class, 'updateDeliveryAddress']);
+
+    // View customer profile details
+    Route::get('customers/{customerId}', [CustomerController::class, 'viewProfile']);
+
+    // Add a restaurant to the customer's favorite list
+    Route::post('customers/{customerId}/favorite-restaurants', [CustomerController::class, 'addFavoriteRestaurant']);
+
+    // Remove a restaurant from the customer's favorite list
+    Route::delete('customers/{customerId}/favorite-restaurants/{restaurantId}', [CustomerController::class, 'removeFavoriteRestaurant']);
+
+    // View the customer’s current active order
+    Route::get('customers/{customerId}/active-order', [CustomerController::class, 'activeOrder']);
+
+    // Submit feedback or review for an order/restaurant
+    Route::post('customers/{customerId}/feedback', [CustomerController::class, 'submitFeedback']);
 });
 
 // View all menus (does not depend on customer ID)
