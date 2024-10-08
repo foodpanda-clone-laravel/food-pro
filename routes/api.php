@@ -3,6 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Middleware\APIRequestLogsMiddleware;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Database\QueryException;
+use App\Models\ApiRequestLog;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -15,6 +18,7 @@ use \App\Http\Middleware\APIRequestLogsMiddleware;
 */
 Route::middleware('request.logs')->group(function(){
     Route::get('/hi', function(){
-        return "hello";
+        ApiRequestLog::create();
+
     });
 });

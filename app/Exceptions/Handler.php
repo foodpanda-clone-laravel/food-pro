@@ -4,6 +4,11 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Database\QueryException;
+use App\Models\ErrorLog;
+use Exception;
+
+use App\Helpers\Helpers;
 
 class Handler extends ExceptionHandler
 {
@@ -36,6 +41,20 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+        $this->renderable(function(QueryException $exception, $request){
+            Helpers::createErrorLogs($exception, $request->request_id);
+            return response()->json(['error'=>'internal server error'], 500);
+        });
+        $this->renderable(function(Exception $exception, $request){
+            Helpers::createErrorLogs($exception, $request->request_id);
+            return response()->json(['error'=>'internal server error'], 500);
+
+        });
+        $this->renderable(function(Error $error, $request){
+            Helpers::createErrorLogs($error, $request->request_id);
+            return response()->json(['error'=>'internal server error'], 500);
+
         });
     }
 }

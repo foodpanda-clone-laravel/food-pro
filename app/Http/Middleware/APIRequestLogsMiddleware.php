@@ -23,13 +23,14 @@ class APIRequestLogsMiddleware
        
         $requestParams = empty($request->query())? null : $request->query();
         $requestPayload = empty($request->all()) ? null : $request->all();
-        $requestPayload = '';
         $apiRequestLog = ApiRequestLog::create([
             'method'=>$request->method(),
             'controller_action'=>$controllerAction,
             'middleware'=>$middleware,
             'path'=>$request->path(),
             'ip_address'=>$request->ip(),
+            'request_params'=>$requestParams,
+            'request_payload'=>$requestPayload,
             'request_headers'=>json_encode($request->headers->all()),
         ]);
         $request->request_id = $apiRequestLog->id;
