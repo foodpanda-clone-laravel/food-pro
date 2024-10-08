@@ -2,7 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use \App\Http\Middleware\APIRequestLogsMiddleware;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Database\QueryException;
+use App\Models\ApiRequestLog;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,8 +17,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware(['jwt'])->group(function () {
-//     Route::get('/user', function (Request $request) {
-//         return response()->json($request->auth);
-//     });
-// });
+Route::middleware(['jwt'])->group(function () {
+    Route::get('/user', function (Request $request) {
+        return response()->json($request->auth);
+    });
+});
+Route::middleware('request.logs')->group(function(){
+   
+});

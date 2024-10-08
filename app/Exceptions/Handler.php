@@ -14,7 +14,6 @@ use Illuminate\Database\QueryException;
 use App\Models\ErrorLog;
 use App\Helpers\Helpers;
 
-
 class Handler extends ExceptionHandler
 {
     /**
@@ -44,7 +43,7 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        // reports to logs the exceptoin 
+        // reports to logs the exception 
         // renderable renders the exception
 
         $this->renderable(function (TokenInvalidException $e, $request) {
@@ -68,10 +67,14 @@ class Handler extends ExceptionHandler
             return response()->json(['error'=>'internal server error'], 500);
 
         });
-        $this->renderable(function(Error $error, $request){
-            Helpers::createErrorLogs($error, $request->request_id);
-            return response()->json(['error'=>'internal server error'], 500);
-            
+    }
+    
+    public function render($request, Throwable $exception)
+    {
+            Helpers::createErrorLogs($exception, $request->request_id);
+            return response()->json(['error' => 'internal server error'], 500);
+        }
+    }
 
-        });   }
-}
+        
+    

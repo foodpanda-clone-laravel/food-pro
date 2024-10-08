@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('category');
             $table->unsignedBigInteger('menu_item_id');
             $table->float('price');
+            $table->foreign('menu_item_id')->references('id')->on('menu_items');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

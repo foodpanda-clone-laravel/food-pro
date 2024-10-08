@@ -17,10 +17,11 @@ return new class extends Migration
             $table->id();
             $table->string('cnic');
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->string('bank_name');
             $table->string('iban');
             $table->string('account_owner_title');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

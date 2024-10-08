@@ -19,9 +19,9 @@ class CreateOrdersTable extends Migration
             $table->float('delivery_charges');
             $table->datetime('estimated_delivery_time');
             $table->timestamps();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
-            $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('restaurant_id')->references('id')->on('restaurants');
+            $table->foreign('branch_id')->references('id')->on('branches');
         });
     }
 
