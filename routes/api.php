@@ -6,6 +6,7 @@ use \App\Http\Middleware\APIRequestLogsMiddleware;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Database\QueryException;
 use App\Models\ApiRequestLog;
+use App\Http\Controllers\ForgotPasswordController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -23,5 +24,7 @@ Route::middleware(['jwt'])->group(function () {
     });
 });
 Route::middleware('request.logs')->group(function(){
-     
+    Route::controller(ForgotPasswordController::class)->group(function(){
+        Route::post('/forgot-password', 'submitForgotPasswordForm');
+    });     
 });
