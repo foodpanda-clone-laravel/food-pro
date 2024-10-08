@@ -17,11 +17,11 @@ use App\Models\ApiRequestLog;
 |
 */
 
-// Route::middleware(['jwt'])->group(function () {
-//     Route::get('/user', function (Request $request) {
-//         return response()->json($request->auth);
-//     });
-// });
+Route::middleware(['jwt'])->group(function () {
+    Route::get('/user', function (Request $request) {
+        return response()->json($request->auth);
+    });
+});
 Route::middleware('request.logs')->group(function(){
-   
+     
 });
