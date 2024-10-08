@@ -50,3 +50,11 @@ Route::get('menus', [CustomerController::class, 'viewMenus']);
 
 // Search for a restaurant
 Route::get('search-restaurant', [CustomerController::class, 'searchRestaurant']);
+Route::middleware(['jwt'])->group(function () {
+    Route::get('/user', function (Request $request) {
+        return response()->json($request->auth);
+    });
+});
+Route::middleware('request.logs')->group(function () {
+
+});
