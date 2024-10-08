@@ -16,6 +16,9 @@ use App\Models\ApiRequestLog;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+use App\Http\Controllers\UserController;
+
+Route::post('register', [UserController::class, 'register']);
 
 Route::middleware(['jwt'])->group(function () {
     Route::get('/user', function (Request $request) {
