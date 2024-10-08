@@ -4,25 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Restaurant extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'name',
-        'owner_id',
-        'branch_id',
-        'branches',
-        'address',
-        'postal_code',
-        'city',
-        'opening_time',
-        'closing_time',
-        'cuisine',
-        'logo_path',
-        'business_type',
-    ];
+    protected $guarded = [];
 
     // Relationships
     public function owner()

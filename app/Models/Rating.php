@@ -9,12 +9,7 @@ class Rating extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'order_id',
-        'user_id',
-        'feedback',
-        'starts',
-    ];
+    protected $guarded = [];
 
     // Relationships
     public function user()

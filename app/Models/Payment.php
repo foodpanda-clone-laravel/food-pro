@@ -9,11 +9,7 @@ class Payment extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'amount',
-        'user_id',
-        'order_id',
-    ];
+    protected $guarded = [];
 
     // Relationships
     public function user()

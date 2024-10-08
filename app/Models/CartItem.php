@@ -9,11 +9,7 @@ class CartItem extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'session_id',
-        'menu_item_id',
-        'quantity',
-    ];
+    protected $guarded = [];
 
     // Relationships
     public function shoppingSession()

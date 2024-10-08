@@ -4,18 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RestaurantOwner extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'user_id',
-        'cnic',
-        'bank_name',
-        'iban',
-        'account_owner_title',
-    ];
+    protected $guarded = [];
 
     // Relationships
     public function user()

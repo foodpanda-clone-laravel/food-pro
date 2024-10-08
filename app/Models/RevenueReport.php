@@ -9,13 +9,7 @@ class RevenueReport extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'restaurant_id',
-        'branch_id',
-        'total_orders',
-        'total_revenue',
-        'report_month',
-    ];
+    protected $guarded = [];
 
     // Relationships
     public function restaurant()

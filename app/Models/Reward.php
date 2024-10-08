@@ -9,12 +9,7 @@ class Reward extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'points',
-        'user_id',
-        'badge_id',
-        'expired_at',
-    ];
+    protected $guarded = [];
 
     // Relationships
     public function user()
@@ -24,6 +19,6 @@ class Reward extends Model
 
     public function badge()
     {
-        return $this->belongsTo(Badge::class);
+        return $this->hasOne(Badge::class);
     }
 }
