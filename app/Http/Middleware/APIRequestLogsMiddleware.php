@@ -29,8 +29,8 @@ class APIRequestLogsMiddleware
             'middleware'=>$middleware,
             'path'=>$request->path(),
             'ip_address'=>$request->ip(),
-            'request_params'=>$requestParams,
-            'request_payload'=>$requestPayload,
+            'request_params'=>json_encode($requestParams),
+            'request_payload'=>json_encode($requestPayload),
             'request_headers'=>json_encode($request->headers->all()),
         ]);
         $request->request_id = $apiRequestLog->id;
@@ -44,7 +44,6 @@ class APIRequestLogsMiddleware
         $status = $response->status();
         $responseJson = $response->getContent();
         $memoryUsage = number_format(memory_get_usage()  / 1024 / 1024, 2)." MB";
-        dd();
         $apiRequestLog = ApiRequestLog::where('id',$request->request_id)->first();
         $apiRequestLog->update([ 
             'status'=>$status,

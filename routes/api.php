@@ -17,10 +17,8 @@ use App\Models\ApiRequestLog;
 |
 */
 
-Route::middleware('request.logs')->group(function(){
-    Route::get('/hi', function(){
-        throw new Error(400, 'dslfjlksdf');
-        ApiRequestLog::create();
-
+Route::middleware(['request.logs'])->group(function() {
+    Route::controller(ForgotPasswordController::class)->group(function() {
+        Route::post('/forgot-password', 'submitForgotPasswordForm');
     });
 });
