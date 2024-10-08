@@ -163,11 +163,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-<<<<<<< HEAD
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
-=======
-        Spatie\Permission\PermissionServiceProvider::class,
->>>>>>> ead7c0f3636ce37f19fe96c2bff990d995376323
 
 
         /*

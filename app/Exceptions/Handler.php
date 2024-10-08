@@ -69,11 +69,12 @@ class Handler extends ExceptionHandler
         });
     }
     
-    public function render($request, Throwable $exception)
-    {
-            Helpers::createErrorLogs($exception, $request->request_id);
-            return response()->json(['error' => 'internal server error'], 500);
-        }
+    // public function render($request, Throwable $exception)
+    // {
+    //     // dd($exception);
+    //         Helpers::createErrorLogs($exception, $request->request_id);
+    //         return response()->json(['error' => 'internal server error'], 500);
+    //     }
     }
 
     
