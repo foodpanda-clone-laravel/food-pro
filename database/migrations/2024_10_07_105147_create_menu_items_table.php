@@ -23,7 +23,6 @@ return new class extends Migration
             $table->string('image_path');
             $table->float('discount')->nullable();
             $table->foreign('menu_id')->references('id')->on('menus')->onDelete('cascade');
-
             $table->softDeletes();
             $table->timestamps();
         });

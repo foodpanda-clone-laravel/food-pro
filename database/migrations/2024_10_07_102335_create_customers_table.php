@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('address');
             $table->string('delivery_address');
-            $table->string('favorites');
+            $table->string('favorites'); // is there a way to store favorites restaurant ids in one column
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();

@@ -17,11 +17,11 @@ class AdminSeeder extends Seeder
     {
         // Create an admin user
         User::create([
-            'first_name' => 'Admin',         // Admin first name
-            'last_name' => 'User',           // Admin last name
-            'phone_number' => '1234567890',  // Admin phone number (optional)
-            'email' => 'admin@example.com',   // Admin email
-            'password' => Hash::make('password'), // Admin password (hashed)
+            'first_name' => 'Admin',        
+            'last_name' => 'User',           
+            'phone_number' => '1234567890',  
+            'email' => 'admin@example.com',   
+            'password' => Hash::make('password'), 
         ]);
     }
 }

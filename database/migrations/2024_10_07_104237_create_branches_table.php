@@ -19,8 +19,6 @@ return new class extends Migration
             $table->string('postal_code');
             $table->string('city');
             $table->unsignedBigInteger('restaurant_id');
-
-            // Foreign key constraint referencing the 'restaurants' table
             $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
             
             $table->softDeletes();

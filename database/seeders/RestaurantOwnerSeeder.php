@@ -6,8 +6,9 @@ use App\Models\Restaurant;
 use App\Models\RestaurantOwner;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use App\Models\Branch;
 
-class OwnerSeeder extends Seeder
+class RestaurantOwnerSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -18,34 +19,36 @@ class OwnerSeeder extends Seeder
     {
         // Create a user first
         $user = User::create([
-            'email' => 'adeel@example.com',
-            'first_name' => 'Adeel',
-            'last_name' => 'Shah',
+            'email' => 'shahidkapoor@example.com',
+            'first_name' => 'shahid',
+            'last_name' => 'kapoor',
             'phone_number' => '1234567890',
             'password' => bcrypt('password123'),
         ]);
 
-        // Create a restaurant owner linked to the created user
        $owner = RestaurantOwner::create([
-            'cnic' => '12345-6789012-3',
-            'user_id' => $user->id, // Linking to the user
+            'cnic' => '12345-6789012-4',
+            'user_id' =>$user->id,
             'bank_name' => 'Meezan Bank',
-            'iban' => 'PK36SCBL0000001123456702',
-            'account_owner_title' => 'Adeel Shah',
+            'iban' => 'PK36SCBL0000001123456902',
+            'account_owner_title' => 'shahid Shah',
         ]);
 
 
-        Restaurant::create([
-            'name' => 'Adeel’s Bistro',
+        $restaurant= Restaurant::create([
+            'name' => $user->first_name.' '.$user->last_name,
             'owner_id' => $owner->id,
-            'address' => '123 Main St',
-            'postal_code' => '12345',
-            'city' => 'Lahore',
             'opening_time' => '2024-10-01 09:00:00',
             'closing_time' => '2024-10-01 22:00:00',
             'cuisine' => 'Italian',
             'logo_path' => null, // Assuming no logo yet
-            'business_type' => 'Sole Proprietorship',
+            'business_type' => 'Restaurant',
+        ]);
+        Branch::create([
+            'address'=>'programmers force',
+            'city'=>'lahore',
+            'postal_code'=>'54000',
+            'restaurant_id'=>$restaurant->id,
         ]);
     }
 }

@@ -19,10 +19,11 @@ return new class extends Migration
             $table->unsignedBigInteger('branch_id')->nullable()->default(null);
 
             $table->string('name');
-            $table->string('description');
+            // how will the restaurant owner fetch all the menus
+            // menus will have categories like meals
+            $table->string('description')->nullable()->default(null);
             $table->softDeletes();
             $table->timestamps();
-
             $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
             $table->foreign('branch_id')->references('id')->on('branches');
         });

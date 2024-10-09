@@ -16,13 +16,13 @@ return new class extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('order_id');
-            
             $table->unsignedBigInteger('menu_item_id');
             $table->integer('quantity');
             $table->float('item_price');
             $table->float('addon_price');
             $table->float('total_price');
             $table->string('addon_name');
+            $table->unsignedBigInteger('variation_id')->nullable()->default(null);
             $table->foreign('menu_item_id')->references('id')->on('menus');
             $table->foreign('order_id')->references('id')->on('orders');
             $table->timestamps();
