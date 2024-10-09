@@ -75,9 +75,6 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
         
     });
 
-});
-Route::middleware('request.logs')->group(function(){
-
     Route::controller(ForgotPasswordController::class)->group(function(){
         Route::post('/forgot-password', 'submitForgotPasswordForm')->name('password.email');;
         Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
@@ -85,7 +82,3 @@ Route::middleware('request.logs')->group(function(){
 
 });
 
-
-Route::get('hello', function(){
-
-});
