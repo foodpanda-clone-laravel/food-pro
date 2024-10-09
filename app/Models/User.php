@@ -11,20 +11,10 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-<<<<<<< feature-branch-ali
-
-
-class User extends Authenticatable implements JWTSubject
-{
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
-    use HasRoles;  
-
-=======
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;  
     use HasRoles;
->>>>>>> main
     /**
      * The attributes that are mass assignable.
      *
