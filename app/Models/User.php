@@ -11,6 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+<<<<<<< feature-branch-ali
 
 
 class User extends Authenticatable implements JWTSubject
@@ -18,6 +19,12 @@ class User extends Authenticatable implements JWTSubject
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
     use HasRoles;  
 
+=======
+class User extends Authenticatable implements JWTSubject
+{
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;  
+    use HasRoles;
+>>>>>>> main
     /**
      * The attributes that are mass assignable.
      *
@@ -53,5 +60,18 @@ class User extends Authenticatable implements JWTSubject
     public function restaurantOwner()
     {
         return $this->hasOne(RestaurantOwner::class);
+    }
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [
+            'role' => $this->role,  // Assuming you have a 'role' field in your users table
+            // Add other claims if necessary
+        ];
     }
 }
