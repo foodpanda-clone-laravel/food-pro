@@ -21,7 +21,7 @@ use App\Http\Controllers\RestaurantController;
 |
 */
 
-Route::middleware(['jwt', 'request.logs'])->group(function () {
+Route::middleware(['request.logs', 'jwt'])->group(function () {
 
     // Grouped routes for customer-related actions
     Route::prefix('customers')->group(function () {
