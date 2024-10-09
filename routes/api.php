@@ -22,70 +22,69 @@ use App\Http\Controllers\RestaurantController;
 */
 use App\Http\Controllers\UserController;
 
-Route::post('register', [UserController::class, 'register']);
-Route::post('/restaurant/register-with-owner', [RestaurantController::class, 'registerRestaurantWithOwner']);
-Route::post('/login', [UserController::class, 'login']);
-
-
 Route::middleware(['request.logs', 'jwt'])->group(function () {
 
-    // Grouped routes for customer-related actions
-    Route::prefix('customers')->group(function () {
+    // Group all customer-related actions under the CustomerController
+    Route::controller(CustomerController::class)->group(function () {
 
-        // View order history for a specific customer
-        Route::get('{customerId}/orders', [CustomerController::class, 'orderHistory']);
+        Route::prefix('customers')->group(function () {
+            // View order history for a specific customer
+            Route::get('{customerId}/orders', 'orderHistory');
 
-        // View favorite restaurants for a specific customer
-        Route::get('{customerId}/favorites', [CustomerController::class, 'favoriteItems']);
+            // View favorite restaurants for a specific customer
+            Route::get('{customerId}/favorites', 'favoriteItems');
 
-        // View rewards for a specific customer
-        Route::get('{customerId}/rewards', [CustomerController::class, 'viewRewards']);
+            // View rewards for a specific customer
+            Route::get('{customerId}/rewards', 'viewRewards');
 
-        // Use points at checkout for a specific customer
-        Route::post('{customerId}/use-points', [CustomerController::class, 'usePointsAtCheckout']);
+            // Use points at checkout for a specific customer
+            Route::post('{customerId}/use-points', 'usePointsAtCheckout');
 
-        // Update delivery address for a specific customer
-        Route::patch('{customerId}/update-address', [CustomerController::class, 'updateDeliveryAddress']);
+            // Update delivery address for a specific customer
+            Route::patch('{customerId}/update-address', 'updateDeliveryAddress');
 
-        // View customer profile details
-        Route::get('{customerId}', [CustomerController::class, 'viewProfile']);
+            // View customer profile details
+            Route::get('{customerId}', 'viewProfile');
 
-        // Add a restaurant to the customer's favorite list
-        Route::post('{customerId}/favorite-restaurants', [CustomerController::class, 'addFavoriteRestaurant']);
+            // Add a restaurant to the customer's favorite list
+            Route::post('{customerId}/favorite-restaurants', 'addFavoriteRestaurant');
 
-        // Remove a restaurant from the customer's favorite list
-        Route::delete('{customerId}/favorite-restaurants/{restaurantId}', [CustomerController::class, 'removeFavoriteRestaurant']);
+            // Remove a restaurant from the customer's favorite list
+            Route::delete('{customerId}/favorite-restaurants/{restaurantId}', 'removeFavoriteRestaurant');
 
-        // View the customer’s current active order
-        Route::get('{customerId}/active-order', [CustomerController::class, 'activeOrder']);
+            // View the customer’s current active order
+            Route::get('{customerId}/active-order', 'activeOrder');
 
-        // Submit feedback or review for an order/restaurant
-        Route::post('{customerId}/feedback', [CustomerController::class, 'submitFeedback']);
+            // Submit feedback or review for an order/restaurant
+            Route::post('{customerId}/feedback', 'submitFeedback');
+        });
+
+        // View all menus (does not depend on customer ID)
+        Route::get('menus', 'viewMenus');
+
+        // Search for a restaurant
+        Route::get('search-restaurant', 'searchRestaurant');
     });
 
-    // View all menus (does not depend on customer ID)
-    Route::get('menus', [CustomerController::class, 'viewMenus']);
-
-    // Search for a restaurant
-    Route::get('search-restaurant', [CustomerController::class, 'searchRestaurant']);
-
-    // Test user route (authenticated)
+    // Test authenticated user route
     Route::get('/user', function (Request $request) {
         return response()->json($request->auth);
-        
     });
 
 });
-Route::middleware('request.logs')->group(function(){
 
-    Route::controller(ForgotPasswordController::class)->group(function(){
-        Route::post('/forgot-password', 'submitForgotPasswordForm')->name('password.email');;
+
+Route::middleware('request.logs')->group(function () {
+
+    Route::controller(ForgotPasswordController::class)->group(function () {
+        Route::post('/forgot-password', 'submitForgotPasswordForm')->name('password.email');
+        ;
         Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
-    });  
+    });
 
 });
 
 
-Route::get('hello', function(){
+Route::get('hello', function () {
 
 });
