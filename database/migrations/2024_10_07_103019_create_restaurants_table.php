@@ -17,8 +17,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->unsignedBigInteger('owner_id');
-            $table->integer('branch_id');
-            $table->integer('branches')->nullable()->default(null);
             $table->string('address');
             $table->string('postal_code');
             $table->string('city');

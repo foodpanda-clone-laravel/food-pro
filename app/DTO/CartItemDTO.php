@@ -2,28 +2,19 @@
 
 namespace App\DTO;
 
-class RestaurantOwnerDTO extends BaseDTO
+class CartItemDTO extends BaseDTO
 {
-    public string $cnic;
-    public int $user_id;
-    public string $bank_name;
-    public string $iban;
-    public string $account_owner_title;
-   
+    public int $session_id;     // The ID of the associated shopping session
+    public int $menu_item_id;   // The ID of the menu item
+    public int $quantity;        // The quantity of the menu item in the cart
 
     public function __construct(
-        string $cnic,
-        int $user_id,
-        string $bank_name,
-        string $iban,
-        string $account_owner_title,
-        
+        int $session_id,
+        int $menu_item_id,
+        int $quantity
     ) {
-        $this->cnic = $cnic;
-        $this->user_id = $user_id;
-        $this->bank_name = $bank_name;
-        $this->iban = $iban;
-        $this->account_owner_title = $account_owner_title;
- 
+        $this->session_id = $session_id;
+        $this->menu_item_id = $menu_item_id;
+        $this->quantity = $quantity;
     }
 }

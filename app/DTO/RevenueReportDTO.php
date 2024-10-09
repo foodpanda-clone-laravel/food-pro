@@ -2,34 +2,25 @@
 
 namespace App\DTO;
 
-class OrderDTO extends BaseDTO
+class RevenueReportDTO extends BaseDTO
 {
-    public int $user_id;
-    public int $restaurant_id;
-    public int $branch_id;
-    public float $total_amount;
-    public string $status; // Enum values: 'in progress','confirmed', 'prepared', 'delivered', 'canceled'
-    public string $order_type; // Enum values: 'delivery', 'takeaway'
-    public float $delivery_charges;
-    public \DateTime $estimated_delivery_time;
+    public int $restaurant_id;   // The ID of the associated restaurant
+    public int $branch_id;       // The ID of the associated branch
+    public int $total_orders;     // The total number of orders
+    public float $total_revenue;  // The total revenue generated
+    public string $report_month;  // The month of the report
 
     public function __construct(
-        int $user_id,
         int $restaurant_id,
         int $branch_id,
-        float $total_amount,
-        string $status,
-        string $order_type,
-        float $delivery_charges,
-        \DateTime $estimated_delivery_time
+        int $total_orders,
+        float $total_revenue,
+        string $report_month
     ) {
-        $this->user_id = $user_id;
         $this->restaurant_id = $restaurant_id;
         $this->branch_id = $branch_id;
-        $this->total_amount = $total_amount;
-        $this->status = $status;
-        $this->order_type = $order_type;
-        $this->delivery_charges = $delivery_charges;
-        $this->estimated_delivery_time = $estimated_delivery_time;
+        $this->total_orders = $total_orders;
+        $this->total_revenue = $total_revenue;
+        $this->report_month = $report_month;
     }
 }

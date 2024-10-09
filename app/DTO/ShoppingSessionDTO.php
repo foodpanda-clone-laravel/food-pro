@@ -2,22 +2,19 @@
 
 namespace App\DTO;
 
-class RewardDTO extends BaseDTO
+class ShoppingSessionDTO extends BaseDTO
 {
-    public float $points;
-    public int $user_id;
-    public int $badge_id;
-    public ?\DateTime $expired_at; // Nullable, since it can be null
+    public int $user_id;         // The ID of the associated user
+    public float $total;         // The total amount of the shopping session
+    public \DateTime $expired_at; // The expiration date and time of the session
 
     public function __construct(
-        float $points,
         int $user_id,
-        int $badge_id,
-        ?\DateTime $expired_at = null // Default to null if not provided
+        float $total,
+        \DateTime $expired_at
     ) {
-        $this->points = $points;
         $this->user_id = $user_id;
-        $this->badge_id = $badge_id;
+        $this->total = $total;
         $this->expired_at = $expired_at;
     }
 }
