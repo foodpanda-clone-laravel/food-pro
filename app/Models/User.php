@@ -8,8 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;  // Import SoftDeletes
 use Laravel\Sanctum\HasApiTokens;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;  // Add SoftDeletes trait
 
@@ -48,5 +49,28 @@ class User extends Authenticatable
     public function restaurantOwner()
     {
         return $this->hasOne(RestaurantOwner::class);
+    }
+
+    /**
+     * Get the identifier that will be stored in the JWT subject claim.
+     *
+     * @return mixed
+     */
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    /**
+     * Return a key-value array, containing any custom claims to be added to the JWT.
+     *
+     * @return array
+     */
+    public function getJWTCustomClaims()
+    {
+        return [
+            'role' => $this->role,  // Assuming you have a 'role' field in your users table
+            // Add other claims if necessary
+        ];
     }
 }
