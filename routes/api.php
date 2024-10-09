@@ -36,6 +36,3 @@ Route::middleware('request.logs')->group(function(){
         Route::post('/forgot-password', 'submitForgotPasswordForm');
     });     
 });
-Route::get('/hello', function(){
-    return "hello";
-});

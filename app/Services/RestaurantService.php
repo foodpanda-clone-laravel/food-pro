@@ -31,8 +31,6 @@ class RestaurantService
                 $restaurant = Restaurant::create([
                     'name' => $data['name'],
                     'owner_id' => $owner->id,
-                //    'branch_id' => $data['branch_id'],
-                 //   'branches' => $data['branches'],
                     'address' => $data['address'],
                     'postal_code' => $data['postal_code'],
                     'city' => $data['city'],
