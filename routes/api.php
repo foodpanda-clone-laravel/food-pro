@@ -6,6 +6,8 @@ use \App\Http\Middleware\APIRequestLogsMiddleware;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Database\QueryException;
 use App\Models\ApiRequestLog;
+use App\Http\Controllers\CustomerController;
+
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\RestaurantController;
 /*
