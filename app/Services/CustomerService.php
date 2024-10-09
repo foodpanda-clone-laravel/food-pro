@@ -9,6 +9,7 @@ use App\Models\Restaurant;
 use App\Models\Reward;
 use App\Models\Rating;
 use Exception;
+use Illuminate\Support\Str;
 
 use App\Interfaces\CustomerServiceInterface;
 
