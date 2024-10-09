@@ -4,12 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Services\CustomerService;
 use App\Helpers\Helpers;
-use App\Http\Requests\SearchRestaurantRequest;
-use App\Http\Requests\AddFavoriteRestaurantRequest;
-use App\Http\Requests\UsePointsRequest;
-use App\Http\Requests\UpdateDeliveryAddressRequest;
-use App\Http\Requests\SubmitFeedbackRequest;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
 class CustomerController extends Controller
@@ -45,10 +41,13 @@ class CustomerController extends Controller
         }
     }
 
-    public function searchRestaurant(SearchRestaurantRequest $request)
+    public function searchRestaurant(Request $request)
     {
         try {
-            $restaurants = $this->customerService->searchRestaurant($request->input('search_term'));
+            $validated = $request->validate([
+                'search_term' => 'required|string|min:1',
+            ]);
+            $restaurants = $this->customerService->searchRestaurant($validated['search_term']);
             return Helpers::sendSuccessResponse(200, 'Restaurants retrieved successfully', $restaurants);
         } catch (Exception $e) {
             $requestId = Str::uuid();
@@ -81,10 +80,13 @@ class CustomerController extends Controller
         }
     }
 
-    public function usePointsAtCheckout($customerId, UsePointsRequest $request)
+    public function usePointsAtCheckout($customerId, Request $request)
     {
         try {
-            $monetaryValue = $this->customerService->usePoints($customerId, $request->input('points'));
+            $validated = $request->validate([
+                'points' => 'required|integer|min:1',
+            ]);
+            $monetaryValue = $this->customerService->usePoints($customerId, $validated['points']);
             return Helpers::sendSuccessResponse(200, 'Points redeemed successfully', ['monetary_value' => $monetaryValue]);
         } catch (Exception $e) {
             $requestId = Str::uuid();
@@ -93,10 +95,13 @@ class CustomerController extends Controller
         }
     }
 
-    public function updateDeliveryAddress($customerId, UpdateDeliveryAddressRequest $request)
+    public function updateDeliveryAddress($customerId, Request $request)
     {
         try {
-            $this->customerService->updateDeliveryAddress($customerId, $request->input('delivery_address'));
+            $validated = $request->validate([
+                'delivery_address' => 'required|string|min:5',
+            ]);
+            $this->customerService->updateDeliveryAddress($customerId, $validated['delivery_address']);
             return Helpers::sendSuccessResponse(200, 'Delivery address updated successfully');
         } catch (Exception $e) {
             $requestId = Str::uuid();
@@ -117,10 +122,13 @@ class CustomerController extends Controller
         }
     }
 
-    public function addFavoriteRestaurant($customerId, AddFavoriteRestaurantRequest $request)
+    public function addFavoriteRestaurant($customerId, Request $request)
     {
         try {
-            $this->customerService->addFavoriteRestaurant($customerId, $request->input('restaurant_id'));
+            $validated = $request->validate([
+                'restaurant_id' => 'required|integer|exists:restaurants,id',
+            ]);
+            $this->customerService->addFavoriteRestaurant($customerId, $validated['restaurant_id']);
             return Helpers::sendSuccessResponse(200, 'Restaurant added to favorites successfully');
         } catch (Exception $e) {
             $requestId = Str::uuid();
@@ -156,10 +164,15 @@ class CustomerController extends Controller
         }
     }
 
-    public function submitFeedback($customerId, SubmitFeedbackRequest $request)
+    public function submitFeedback($customerId, Request $request)
     {
         try {
-            $feedback = $this->customerService->submitFeedback($customerId, $request->validated());
+            $validated = $request->validate([
+                'order_id' => 'required|exists:orders,id',
+                'rating' => 'required|integer|min:1|max:5',
+                'review' => 'nullable|string',
+            ]);
+            $feedback = $this->customerService->submitFeedback($customerId, $validated);
             return Helpers::sendSuccessResponse(200, 'Feedback submitted successfully', $feedback);
         } catch (Exception $e) {
             $requestId = Str::uuid();
