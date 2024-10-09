@@ -8,10 +8,11 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;  // Import SoftDeletes
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;  // Add SoftDeletes trait
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes,HasRoles;  // Add SoftDeletes trait
 
     /**
      * The attributes that are mass assignable.

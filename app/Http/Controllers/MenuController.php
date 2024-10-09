@@ -5,6 +5,12 @@ namespace App\Http\Controllers;
 use App\DTO\AddonDTO;
 use App\DTO\MenuDTO;
 use App\DTO\MenuItemDTO;
+use App\Helpers\Helpers;
+use App\Http\Requests\AddMenuItemRequest;
+use App\Http\Requests\AddOnRequest;
+use App\Http\Requests\CreateMenuRequest;
+use App\Http\Requests\UpdateMenuItemRequest;
+use App\Http\Requests\UpdateMenuRequest;
 use App\Models\Addon;
 use App\Models\Branch;
 use App\Models\Menu;
@@ -15,7 +21,7 @@ use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
-    public function createMenu(Request $request,$branch_id)
+    public function createMenu(CreateMenuRequest $request,$restaurant_id,$branch_id)
     {
         $user = auth()->user();
 
@@ -32,21 +38,23 @@ class MenuController extends Controller
 
         // Create a new MenuDTO instance
         $menu = new MenuDTO(
-            restaurant_id: $restaurant->id,
+            restaurant_id: $restaurant_id,
             name: $request->name,
             description: $request->description,
             branch_id: $branch->id // Use validated branch ID
         );
 
         // Create the menu in the database
-        Menu::create($menu->toArray());
+        $menu = Menu::create($menu->toArray());
+
+        return Helpers::sendSuccessResponse(200, 'Menu created successfully', $menu);
 
         
 
 
     }
 
-    public function addMenuItem($menu_id, Request $request){
+    public function addMenuItem(AddMenuItemRequest $request, $menu_id){
 
         $menu=Menu::findorfail($menu_id);
 
@@ -60,7 +68,12 @@ class MenuController extends Controller
             discount: $request->discount
         );
 
-        MenuItem::create($menuItem->toArray());
+        $menu_item = MenuItem::create($menuItem->toArray());
+
+        return Helpers::sendSuccessResponse(200, 'Menu item created successfully', $menu_item);
+
+
+
 
 
 
@@ -73,7 +86,7 @@ class MenuController extends Controller
         return $menu;
     }
 
-    public function addOns($menu_id,$menu_item_id, Request $request){
+    public function addOns( AddOnRequest $request,$menu_id,$menu_item_id){
         $menu = Menu::findorfail($menu_id);
         $menu_item = MenuItem::where('menu_id', $menu_id)->findOrFail($menu_item_id);
         $addOn= new AddonDTO(
@@ -83,24 +96,40 @@ class MenuController extends Controller
             price: $request->price
         );
 
-        Addon::create($addOn->toArray());
+       $addOn = Addon::create($addOn->toArray());
+
+       return Helpers::sendSuccessResponse(200, 'Addon created successfully', $addOn);
 
         
 
         
     }
 
-    public function updateMenu($menu_id, Request $request){
-        $menu = Menu::findorfail($menu_id);
-        $menu->update($request->validated());
+    public function updateMenu(UpdateMenuRequest $request, $menu_id){
+        $menu = Menu::findOrFail($menu_id);
+
+        $menu->update($request->only(['name', 'description']));
+    
+       return Helpers::sendSuccessResponse(200, 'Menu updated successfully', $menu);
     }
 
-
-    public function updateMenuItem($menu_id, $menu_item_id, Request $request){
-        $menu = Menu::findorfail($menu_id);
+    public function updateMenuItem(UpdateMenuItemRequest $request, $menu_id, $menu_item_id)
+    {
+        // Find the menu
+        $menu = Menu::findOrFail($menu_id);
+    
+        // Find the menu item within the specified menu
         $menu_item = MenuItem::where('menu_id', $menu_id)->findOrFail($menu_item_id);
+    
+        // Update the menu item with validated data
         $menu_item->update($request->validated());
+    
+        return response()->json([
+            'message' => 'Menu item updated successfully.',
+            'menu_item' => $menu_item,
+        ]);
     }
+    
 
     public function deleteMenu($menu_id){
         $menu = Menu::findorfail($menu_id);
