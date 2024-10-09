@@ -75,7 +75,7 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
         return response()->json($request->auth);
         
     });
-
+// group related routes in a controller
     Route::post('create-menu/{branch_id}', [MenuController::class, 'createMenu']);
     Route::post('menu/add-item/{menu_id}', [MenuController::class, 'addMenuItem']);
 
@@ -86,10 +86,5 @@ Route::middleware('request.logs')->group(function(){
         Route::post('/forgot-password', 'submitForgotPasswordForm')->name('password.email');;
         Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
     });  
-
-});
-
-
-Route::get('hello', function(){
 
 });
