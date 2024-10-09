@@ -72,8 +72,6 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
     });
 
 });
-
-
 Route::middleware('request.logs')->group(function () {
 
     Route::controller(ForgotPasswordController::class)->group(function () {
@@ -85,6 +83,3 @@ Route::middleware('request.logs')->group(function () {
 });
 
 
-Route::get('hello', function () {
-
-});
