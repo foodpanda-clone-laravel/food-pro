@@ -16,11 +16,15 @@ return new class extends Migration
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('restaurant_id');
-            
+            $table->unsignedBigInteger('branch_id')->nullable()->default(null);
+
             $table->string('name');
             $table->string('description');
             $table->softDeletes();
             $table->timestamps();
+
+            $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
+            $table->foreign('branch_id')->references('id')->on('branches');
         });
     }
 
@@ -34,3 +38,4 @@ return new class extends Migration
         Schema::dropIfExists('menus');
     }
 };
+
