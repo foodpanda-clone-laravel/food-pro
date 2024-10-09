@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
 use App\Http\Requests\RegisterUserRequest;
 use App\Http\Requests\LoginRequest;
 use App\Services\UserService;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\JsonResponse; 
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\Helpers;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
@@ -27,10 +28,11 @@ class UserController extends Controller
      */
     public function register(RegisterUserRequest $request): JsonResponse
     {
+        // @junaidsajidkhan
+        // think of another way of getting request->validated()
+        // unnecessary type hinting when we are returning response using helpers function remove : JsonResponse
         // Check if user already exists
-        if ($this->userService->userExists($request->email)) {
-            return Helpers::sendFailureResponse(400, 'User already exists');
-        }
+     
 
         // Create the user
         $user = $this->userService->createUser($request->validated());
@@ -47,6 +49,8 @@ class UserController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
+        // Remove all single line comments @junaidsajidkhan 
+
         // Validate credentials and attempt login
         $credentials = $request->validated();
         $result = $this->userService->loginUser($credentials);

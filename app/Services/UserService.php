@@ -6,23 +6,33 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Spatie\Permission\Models\Role;
 
 class UserService
 {
     public function createUser(array $data)
     {
-        return User::create([
+        /**
+         * instead of creating user like this change the data array
+         * 
+         */
+        $user = User::create([
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+        $user->assignRole('Customer');
+       
+        $role = Role::findByName('Customer');
+
+        $permissions = $role->permissions->toArray();
+        $permissionIds = array_column($permissions, 'id');
+        $user->givePermissionTo($permissionIds);
+       
+        return $user;
     }
 
-    public function userExists(string $email): bool
-    {
-        return User::where('email', $email)->exists();
-    }
 
     public function loginUser(array $credentials)
     {
@@ -31,17 +41,15 @@ class UserService
         }
 
         $user = Auth::user();
-        $token = JWTAuth::fromUser($user);        // Check if the user has a role and handle null role case
-        $role = $user->roles;
+        $token = JWTAuth::fromUser($user);       
         $user_id = $user->id;
+        $roleName= $user->roles->pluck('name')[0];
+        
+        
+        $permissions = $user->permissions->toArray();
+        $permissions = array_column($permissions, 'name');
 
-        // Get the first role name if the user has any roles
-        $role = $user->roles->first() ? $user->roles->first()->name : null;
-
-        // Get permissions names if the user has roles
-        $permissions = $user->roles->first() ? $user->roles->first()->permissions->pluck('name') : [];
-
-        $result = ['role' => $role, 'permissions' => $permissions, 'access_token' => $token, 'user_id' => $user_id];
-        return $result; // Return false if authentication fails
+        $result = ['role' => $roleName, 'permissions' => $permissions, 'access_token' => $token, 'user_id' => $user_id];
+        return $result; 
     }
 }

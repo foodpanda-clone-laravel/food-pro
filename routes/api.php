@@ -2,14 +2,13 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use \App\Http\Middleware\APIRequestLogsMiddleware;
-use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Database\QueryException;
-use App\Models\ApiRequestLog;
-use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\Customer\CustomerController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\RestaurantOwner\RestaurantController;
+use App\Http\Controllers\Auth\UserController;
 
-use App\Http\Controllers\ForgotPasswordController;
-use App\Http\Controllers\RestaurantController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,13 +19,13 @@ use App\Http\Controllers\RestaurantController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-use App\Http\Controllers\UserController;
 
 Route::post('register', [UserController::class, 'register']);
 Route::post('/restaurant/register-with-owner', [RestaurantController::class, 'registerRestaurantWithOwner']);
 Route::post('/login', [UserController::class, 'login']);
 
-
+// @hiba haseeb remove all comments from customer controller api file and group them togeher in a controller.
+// you did that in previous commit but they are not merged properly.
 Route::middleware(['request.logs', 'jwt'])->group(function () {
 
     // Grouped routes for customer-related actions
@@ -62,6 +61,8 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
         // Submit feedback or review for an order/restaurant
         Route::post('{customerId}/feedback', [CustomerController::class, 'submitFeedback']);
     });
+
+
 
     // View all menus (does not depend on customer ID)
     Route::get('menus', [CustomerController::class, 'viewMenus']);

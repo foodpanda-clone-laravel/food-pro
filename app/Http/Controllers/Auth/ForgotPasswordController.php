@@ -1,15 +1,20 @@
 <?php
 
-namespace App\Http\Controllers;
-use App\Http\Requests\ForgotPasswordRequest;
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+
 use Illuminate\Http\Request;
-use App\Services\ResetPasswordService;
 use Illuminate\Support\Facades\Password;
-use App\Helpers\Helpers;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\ForgotPasswordRequest;
+use App\Helpers\Helpers;
+
+use App\Services\ResetPasswordService;
+
 
 class ForgotPasswordController extends Controller
 {
