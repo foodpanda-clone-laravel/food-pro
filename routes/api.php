@@ -7,6 +7,7 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Database\QueryException;
 use App\Models\ApiRequestLog;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\RestaurantController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,10 +21,14 @@ use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\UserController;
 
 Route::post('register', [UserController::class, 'register']);
+Route::post('/restaurant/register-with-owner', [RestaurantController::class, 'registerRestaurantWithOwner']);
+Route::post('/login', [UserController::class, 'login']);
+
 
 Route::middleware(['jwt'])->group(function () {
     Route::get('/user', function (Request $request) {
         return response()->json($request->auth);
+        
     });
 });
 Route::middleware('request.logs')->group(function(){

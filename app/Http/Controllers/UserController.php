@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RegisterUserRequest;
+use App\Http\Requests\LoginRequest;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Auth;
+use App\Helpers\Helpers;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
@@ -16,18 +19,49 @@ class UserController extends Controller
         $this->userService = $userService;
     }
 
+    /**
+     * Handle user registration.
+     *
+     * @param RegisterUserRequest $request
+     * @return JsonResponse
+     */
     public function register(RegisterUserRequest $request): JsonResponse
     {
-        // Check if the user already exists
+        // Check if user already exists
         if ($this->userService->userExists($request->email)) {
-            throw new HttpResponseException(response()->json([
-                'message' => 'This email is already registered. Please log in or use another email.'
-            ], 409)); // 409 Conflict
+            return Helpers::sendFailureResponse(400, 'User already exists');
         }
 
-        // Create the user if they do not exist
+        // Create the user
         $user = $this->userService->createUser($request->validated());
 
-        return response()->json(['message' => 'User registered successfully', 'user' => $user], 201);
+        // Send success response
+        return Helpers::sendSuccessResponse(201, 'User registered successfully', ['user' => $user]);
+    }
+
+    /**
+     * Handle user login.
+     *
+     * @param LoginRequest $request
+     * @return JsonResponse
+     */
+    public function login(LoginRequest $request): JsonResponse
+    {
+        // Validate credentials and attempt login
+        $credentials = $request->validated();
+        $result = $this->userService->loginUser($credentials);
+
+        // If authentication fails, send failure response
+        if (!$result) {
+            return Helpers::sendFailureResponse(401, 'Unauthorized');
+        }
+
+        // If authentication succeeds, send success response with token
+        return Helpers::sendSuccessResponse(
+            200,
+            'Logged in successfully',
+            $result,
+            ['Authorization' => 'Bearer ' . $result['access_token']]
+        );
     }
 }
