@@ -54,6 +54,7 @@ class APIRequestLogsMiddleware
             'response_json'=>$responseJson,
             'memory_usage'=>$memoryUsage
         ]);
+
     
     }
 }
