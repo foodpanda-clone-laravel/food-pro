@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('postal_code');
             $table->string('city');
             $table->unsignedBigInteger('restaurant_id');
-            $table->foreign('restaurant_id')->references('id')->on('restaurant_owners')->onDelete('cascade');
+            $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });
