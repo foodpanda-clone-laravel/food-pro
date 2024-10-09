@@ -45,7 +45,8 @@ class APIRequestLogsMiddleware
         $status = $response->status();
         $responseJson = $response->getContent();
         $memoryUsage = number_format(memory_get_usage()  / 1024 / 1024, 2)." MB";
-        $apiRequestLog = ApiRequestLog::where('id',$request->request_id)->first();
+        $id = $request->request_id;
+        $apiRequestLog = ApiRequestLog::where('id',$id)->first();
         $apiRequestLog->update([ 
             'status'=>$status,
             'duration'=>number_format($duration, 4) . ' s',

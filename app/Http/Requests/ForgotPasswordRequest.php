@@ -14,13 +14,14 @@ class ForgotPasswordRequest extends BaseRequest
     public function rules()
     {
         return [
-            'email'=>'required|exists:users,email'
+            'email'=>'required|exists:users,email|email'
         ];
     }
     public function messages(){
         return [
             'email.required'=>'Email fied is required',
-            'email.exists'=>'Invalid email addresss'
+            'email.exists'=>'Invalid email addresss',
+            'email.email'=>'Invalid email address format',
         ];
     }
 }
