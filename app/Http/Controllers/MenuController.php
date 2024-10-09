@@ -21,24 +21,27 @@ use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
-    public function createMenu(CreateMenuRequest $request,$restaurant_id,$branch_id)
+    public function createMenu(CreateMenuRequest $request,$branch_id)
     {
         $user = auth()->user();
 
+    
+
         // Find the restaurant owner
-        $owner = RestaurantOwner::findOrFail($user->id);
+        $owner = RestaurantOwner::where('user_id', $user->id)->firstOrFail();
+
 
         // Find the restaurant associated with the owner
-        $restaurant = Restaurant::findOrFail($owner->owner_id);
+        $restaurant = Restaurant::where('owner_id', $owner->id)->firstOrFail();
+
 
         // Check if the specified branch belongs to the restaurant
         $branch = Branch::where('restaurant_id', $restaurant->id)
                         ->where('id', $branch_id)
                         ->firstOrFail(); // Throws an exception if branch is not found
 
-        // Create a new MenuDTO instance
         $menu = new MenuDTO(
-            restaurant_id: $restaurant_id,
+            restaurant_id: $restaurant->id,
             name: $request->name,
             description: $request->description,
             branch_id: $branch->id // Use validated branch ID

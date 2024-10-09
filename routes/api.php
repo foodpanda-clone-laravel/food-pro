@@ -9,6 +9,7 @@ use App\Models\ApiRequestLog;
 use App\Http\Controllers\CustomerController;
 
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RestaurantController;
 /*
 |--------------------------------------------------------------------------
@@ -74,6 +75,9 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
         return response()->json($request->auth);
         
     });
+
+    Route::post('create-menu/{branch_id}', [MenuController::class, 'createMenu']);
+    Route::post('menu/add-item/{menu_id}', [MenuController::class, 'addMenuItem']);
 
 });
 Route::middleware('request.logs')->group(function(){

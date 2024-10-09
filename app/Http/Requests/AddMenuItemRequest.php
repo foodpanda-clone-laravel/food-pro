@@ -28,7 +28,8 @@ class AddMenuItemRequest extends BaseRequest
             'price' => 'required|numeric|min:0',
             'category' => 'required|string|max:100',
             'serving_size' => 'nullable|string|max:50',
-            'image_path' => 'nullable|string|max:255', // You can add file/image validation if necessary
+            // Updated image_path rule to accept only certain image types (jpeg, png, jpg)
+            'image_path' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', 
             'discount' => 'nullable|numeric|min:0|max:100', // Assuming discount is a percentage
         ];
     }
@@ -52,13 +53,12 @@ class AddMenuItemRequest extends BaseRequest
             'category.max' => 'The category cannot exceed 100 characters.',
             'serving_size.string' => 'The serving size must be a valid string.',
             'serving_size.max' => 'The serving size cannot exceed 50 characters.',
-            'image_path.string' => 'The image path must be a valid string.',
-            'image_path.max' => 'The image path cannot exceed 255 characters.',
+            'image_path.image' => 'The image must be a valid image file.',
+            'image_path.mimes' => 'The image must be a file of type: jpeg, png, jpg.',
+            'image_path.max' => 'The image cannot exceed 2 MB in size.',
             'discount.numeric' => 'The discount must be a valid number.',
             'discount.min' => 'The discount must be at least 0%.',
             'discount.max' => 'The discount cannot exceed 100%.',
         ];
     }
-
-   
 }
