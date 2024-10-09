@@ -52,7 +52,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(RestaurantOwner::class);
     }
 
-       public function getJWTIdentifier()
+    public function getJWTIdentifier()
     {
         return $this->getKey();
     }
@@ -64,5 +64,4 @@ class User extends Authenticatable implements JWTSubject
             // Add other claims if necessary
         ];
     }
-    
 }
