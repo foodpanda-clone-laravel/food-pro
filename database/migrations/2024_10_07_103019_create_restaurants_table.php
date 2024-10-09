@@ -17,9 +17,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->unsignedBigInteger('owner_id');
-            $table->string('address');
-            $table->string('postal_code');
-            $table->string('city');
             $table->datetime('opening_time')->nullable()->default(null);
             $table->datetime('closing_time')->nullable()->default(null);
             $table->string('cuisine');
