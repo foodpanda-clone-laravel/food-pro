@@ -26,13 +26,22 @@ class UserService
 
     public function loginUser(array $credentials)
     {
-        if (Auth::attempt($credentials)) {
-            // Get the authenticated user
-            $user = Auth::user();
-            // Generate JWT token
-            return JWTAuth::fromUser($user);
+        if (!Auth::attempt($credentials)) {
+            return false;
         }
 
-        return false; // Return false if authentication fails
+        $user = Auth::user();
+        $token = JWTAuth::fromUser($user);        // Check if the user has a role and handle null role case
+        $role = $user->roles;
+        $user_id = $user->id;
+
+        // Get the first role name if the user has any roles
+        $role = $user->roles->first() ? $user->roles->first()->name : null;
+
+        // Get permissions names if the user has roles
+        $permissions = $user->roles->first() ? $user->roles->first()->permissions->pluck('name') : [];
+
+        $result = ['role' => $role, 'permissions' => $permissions, 'access_token' => $token, 'user_id' => $user_id];
+        return $result; // Return false if authentication fails
     }
 }

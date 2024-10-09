@@ -8,12 +8,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;  // Import SoftDeletes
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;  // Add SoftDeletes trait
-
+    use HasRoles;
     /**
      * The attributes that are mass assignable.
      *
@@ -73,4 +74,5 @@ class User extends Authenticatable implements JWTSubject
             // Add other claims if necessary
         ];
     }
+    
 }
