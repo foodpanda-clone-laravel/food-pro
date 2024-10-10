@@ -17,13 +17,6 @@ class UserController extends Controller
         $this->userService = $userService;
     }
 
-    public function register(RegisterUserRequest $request): JsonResponse
-    {
-        $user = $this->userService->createUser($request->validated());
-
-        return Helpers::sendSuccessResponse(201, 'User registered successfully', ['user' => $user]);
-    }
-
     public function login(LoginRequest $request)
     {
         $credentials = $request->getValidatedData();
