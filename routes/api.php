@@ -28,58 +28,66 @@ Route::post('/login', [UserController::class, 'login']);
 // you did that in previous commit but they are not merged properly.
 Route::middleware(['request.logs', 'jwt'])->group(function () {
 
+
     // Grouped routes for customer-related actions
     Route::prefix('customers')->group(function () {
 
-        // View order history for a specific customer
-        Route::get('{customerId}/orders', [CustomerController::class, 'orderHistory']);
+        Route::controller(CustomerController::class)->group(function () {
 
-        // View favorite restaurants for a specific customer
-        Route::get('{customerId}/favorites', [CustomerController::class, 'favoriteItems']);
+            // View order history for a specific customer
+            Route::get('{customerId}/orders', 'orderHistory');
 
-        // View rewards for a specific customer
-        Route::get('{customerId}/rewards', [CustomerController::class, 'viewRewards']);
+            // View favorite restaurants for a specific customer
+            Route::get('{customerId}/favorites', 'favoriteItems');
 
-        // Use points at checkout for a specific customer
-        Route::post('{customerId}/use-points', [CustomerController::class, 'usePointsAtCheckout']);
+            // View rewards for a specific customer
+            Route::get('{customerId}/rewards', 'viewRewards');
 
-        // Update delivery address for a specific customer
-        Route::patch('{customerId}/update-address', [CustomerController::class, 'updateDeliveryAddress']);
+            // Use points at checkout for a specific customer
+            Route::post('{customerId}/use-points', 'usePointsAtCheckout');
 
-        // View customer profile details
-        Route::get('{customerId}', [CustomerController::class, 'viewProfile']);
+            // Update delivery address for a specific customer
+            Route::patch('{customerId}/update-address', 'updateDeliveryAddress');
 
-        // Add a restaurant to the customer's favorite list
-        Route::post('{customerId}/favorite-restaurants', [CustomerController::class, 'addFavoriteRestaurant']);
+            // View customer profile details
+            Route::get('{customerId}', 'viewProfile');
 
-        // Remove a restaurant from the customer's favorite list
-        Route::delete('{customerId}/favorite-restaurants/{restaurantId}', [CustomerController::class, 'removeFavoriteRestaurant']);
+            // Add a restaurant to the customer's favorite list
+            Route::post('{customerId}/favorite-restaurants', 'addFavoriteRestaurant');
 
-        // View the customer’s current active order
-        Route::get('{customerId}/active-order', [CustomerController::class, 'activeOrder']);
+            // Remove a restaurant from the customer's favorite list
+            Route::delete('{customerId}/favorite-restaurants/{restaurantId}', 'removeFavoriteRestaurant');
 
-        // Submit feedback or review for an order/restaurant
-        Route::post('{customerId}/feedback', [CustomerController::class, 'submitFeedback']);
+            // View the customer’s current active order
+            Route::get('{customerId}/active-order', 'activeOrder');
+
+            // Submit feedback or review for an order/restaurant
+            Route::post('{customerId}/feedback', 'submitFeedback');
+        });
+
+        // View all menus (does not depend on customer ID)
+        Route::get('menus', 'viewMenus');
+
+        // Search for a restaurant
+        Route::get('search-restaurant', 'searchRestaurant');
+
+        // View all restaurants (does not depend on customer ID)
+        Route::get('restaurants', 'viewAllRestaurants');
     });
 
 
-
-    // View all menus (does not depend on customer ID)
-    Route::get('menus', [CustomerController::class, 'viewMenus']);
-
-    // Search for a restaurant
-    Route::get('search-restaurant', [CustomerController::class, 'searchRestaurant']);
 
     // Test user route (authenticated)
     Route::get('/user', function (Request $request) {
         return response()->json($request->auth);
-        
+
     });
 
-    Route::controller(ForgotPasswordController::class)->group(function(){
-        Route::post('/forgot-password', 'submitForgotPasswordForm')->name('password.email');;
+    Route::controller(ForgotPasswordController::class)->group(function () {
+        Route::post('/forgot-password', 'submitForgotPasswordForm')->name('password.email');
+        ;
         Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
-    });  
+    });
 
 });
 

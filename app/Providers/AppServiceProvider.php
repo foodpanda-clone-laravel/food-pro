@@ -19,6 +19,11 @@ class AppServiceProvider extends ServiceProvider
 			\App\Interfaces\BaseServiceInterface::class,
 			\App\Services\BaseService::class
 		);
+
+		$this->app->bind(
+			\App\Interfaces\CustomerServiceInterface::class,
+			\App\Services\CustomerService::class
+		);
     }
 
     /**
