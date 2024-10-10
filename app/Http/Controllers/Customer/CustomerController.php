@@ -17,6 +17,7 @@ use App\Http\Requests\AddFavoriteRestaurantRequest;
 use App\Http\Requests\UsePointsRequest;
 use App\Http\Requests\UpdateDeliveryAddressRequest;
 use App\Http\Requests\SubmitFeedbackRequest;
+use App\Http\Controllers\Controller;
 
 
 class CustomerController extends Controller

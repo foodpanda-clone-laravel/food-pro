@@ -18,6 +18,7 @@ use App\Models\MenuItem;
 use App\Models\Restaurant;
 use App\Models\RestaurantOwner;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class MenuController extends Controller
 {
