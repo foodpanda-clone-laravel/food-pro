@@ -12,10 +12,7 @@ class UserService
 {
     public function createUser(array $data)
     {
-        /**
-         * instead of creating user like this change the data array
-         * 
-         */
+        
         $user = User::create([
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
@@ -25,11 +22,9 @@ class UserService
         $user->assignRole('Customer');
        
         $role = Role::findByName('Customer');
-
         $permissions = $role->permissions->toArray();
         $permissionIds = array_column($permissions, 'id');
         $user->givePermissionTo($permissionIds);
-       
         return $user;
     }
 
@@ -49,7 +44,10 @@ class UserService
         $permissions = $user->permissions->toArray();
         $permissions = array_column($permissions, 'name');
 
+
+
         $result = ['role' => $roleName, 'permissions' => $permissions, 'access_token' => $token, 'user_id' => $user_id];
         return $result; 
     }
+
 }

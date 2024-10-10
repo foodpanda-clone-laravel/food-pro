@@ -1,0 +1,299 @@
+const productImage = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTa9Qq1rV_svdydH5u3O8r5ZmT8udMBnSuKeA&s';
+const productName = 'Summer Deal 1';
+const discountedPrice = 475.16;
+const originalPrice = 774;
+const productDescription = 'Chicken Sub & 345ml Drink';
+
+
+ {
+    title: 'Choose Your Sub',
+    selectLimit: 1,
+    required: true,
+    selectedOption: null,
+    options: [
+      { name: 'Tikka', price: 'Free', popular: true },
+      { name: 'BBQ', price: 'Free', popular: false },
+      { name: 'Roasted Chicken Breast', price: 'Free', popular: false },
+      { name: 'Chicken Chapli', price: 'Free', popular: false },
+    ],
+  },
+  {
+    title: 'Choose Your Drink',
+    selectLimit: 1,
+    required: true,
+    selectedOption: null,
+    options: [
+      { name: 'Coca Cola', price: 'Free', popular: true },
+      { name: 'Pepsi', price: 'Free', popular: false },
+      { name: 'Sprite', price: 'Free', popular: false },
+    ],
+  },
+  {
+    title: 'Choose Your Extras',
+    selectLimit: 1,
+    required: false,
+    selectedOption: null,
+    options: [
+      { name: 'Extra Cheese', price: 'Rs. 50', popular: false },
+      { name: 'Extra Mayo', price: 'Rs. 30', popular: false },
+    ],
+  }
+
+
+when i add to cart
+https://pk.fd-api.com/api/v5/cart/calculate?include=expedition
+request payload
+{
+    "expedition": {
+        "type": "delivery",
+        "latitude": 31.47459998,
+        "longitude": 74.27181041,
+        "delivery_address": {
+            "latitude": 31.47459998,
+            "longitude": 74.27181041
+        },
+        "delivery_option": "standard"
+    },
+    "order_time": "now",
+    "payment": {
+        "methods": [],
+        "allowance_amount": 0,
+        "loyalty": {
+            "points": 0,
+            "selected_promotion_id": ""
+        }
+    },
+    "products": [
+        {
+            "id": 43109918,
+            "variation_id": 45669605,
+            "quantity": 1,
+            "toppings": [],
+            "special_instructions": "",
+            "sold_out_option": "REFUND",
+            "price": 792,
+            "original_price": 880,
+            "variation_name": "Medium",
+            "menu_id": null,
+            "menu_category_id": null,
+            "code": "cfe3e966-dd67-44d8-ba8c-d058acdf44a7",
+            "variation_code": "22055658-3d15-4e2d-b6c6-8ec5bf225b53"
+        },
+        {
+            "id": 43109911,
+            "variation_id": 45669598,
+            "quantity": 1,
+            "toppings": [],
+            "special_instructions": "",
+            "sold_out_option": "CANCEL",
+            "price": 405,
+            "original_price": 450,
+            "variation_name": "Mango Shake ",
+            "menu_id": 165963,
+            "menu_category_id": 1947654,
+            "packaging_charge": 0
+        },
+        {
+            "id": 43109918,
+            "variation_id": 45669605,
+            "quantity": 2,
+            "toppings": [],
+            "special_instructions": "no mayo",
+            "sold_out_option": "REFUND",
+            "price": 792,
+            "original_price": 880,
+            "variation_name": "Medium",
+            "menu_id": null,
+            "menu_category_id": null,
+            "code": "cfe3e966-dd67-44d8-ba8c-d058acdf44a7",
+            "variation_code": "22055658-3d15-4e2d-b6c6-8ec5bf225b53"
+        }
+    ],
+    "vendor": {
+        "code": "yjp4",
+        "hasDeliveryProvider": true,
+        "id": 99688,
+        "latitude": 31.4729004,
+        "longitude": 74.27863095,
+        "marketplace": false,
+        "vertical": "restaurants"
+    },
+    "allowanceAmount": 0,
+    "participants": [],
+    "voucher": null,
+    "auto_apply_voucher": false,
+    "supported_features": {
+        "support_voucher_soft_fail": true,
+        "support_banned_products_soft_fail": false,
+        "small_order_fee_enabled": true,
+        "pd-qc-weight-stepper": false,
+        "pd-tx-cash-to-online-payment-surcharge": false
+    },
+    "joker_offer_id": "",
+    "joker": {
+        "single_discount": true
+    },
+    "voucher_context": null
+}
+
+response from api
+
+{
+    "discount_subscription_savings_attrs": [
+        "non-pro"
+    ],
+    "joker": null,
+    "dynamic_pricing": {
+        "customer_tag": {
+            "tag": "",
+            "variant": ""
+        },
+        "price_reasons": [],
+        "fleet_utilization": 0,
+        "subscription_benefits_applied": false
+    },
+    "upselling": null,
+    "voucher": null,
+    "small_order_fee": {
+        "hard_minimum_order_value": {
+            "amount": 0,
+            "fee": 0
+        },
+        "soft_minimum_order_value": {
+            "amount": 0,
+            "fee": 0
+        },
+        "cap": 249.00
+    },
+    "order_time": "2024-10-10T14:42:49+0500",
+    "products": [
+        {
+            "discount": null,
+            "special_instructions": "",
+            "variation_name": "Medium",
+            "sold_out_option": "REFUND",
+            "toppings": [],
+            "price": 792.00,
+            "packaging_price": 0,
+            "original_price": 880.00,
+            "quantity": 1,
+            "quantity_auto_added": 0,
+            "id": 43109918,
+            "variation_id": 45669605,
+            "is_available": true
+        },
+        {
+            "discount": null,
+            "special_instructions": "",
+            "variation_name": "",
+            "sold_out_option": "CANCEL",
+            "toppings": [],
+            "price": 405.00,
+            "packaging_price": 0,
+            "original_price": 450.00,
+            "quantity": 1,
+            "quantity_auto_added": 0,
+            "id": 43109911,
+            "variation_id": 45669598,
+            "is_available": true
+        },
+        {
+            "discount": null,
+            "special_instructions": "no mayo",
+            "variation_name": "Medium",
+            "sold_out_option": "REFUND",
+            "toppings": [],
+            "price": 1584.00,
+            "packaging_price": 0,
+            "original_price": 1760.00,
+            "quantity": 2,
+            "quantity_auto_added": 0,
+            "id": 43109918,
+            "variation_id": 45669605,
+            "is_available": true
+        }
+    ],
+    "expedition": {
+        "time": 35,
+        "delivery_duration_range": {
+            "lower_limit_in_minutes": 25,
+            "upper_limit_in_minutes": 40
+        },
+        "timepicker": [],
+        "packaging_charge_details": null,
+        "rider_tip": null,
+        "delivery_option": "standard",
+        "type": "delivery",
+        "available_delivery_options": [
+            {
+                "time": 35,
+                "time_range": {
+                    "lower_limit_in_minutes": 20,
+                    "upper_limit_in_minutes": 35
+                },
+                "type": "priority",
+                "fee": 50.00,
+                "total_fee": 129.00,
+                "original_delivery_option_fee": 129.00
+            },
+            {
+                "time": 35,
+                "time_range": {
+                    "lower_limit_in_minutes": 25,
+                    "upper_limit_in_minutes": 40
+                },
+                "type": "standard",
+                "fee": 79.00,
+                "total_fee": 79.00,
+                "original_delivery_option_fee": 79.00
+            }
+        ],
+        "adjustments": {
+            "next_discount": {
+                "difference": 0,
+                "discount": 0,
+                "progress_percentage": 100,
+                "is_free": false,
+                "show_message": false
+            },
+            "current_discount": 0
+        },
+        "selected_delivery_option": {
+            "type": "standard",
+            "delivery_fee": 79.00,
+            "delivery_fee_discount": 0,
+            "delivery_fee_without_discount": 79.00
+        },
+        "original_delivery_fee": 79.00,
+        "packaging_charge": 0,
+        "delivery_fee": 79.00
+    },
+    "payment": {
+        "methods": [],
+        "loyalty": {
+            "balance": null,
+            "earning_type": "",
+            "selected_promotion_id": "",
+            "partner_name": "",
+            "buckets": null,
+            "promotions": null,
+            "discount": 0,
+            "earned": 0,
+            "points": 0
+        },
+        "service_fee": 9.99,
+        "subtotal": 3090.00,
+        "discounted_subtotal": 2781.00,
+        "vat_total": 0,
+        "discount": 309.00,
+        "payable_total": 2869.99,
+        "payable_total_without_voucher": 2869.99,
+        "crossed_out_total": 3178.99,
+        "total_savings": 309.00,
+        "total": 3178.99
+    },
+    "minimum_order_value": {
+        "amount": 0,
+        "fee": 0
+    }
+}

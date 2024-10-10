@@ -7,14 +7,14 @@ use Illuminate\Database\QueryException;
 
 class Helpers{
 
-    public static function sendSuccessResponse(int $status, string $message, $data=[], $headers=null)
+    public static function sendSuccessResponse(int $status, string $message, $data=[], $headers=null, $cookies=null)
     {
         if($headers){
             return response()->json([
                 'status'=>$status,
                 'message'=>$message,
                 'data'=>$data
-            ], $status)->withHeaders($headers);    
+            ], $status)->withHeaders($headers)->cookie('example', 'sdkfjls');    
         }
         return response()->json([
             'status'=>$status,

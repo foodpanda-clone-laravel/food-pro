@@ -51,10 +51,11 @@ class UserController extends Controller
     {
         // Remove all single line comments @junaidsajidkhan 
 
+
         // Validate credentials and attempt login
         $credentials = $request->validated();
         $result = $this->userService->loginUser($credentials);
-
+        
         // If authentication fails, send failure response
         if (!$result) {
             return Helpers::sendFailureResponse(401, 'Unauthorized');

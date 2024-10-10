@@ -2,8 +2,10 @@
 
 namespace App\Services\Cart;
 
-use App\Interfaces\CartServiceInterface;
-
+use App\Interfaces\Cart\CartServiceInterface;
+use App\Models\Cart;
+use App\Models\ShoppingSession;
+use Illuminate\Support\Facades\Session;
 class CartService implements CartServiceInterface
 {
     public function addToCart($data){
@@ -14,5 +16,10 @@ class CartService implements CartServiceInterface
     }
     public function viewCart($data){
         
+    }
+    public function getCart($shoppingSession){
+        
+        $userCart = Cart::where('session_id', $shoppingSession->id)->first();
+        return $userCart;
     }
 }
