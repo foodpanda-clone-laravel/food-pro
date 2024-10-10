@@ -20,7 +20,6 @@ class UserService
             'password' => Hash::make($data['password']),
         ]);
         $user->assignRole('Customer');
-       
         $role = Role::findByName('Customer');
         $permissions = $role->permissions->toArray();
         $permissionIds = array_column($permissions, 'id');
