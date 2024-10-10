@@ -19,33 +19,35 @@ class RestaurantOwnerSeeder extends Seeder
     {
         // Create a user first
         $user = User::create([
-            'email' => 'shahidkapoor@example.com',
-            'first_name' => 'shahid',
-            'last_name' => 'kapoor',
-            'phone_number' => '1234567890',
+            'email' => 'ali@example.com',
+            'first_name' => 'ali',
+            'last_name' => 'kh',
+            'phone_number' => '1234567891',
             'password' => bcrypt('password123'),
         ]);
+
+        $user->assignRole('Restaurant Owner');
 
        $owner = RestaurantOwner::create([
             'cnic' => '12345-6789012-4',
             'user_id' =>$user->id,
             'bank_name' => 'Meezan Bank',
             'iban' => 'PK36SCBL0000001123456902',
-            'account_owner_title' => 'shahid Shah',
+            'account_owner_title' => 'ali shoaib',
         ]);
 
 
         $restaurant= Restaurant::create([
-            'name' => $user->first_name.' '.$user->last_name,
+            'name' => 'AFC',
             'owner_id' => $owner->id,
             'opening_time' => '2024-10-01 09:00:00',
             'closing_time' => '2024-10-01 22:00:00',
-            'cuisine' => 'Italian',
+            'cuisine' => 'Desi',
             'logo_path' => null, // Assuming no logo yet
             'business_type' => 'Restaurant',
         ]);
         Branch::create([
-            'address'=>'programmers force',
+            'address'=>'WT road',
             'city'=>'lahore',
             'postal_code'=>'54000',
             'restaurant_id'=>$restaurant->id,
