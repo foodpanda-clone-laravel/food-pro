@@ -10,22 +10,7 @@ use Spatie\Permission\Models\Role;
 
 class UserService
 {
-    public function createUser(array $data)
-    {
-        
-        $user = User::create([
-            'first_name' => $data['first_name'],
-            'last_name' => $data['last_name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
-        $user->assignRole('Customer');
-        $role = Role::findByName('Customer');
-        $permissions = $role->permissions->toArray();
-        $permissionIds = array_column($permissions, 'id');
-        $user->givePermissionTo($permissionIds);
-        return $user;
-    }
+    
 
 
     public function loginUser(array $credentials)

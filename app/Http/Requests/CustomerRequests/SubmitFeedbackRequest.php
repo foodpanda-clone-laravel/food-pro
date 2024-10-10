@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\CustomerRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SearchRestaurantRequest extends FormRequest
+class SubmitFeedbackRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,9 @@ class SearchRestaurantRequest extends FormRequest
     public function rules()
     {
         return [
-            'search_term' => 'required|string|max:255'
+            'order_id' => 'required|exists:orders,id',
+            'rating' => 'required|integer|min:1|max:5',
+            'review' => 'nullable|string'
         ];
     }
 }

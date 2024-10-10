@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\AuthRequests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 use Illuminate\Validation\Rules\Password;
 
 class ResetPasswordRequest extends BaseRequest
@@ -17,12 +17,12 @@ class ResetPasswordRequest extends BaseRequest
     {
 
             return [
-            'token'=>'required', 
+            'token'=>'required',
             'email'=>'required|exists:users,email',
             'password_confirmation'=>'required',
             'password'=>['required', 'confirmed', Password::min(8),'max:11']
             ];
-     
+
     }
     public function messages(){
         return [
@@ -35,5 +35,5 @@ class ResetPasswordRequest extends BaseRequest
         'password.max'=>"Password length exceeds max length of 11 characters"
         ];
     }
-   
+
 }

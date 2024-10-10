@@ -10,4 +10,12 @@ class OrderController extends Controller
     public function __construct(){
         
     }
+
+    public function createOrder(){
+
+    }
+    public function cancelOrder(){
+
+    }
+    
 }

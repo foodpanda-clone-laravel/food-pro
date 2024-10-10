@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Database\QueryException;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\RestaurantOwner\RestaurantController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Orders\CartController;
 
@@ -21,12 +21,10 @@ use App\Http\Controllers\Orders\CartController;
 |
 */
 
-Route::post('register', [UserController::class, 'register']);
-Route::post('/restaurant/register-with-owner', [RestaurantController::class, 'registerRestaurantWithOwner']);
+Route::post('register', [RegisterController::class, 'signup']);
+Route::post('/register-business', [RegisterController::class, 'registerRestaurantWithOwner']);
 Route::post('/login', [UserController::class, 'login']);
 
-// @hiba haseeb remove all comments from customer controller api file and group them togeher in a controller.
-// you did that in previous commit but they are not merged properly.
 Route::middleware(['request.logs', 'jwt'])->group(function () {
 
     Route::prefix('customers')->group(function () {
@@ -72,12 +70,12 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
 
     // Test user route (authenticated)
     Route::get('/user', function (Request $request) {
-        return response()->json($request->auth); 
+        return response()->json($request->auth);
     });
     Route::controller(ForgotPasswordController::class)->group(function(){
         Route::post('/forgot-password', 'submitForgotPasswordForm')->name('password.email');;
         Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
-    });  
+    });
     Route::controller(CartController::class)->group(function(){
         Route::get('/session', 'getShoppingSession');
     });

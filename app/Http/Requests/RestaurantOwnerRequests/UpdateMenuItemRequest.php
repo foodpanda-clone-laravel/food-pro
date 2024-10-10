@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\RestaurantOwnerRequests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class AddMenuItemRequest extends BaseRequest
+class UpdateMenuItemRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class AddMenuItemRequest extends BaseRequest
      */
     public function authorize()
     {
-        return true; // You can add authorization logic if necessary
+        return true;
     }
 
     /**
@@ -24,12 +24,12 @@ class AddMenuItemRequest extends BaseRequest
     public function rules()
     {
         return [
-            'name' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'category' => 'required|string|max:100',
-            'serving_size' => 'nullable|string|max:50',
-            'image_path' => 'nullable|string|max:255', // You can add file/image validation if necessary
-            'discount' => 'nullable|numeric|min:0|max:100', // Assuming discount is a percentage
+            'name' => 'nullable|string|max:255',  // Optional field
+            'price' => 'nullable|numeric|min:0',  // Optional field
+            'category' => 'nullable|string|max:255',  // Optional field
+            'serving_size' => 'nullable|string|max:255',  // Optional field
+            'image_path' => 'nullable|string|max:255',  // Optional field
+            'discount' => 'nullable|numeric|min:0|max:100',  // Optional field
         ];
     }
 
@@ -41,24 +41,19 @@ class AddMenuItemRequest extends BaseRequest
     public function messages()
     {
         return [
-            'name.required' => 'The menu item name is required.',
             'name.string' => 'The menu item name must be a valid string.',
             'name.max' => 'The menu item name cannot exceed 255 characters.',
-            'price.required' => 'The price is required.',
             'price.numeric' => 'The price must be a valid number.',
             'price.min' => 'The price must be at least 0.',
-            'category.required' => 'The category is required.',
             'category.string' => 'The category must be a valid string.',
-            'category.max' => 'The category cannot exceed 100 characters.',
+            'category.max' => 'The category cannot exceed 255 characters.',
             'serving_size.string' => 'The serving size must be a valid string.',
-            'serving_size.max' => 'The serving size cannot exceed 50 characters.',
+            'serving_size.max' => 'The serving size cannot exceed 255 characters.',
             'image_path.string' => 'The image path must be a valid string.',
             'image_path.max' => 'The image path cannot exceed 255 characters.',
             'discount.numeric' => 'The discount must be a valid number.',
-            'discount.min' => 'The discount must be at least 0%.',
-            'discount.max' => 'The discount cannot exceed 100%.',
+            'discount.min' => 'The discount must be at least 0.',
+            'discount.max' => 'The discount cannot exceed 100.',
         ];
     }
-
-   
 }
