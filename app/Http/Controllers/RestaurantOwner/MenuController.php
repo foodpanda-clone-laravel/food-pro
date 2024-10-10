@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\RestaurantOwner;
 
 use App\DTO\AddonDTO;
 use App\DTO\MenuDTO;
