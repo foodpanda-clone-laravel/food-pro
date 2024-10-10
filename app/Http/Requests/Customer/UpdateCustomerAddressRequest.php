@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Customer;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SubmitFeedbackRequest extends FormRequest
+class UpdateCustomerAddressRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class SubmitFeedbackRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,9 +24,8 @@ class SubmitFeedbackRequest extends FormRequest
     public function rules()
     {
         return [
-            'order_id' => 'required|exists:orders,id',
-            'rating' => 'required|integer|min:1|max:5',
-            'review' => 'nullable|string'
+            'address' => 'sometimes|string|min:5',
+            'delivery_address' => 'sometimes|nullable|string|min:5',
         ];
     }
 }

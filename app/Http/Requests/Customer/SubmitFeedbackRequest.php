@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Customer;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UsePointsRequest extends FormRequest
+class SubmitFeedbackRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class UsePointsRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,9 @@ class UsePointsRequest extends FormRequest
     public function rules()
     {
         return [
-            'points' => 'required|integer|min:1'
+            'order_id' => 'required|exists:orders,id',
+            'rating' => 'required|integer|min:1|max:5',
+            'review' => 'nullable|string'
         ];
     }
 }

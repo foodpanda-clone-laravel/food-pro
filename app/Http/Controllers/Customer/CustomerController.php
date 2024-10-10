@@ -4,10 +4,14 @@ namespace App\Http\Controllers\Customer;
 
 use App\Services\Customer\CustomerService;
 use App\Helpers\Helpers;
-use App\Http\Requests\BaseRequest;
 use App\DTO\CustomerDTO;
 use Exception;
 use Illuminate\Http\Request;
+
+use App\Http\Requests\Customer\UpdateCustomerAddressRequest;
+use App\Http\Requests\Customer\AddFavoriteRestaurantRequest;
+use App\Http\Requests\Customer\UsePointsRequest;
+use App\Http\Requests\Customer\SubmitFeedbackRequest;
 use Illuminate\Support\Str;
 use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
@@ -23,165 +27,92 @@ class CustomerController extends Controller
 
     public function orderHistory($customerId)
     {
-        try {
-            $orders = $this->customerService->getOrderHistory($customerId);
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order history retrieved successfully', $orders);
-        } catch (Exception $e) {
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to retrieve order history');
-        }
+        $orders = $this->customerService->getOrderHistory($customerId);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order history retrieved successfully', $orders);
     }
 
     public function viewMenus()
     {
-        try {
-            $menus = $this->customerService->getMenus();
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Menus retrieved successfully', $menus);
-        } catch (Exception $e) {
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to retrieve menus');
-        }
+        $menus = $this->customerService->getMenus();
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Menus retrieved successfully', $menus);
     }
 
     public function searchRestaurant(Request $request)
     {
-        $validatedData = $request->getValidatedData();
-
-        if ($validator->fails()) {
-            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Validation failed', $validator->errors());
-        }
-
-        try {
-            $restaurants = $this->customerService->searchRestaurant($request->input('search_term'));
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurants retrieved successfully', $restaurants);
-        } catch (Exception $e) {
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to search restaurants');
-        }
+        $restaurants = $this->customerService->searchRestaurant($request->get('search_term'));
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurants retrieved successfully', $restaurants);
     }
 
     public function favoriteItems($customerId)
     {
-        try {
-            $favoriteRestaurants = $this->customerService->getFavoriteItems($customerId);
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Favorite restaurants retrieved successfully', $favoriteRestaurants);
-        } catch (Exception $e) {
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to retrieve favorite restaurants');
-        }
+        $favoriteRestaurants = $this->customerService->getFavoriteItems($customerId);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Favorite restaurants retrieved successfully', $favoriteRestaurants);
     }
 
     public function viewRewards($customerId)
     {
-        try {
-            $rewards = $this->customerService->getRewards($customerId);
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Rewards retrieved successfully', $rewards);
-        } catch (Exception $e) {
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to retrieve rewards');
-        }
+        $rewards = $this->customerService->getRewards($customerId);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Rewards retrieved successfully', $rewards);
     }
 
-    public function usePointsAtCheckout(Request $request)
+    public function usePointsAtCheckout(UsePointsRequest $request, $customerId)
     {
-        $validator = Validator::make($request->all(), [
-            'points' => 'required|integer|min:1',
-        ]);
-
-        if ($validator->fails()) {
-            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Validation failed', $validator->errors());
-        }
-
-        try {
-            $monetaryValue = $this->customerService->usePoints($request->input('points'));
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Points redeemed successfully', ['monetary_value' => $monetaryValue]);
-        } catch (Exception $e) {
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to use points at checkout');
-        }
+        $validatedData = $request->getValidatedData();
+        $monetaryValue = $this->customerService->usePoints($customerId, $validatedData['points']);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Points redeemed successfully', ['monetary_value' => $monetaryValue]);
     }
 
-    public function updateDeliveryAddress(BaseRequest $request, $customerId)
+    public function updateCustomerAddress(UpdateCustomerAddressRequest $request, $customerId)
     {
-        try {
-            // Use the custom method getValidatedData() instead of Validator
-            $validatedData = $request->getValidatedData();
+        $validatedData = $request->getValidatedData();
+        $isDefaultAddress = $request->routeIs('updateCustomerDefaultAddress');
 
-            // Create DTO from validated data
-            $customerDTO = new CustomerDTO(
-                $validatedData['address'],
-                $validatedData['delivery_address'],
-                $validatedData['favorites'] ?? null
-            );
+        // Use route logic to determine if it's the default or delivery address being updated
+        $customerDTO = new CustomerDTO(
+            $validatedData['address'],
+            $isDefaultAddress ? null : $validatedData['delivery_address'],
+            $validatedData['favorites'] ?? null
+        );
 
-            // Call the service with the DTO
-            $this->customerService->updateCustomerInfo($customerId, $customerDTO);
-
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Delivery address updated successfully');
-        } catch (Exception $e) {
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to update delivery address');
-        }
+        $this->customerService->updateCustomerInfo($customerId, $customerDTO);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Customer address updated successfully');
     }
 
     public function viewProfile($customerId)
     {
-        try {
-            $customer = $this->customerService->getProfile($customerId);
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Customer profile retrieved successfully', $customer);
-        } catch (Exception $e) {
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to retrieve customer profile');
-        }
+        $customer = $this->customerService->getProfile($customerId);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Customer profile retrieved successfully', $customer);
     }
 
-    public function addFavoriteRestaurant(BaseRequest $request, $customerId)
+    public function addFavoriteRestaurant(AddFavoriteRestaurantRequest $request, $customerId)
     {
-        try {
-            $validatedData = $request->getValidatedData();
-
-            // Call service method to add favorite restaurant
-            $this->customerService->addFavoriteRestaurant($customerId, $validatedData['restaurant_id']);
-
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant added to favorites successfully');
-        } catch (Exception $e) {
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to add restaurant to favorites');
-        }
+        $validatedData = $request->getValidatedData();
+        $this->customerService->addFavoriteRestaurant($customerId, $validatedData['restaurant_id']);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant added to favorites successfully');
     }
 
     public function removeFavoriteRestaurant($customerId, $restaurantId)
     {
-        try {
-            $this->customerService->removeFavoriteRestaurant($customerId, $restaurantId);
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant removed from favorites successfully');
-        } catch (Exception $e) {
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to remove restaurant from favorites');
-        }
+        $this->customerService->removeFavoriteRestaurant($customerId, $restaurantId);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant removed from favorites successfully');
     }
 
     public function activeOrder($customerId)
     {
-        try {
-            $activeOrder = $this->customerService->getActiveOrder($customerId);
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Active order retrieved successfully', $activeOrder);
-        } catch (Exception $e) {
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to retrieve active order');
-        }
+        $activeOrder = $this->customerService->getActiveOrder($customerId);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Active order retrieved successfully', $activeOrder);
     }
 
-    public function submitFeedback(BaseRequest $request, $customerId)
+    public function submitFeedback(SubmitFeedbackRequest $request, $customerId)
     {
-        try {
-            $validatedData = $request->getValidatedData();
-
-            // Call the service method
-            $feedback = $this->customerService->submitFeedback($customerId, $validatedData);
-
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Feedback submitted successfully', $feedback);
-        } catch (Exception $e) {
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to submit feedback');
-        }
+        $validatedData = $request->getValidatedData();
+        $feedback = $this->customerService->submitFeedback($customerId, $validatedData);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Feedback submitted successfully', $feedback);
     }
 
     public function viewAllRestaurants()
     {
-        try {
-            $restaurants = $this->customerService->getAllRestaurants();
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'All restaurants retrieved successfully', $restaurants);
-        } catch (Exception $e) {
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to retrieve all restaurants');
-        }
+        $restaurants = $this->customerService->getAllRestaurants();
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'All restaurants retrieved successfully', $restaurants);
     }
 }

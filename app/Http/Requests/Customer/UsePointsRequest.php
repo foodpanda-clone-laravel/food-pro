@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Customer;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddFavoriteRestaurantRequest extends FormRequest
+class UsePointsRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class AddFavoriteRestaurantRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class AddFavoriteRestaurantRequest extends FormRequest
     public function rules()
     {
         return [
-            'restaurant_id' => 'required|exists:restaurants,id'
+            'points' => 'required|integer|min:1'
         ];
     }
 }

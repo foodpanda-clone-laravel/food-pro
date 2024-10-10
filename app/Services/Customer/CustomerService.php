@@ -9,6 +9,8 @@ use App\Models\Restaurant;
 use App\Models\Reward;
 use App\Models\Rating;
 use App\DTO\CustomerDTO;
+use App\Helpers\Helpers;
+use Illuminate\Http\Response;
 use Exception;
 use Illuminate\Support\Str;
 
@@ -20,7 +22,7 @@ class CustomerService implements CustomerServiceInterface
   {
     $customer = Customer::findOrFail($customerId);
     return Order::where('user_id', $customer->user_id)
-      ->with(['orderItems.menuItem']) // Eager Loading
+      ->with(['orderItems.menuItem'])
       ->get();
   }
 
@@ -44,9 +46,7 @@ class CustomerService implements CustomerServiceInterface
   public function getRewards($customerId)
   {
     $customer = Customer::findOrFail($customerId);
-    return Reward::where('user_id', $customer->user_id)
-      ->with('badge') // Eager load badge information
-      ->get();
+    return Reward::where('user_id', $customer->user_id)->with('badge')->get();
   }
 
   public function usePoints($customerId, $pointsToUse)
@@ -54,26 +54,30 @@ class CustomerService implements CustomerServiceInterface
     $customer = Customer::findOrFail($customerId);
     $reward = Reward::where('user_id', $customer->user_id)->sum('points');
     if ($pointsToUse > $reward) {
-      throw new Exception('Not enough points');
+      return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Not enough points');
     }
     return $this->convertPointsToMoney($pointsToUse);
   }
 
   private function convertPointsToMoney($points)
   {
-    return $points * 0.01; // Example conversion logic
+    return $points * 0.01;
   }
 
   public function updateCustomerInfo($customerId, CustomerDTO $customerDTO)
   {
     $customer = Customer::findOrFail($customerId);
 
-    // Update customer fields using DTO
-    $customer->address = $customerDTO->address;
-    $customer->delivery_address = $customerDTO->delivery_address;
-    $customer->favorites = is_array($customerDTO->favorites)
-      ? implode(',', $customerDTO->favorites)
-      : $customerDTO->favorites;
+    // Only update provided fields
+    if ($customerDTO->address) {
+      $customer->address = $customerDTO->address;
+    }
+    if ($customerDTO->delivery_address) {
+      $customer->delivery_address = $customerDTO->delivery_address;
+    }
+    if ($customerDTO->favorites !== null) {
+      $customer->favorites = is_array($customerDTO->favorites) ? implode(',', $customerDTO->favorites) : $customerDTO->favorites;
+    }
 
     $customer->save();
   }
@@ -121,7 +125,7 @@ class CustomerService implements CustomerServiceInterface
       'order_id' => $data['order_id'],
       'user_id' => $customer->user_id,
       'feedback' => $data['review'],
-      'stars' => $data['rating']
+      'stars' => $data['rating'],
     ]);
   }
 
