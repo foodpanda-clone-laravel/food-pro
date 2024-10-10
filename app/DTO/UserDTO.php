@@ -2,6 +2,8 @@
 
 namespace App\DTO;
 
+use Illuminate\Support\Facades\Hash;
+
 class UserDTO extends BaseDTO
 {
     public string $first_name;
@@ -10,17 +12,11 @@ class UserDTO extends BaseDTO
     public string $email;
     public string $password;
 
-    public function __construct(
-        string $first_name,
-        string $last_name,
-        ?string $phone_number = null,
-        string $email,
-        string $password
-    ) {
-        $this->first_name = $first_name;
-        $this->last_name = $last_name;
-        $this->phone_number = $phone_number;
-        $this->email = $email;
-        $this->password = $password;
+    public function __construct($data) {
+        $this->first_name = $data['first_name'];
+        $this->last_name = $data['last_name'];
+        $this->phone_number = $data['phone_number'] ?? null; // Optional, defaulting to null if not provided
+        $this->email = $data['email'];
+        $this->password = Hash  ::make(($data['password']));
     }
 }

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\DTO\AddonDTO;
 use App\DTO\MenuDTO;
 use App\DTO\MenuItemDTO;
+use App\DTO\VariationDTO;
 use App\Interfaces\MenuServiceInterface;
 use App\Models\Addon;
 use App\Models\Branch;
@@ -12,6 +13,7 @@ use App\Models\Menu;
 use App\Models\MenuItem;
 use App\Models\Restaurant;
 use App\Models\RestaurantOwner;
+use App\Models\Variation;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
@@ -37,16 +39,13 @@ class MenuService implements MenuServiceInterface
                             ->where('id', $branch_id)
                             ->firstOrFail();
 
+            $data['branch_id']=$branch->id;
+            $data['restaurant_id']=$restaurant->id;
+
             // Create a DTO (Data Transfer Object) for the menu
-            $menuDTO = new MenuDTO(
-                restaurant_id: $restaurant->id,
-                name: $data['name'],
-                description: $data['description'],
-                branch_id: $branch->id
-            );
+            $menu= Menu::create((new MenuDTO($data))->toArray());
 
             // Create the menu in the database
-            $menu = Menu::create($menuDTO->toArray());
 
             // Return the created menu
             return ['success' => true, 'menu' => $menu];
@@ -57,25 +56,20 @@ class MenuService implements MenuServiceInterface
         }
     }
 
-    public function addMenuItem($request, int $menu_id)
+    public function addMenuItem(array $data, int $menu_id)
     {
         try {
             // Find the menu
             $menu = Menu::findOrFail($menu_id);
 
-            // Create a DTO (Data Transfer Object) for the menu item
-            $menuItemDTO = new MenuItemDTO(
-                menu_id: $menu->id,
-                name: $request->name,
-                price: $request->price,
-                category: $request->category,
-                serving_size: $request->serving_size,
-                image_path: $request->image_path,
-                discount: $request->discount
-            );
+            $data['menu_id']=$menu->id;
 
-            // Create the menu item in the database
-            $menuItem = MenuItem::create($menuItemDTO->toArray());
+             
+
+            // Create a DTO (Data Transfer Object) for the menu
+            $menuItem= MenuItem::create((new MenuItemDTO($data))->toArray());
+
+    
 
             // Return the created menu item
             return ['success' => true, 'menuItem' => $menuItem];
@@ -85,27 +79,20 @@ class MenuService implements MenuServiceInterface
             return ['success' => false, 'error' => 'Menu not found'];
         } catch (Exception $e) {
             // Handle any other exceptions
-            return ['success' => false, 'error' => 'An unexpected error occurred'];
         }
     }
 
 
-    public function createAddon($request, int $menu_item_id)
+    public function createAddon(array $data, int $menu_item_id)
     {
         try {
             // Find the menu item
             $menu_item = MenuItem::findOrFail($menu_item_id);
     
-            // Prepare AddonDTO data
-            $addOnDTO = new AddonDTO(
-                menu_item_id: $menu_item->id,
-                name: $request->name,
-                category: $request->category,
-                price: $request->price
-            );
-    
-            // Create and return the new addon
-            $addOn = Addon::create($addOnDTO->toArray());
+            $data['menu_item_id']=$menu_item->id;
+
+
+            $addOn = Addon::create((new AddonDTO($data))->toArray());
     
             return ['success' => true, 'addon' => $addOn]; // Return the addon
         } catch (Exception $e) {
@@ -148,4 +135,41 @@ class MenuService implements MenuServiceInterface
             return ['success' => false, 'error' => 'Unable to update menu item: ' . $e->getMessage()];
         }
     }
+
+
+    public function storeChoices(array $data, int $menu_id) {
+
+        $data['menu_id']=$menu_id;
+
+
+
+        if ($data['isChoice'] == 1) {
+        
+            $variation= Variation::create((new VariationDTO($data))->toArray()); 
+            
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Variation saved successfully!',
+            ]);
+        } else {
+            // If isChoice is not 1, create an Addon
+            $addOn= Addon::create((new AddonDTO($data))->toArray());        
+    
+    
+            return response()->json([
+                'success' => true,
+                'message' => 'Addon saved successfully!',
+                'data' => $addOn,
+            ]);
+        }
+    }
+
+
+    
+
+
+    
+
+
 }

@@ -9,21 +9,12 @@ class RestaurantOwnerDTO extends BaseDTO
     public string $bank_name;
     public string $iban;
     public string $account_owner_title;
-   
 
-    public function __construct(
-        string $cnic,
-        int $user_id,
-        string $bank_name,
-        string $iban,
-        string $account_owner_title,
-        
-    ) {
-        $this->cnic = $cnic;
-        $this->user_id = $user_id;
-        $this->bank_name = $bank_name;
-        $this->iban = $iban;
-        $this->account_owner_title = $account_owner_title;
- 
+    public function __construct($data) {
+        $this->cnic = $data['cnic'];
+        $this->user_id = $data['user_id'];
+        $this->bank_name = $data['bank_name'];
+        $this->iban = $data['iban'];
+        $this->account_owner_title = $data['account_owner_title'];
     }
 }

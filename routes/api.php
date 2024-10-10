@@ -83,6 +83,7 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
         Route::post('add-addon/menu/{menu_item_id}', [MenuController::class, 'addOns']);
         Route::post('update-menu/{menu_item}', [MenuController::class, 'updateMenu']);
         Route::post('update-menu-item/{menu_item_id}', [MenuController::class, 'updateMenuItem']);
+        Route::post('add-choice/{menu_id}', [MenuController::class, 'storeChoices']);
     
 
     Route::controller(ForgotPasswordController::class)->group(function(){

@@ -8,13 +8,9 @@ class CartItemDTO extends BaseDTO
     public int $menu_item_id;   // The ID of the menu item
     public int $quantity;        // The quantity of the menu item in the cart
 
-    public function __construct(
-        int $session_id,
-        int $menu_item_id,
-        int $quantity
-    ) {
-        $this->session_id = $session_id;
-        $this->menu_item_id = $menu_item_id;
-        $this->quantity = $quantity;
+    public function __construct(array $data) {
+        $this->session_id = $data['session_id'];
+        $this->menu_item_id = $data['menu_item_id'];
+        $this->quantity = $data['quantity'];
     }
 }

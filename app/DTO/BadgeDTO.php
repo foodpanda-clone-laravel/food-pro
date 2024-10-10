@@ -6,8 +6,8 @@ class BadgeDTO extends BaseDTO
 {
     public string $name;
 
-    public function __construct(string $name)
+    public function __construct(array $data)
     {
-        $this->name = $name;
+        $this->name = $data['name'];
     }
 }

@@ -28,7 +28,6 @@ class CreateMenuRequest extends BaseRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'description' => 'required|string|max:1000',
         ];
     }
 
@@ -43,9 +42,7 @@ class CreateMenuRequest extends BaseRequest
             'name.required' => 'The menu name is required.',
             'name.string' => 'The menu name must be a valid string.',
             'name.max' => 'The menu name cannot exceed 255 characters.',
-            'description.string' => 'The description must be a valid string.',
-            'description.required' => 'The description is required.',
-            'description.max' => 'The description cannot exceed 1000 characters.',
+           
         ];
     }
 

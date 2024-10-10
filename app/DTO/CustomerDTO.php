@@ -6,21 +6,13 @@ class CustomerDTO extends BaseDTO
 {
     public int $user_id;
     public string $address;
-    public ?string $delivery_address; // nullable
-    public $favorites; // this can be array or string depending on your choice
-   
+    public ?string $delivery_address; // Nullable
+    public $favorites; // This can be an array or string depending on your choice
 
-    public function __construct(
-       
-        string $address,
-        ?string $delivery_address,
-        $favorites,
-      
-    ) {
-      
-        $this->address = $address;
-        $this->delivery_address = $delivery_address;
-        $this->favorites = $favorites;
-        
+    public function __construct(array $data) {
+        $this->user_id = $data['user_id'];
+        $this->address = $data['address'];
+        $this->delivery_address = $data['delivery_address'] ?? null; // Default to null if not provided
+        $this->favorites = $data['favorites']; // Can be array or string based on input
     }
 }

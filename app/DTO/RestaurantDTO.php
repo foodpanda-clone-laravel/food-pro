@@ -17,31 +17,18 @@ class RestaurantDTO extends BaseDTO
     public ?string $logo_path;
     public string $business_type;
 
-    public function __construct(
-        string $name,
-        int $owner_id,
-        int $branch_id,
-        ?int $branches = null,
-        string $address,
-        string $postal_code,
-        string $city,
-        ?string $opening_time = null,
-        ?string $closing_time = null,
-        string $cuisine,
-        ?string $logo_path = null,
-        string $business_type
-    ) {
-        $this->name = $name;
-        $this->owner_id = $owner_id;
-        $this->branch_id = $branch_id;
-        $this->branches = $branches;
-        $this->address = $address;
-        $this->postal_code = $postal_code;
-        $this->city = $city;
-        $this->opening_time = $opening_time;
-        $this->closing_time = $closing_time;
-        $this->cuisine = $cuisine;
-        $this->logo_path = $logo_path;
-        $this->business_type = $business_type;
+    public function __construct(array $data) {
+        $this->name = $data['name'];
+        $this->owner_id = $data['owner_id'];
+        $this->branch_id = $data['branch_id'];
+        $this->branches = $data['branches'] ?? null; // Nullable field
+        $this->address = $data['address'];
+        $this->postal_code = $data['postal_code'];
+        $this->city = $data['city'];
+        $this->opening_time = $data['opening_time'] ?? null; // Nullable field
+        $this->closing_time = $data['closing_time'] ?? null; // Nullable field
+        $this->cuisine = $data['cuisine'];
+        $this->logo_path = $data['logo_path'] ?? null; // Nullable field
+        $this->business_type = $data['business_type'];
     }
 }

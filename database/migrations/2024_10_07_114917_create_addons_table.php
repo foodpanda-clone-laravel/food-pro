@@ -15,11 +15,9 @@ return new class extends Migration
     {
         Schema::create('addons', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('category');
-            $table->unsignedBigInteger('menu_item_id');
-            $table->float('price');
-            $table->foreign('menu_item_id')->references('id')->on('menu_items');
+            $table->unsignedBigInteger('menu_id'); // menu item id to insert variation against that particular item
+            $table->json('choice_items'); // Use json type here
+            $table->string('choice_name'); // title of the choice group like choose your drink.
             $table->softDeletes();
             $table->timestamps();
         });

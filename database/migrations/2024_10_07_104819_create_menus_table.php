@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('name');
             // how will the restaurant owner fetch all the menus
             // menus will have categories like meals
-            $table->string('description')->nullable()->default(null);
             $table->softDeletes();
             $table->timestamps();
             $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');

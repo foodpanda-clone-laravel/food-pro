@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\DTO\AddonDTO;
 use App\DTO\MenuDTO;
 use App\DTO\MenuItemDTO;
+use App\DTO\VariationDTO;
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddMenuItemRequest;
 use App\Http\Requests\AddOnRequest;
 use App\Http\Requests\CreateMenuRequest;
+use App\Http\Requests\StoreChoicesRequest;
 use App\Http\Requests\UpdateMenuItemRequest;
 use App\Http\Requests\UpdateMenuRequest;
 use App\Models\Addon;
@@ -18,6 +20,7 @@ use App\Models\Menu;
 use App\Models\MenuItem;
 use App\Models\Restaurant;
 use App\Models\RestaurantOwner;
+use App\Models\Variation;
 use App\Services\MenuService;
 use Illuminate\Http\Request;
 
@@ -47,10 +50,8 @@ class MenuController extends Controller
 
     public function addMenuItem(AddMenuItemRequest $request, $menu_id){
 
-        // Call the service to add the menu item
-        $result = $this->menuService->addMenuItem($request, $menu_id);
+        $result = $this->menuService->addMenuItem($request->getValidatedData(), $menu_id);
 
-        // Handle success or failure
         if ($result['success']) {
             return Helpers::sendSuccessResponse(200, 'Menu item created successfully', $result['menuItem']);
         } else {
@@ -69,7 +70,7 @@ class MenuController extends Controller
     public function addOns(AddOnRequest $request, $menu_item_id)
     {
         // Call the service to create the addon
-        $result = $this->menuService->createAddon($request, $menu_item_id);
+        $result = $this->menuService->createAddon($request->validationData(), $menu_item_id);
     
         // Handle success or failure
         if ($result['success']) {
@@ -118,7 +119,30 @@ class MenuController extends Controller
         $menu_item->delete();
     }
 
+    public function storeChoices(StoreChoicesRequest $request, $menu_id)
+{
+
+
+    $data = $request->validated(); // Validate the request data using your request class
+
+        // Call the service to save the choice
+        $result = $this->menuService->storeChoices($request->validationData(), $menu_id);
+
+        return ($result);
+}
+
+
+        }
+
+
+        
+
+       
+
+
+
+
 
 
     
-}
+
