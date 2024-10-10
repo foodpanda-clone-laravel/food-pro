@@ -19,4 +19,7 @@ class BaseRequest extends FormRequest
         ], 400);
         throw new HttpResponseException($response);
     }
+    public function getValidatedData(){
+        return $this->validated();
+    }
 }
