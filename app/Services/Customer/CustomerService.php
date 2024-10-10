@@ -8,6 +8,7 @@ use App\Models\Menu;
 use App\Models\Restaurant;
 use App\Models\Reward;
 use App\Models\Rating;
+use App\DTO\CustomerDTO;
 use Exception;
 use Illuminate\Support\Str;
 
@@ -60,14 +61,20 @@ class CustomerService implements CustomerServiceInterface
 
   private function convertPointsToMoney($points)
   {
-    // Assuming 1 point = $0.01, modify as per business logic
-    return $points * 0.01;
+    return $points * 0.01; // Example conversion logic
   }
 
-  public function updateDeliveryAddress($customerId, $newAddress)
+  public function updateCustomerInfo($customerId, CustomerDTO $customerDTO)
   {
     $customer = Customer::findOrFail($customerId);
-    $customer->delivery_address = $newAddress;
+
+    // Update customer fields using DTO
+    $customer->address = $customerDTO->address;
+    $customer->delivery_address = $customerDTO->delivery_address;
+    $customer->favorites = is_array($customerDTO->favorites)
+      ? implode(',', $customerDTO->favorites)
+      : $customerDTO->favorites;
+
     $customer->save();
   }
 

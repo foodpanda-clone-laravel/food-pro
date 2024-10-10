@@ -24,8 +24,6 @@ Route::post('register', [UserController::class, 'register']);
 Route::post('/restaurant/register-with-owner', [RestaurantController::class, 'registerRestaurantWithOwner']);
 Route::post('/login', [UserController::class, 'login']);
 
-// @hiba haseeb remove all comments from customer controller api file and group them togeher in a controller.
-// you did that in previous commit but they are not merged properly.
 Route::middleware(['request.logs', 'jwt'])->group(function () {
 
 
@@ -63,17 +61,23 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
 
             // Submit feedback or review for an order/restaurant
             Route::post('{customerId}/feedback', 'submitFeedback');
+
+            // View all menus (does not depend on customer ID)
+            Route::get('menus', 'viewMenus');
+
+            // Search for a restaurant
+            Route::get('search-restaurant', 'searchRestaurant');
+
+            // View all restaurants (does not depend on customer ID)
+            Route::get('restaurants', 'viewAllRestaurants');
         });
 
-        // View all menus (does not depend on customer ID)
-        Route::get('menus', 'viewMenus');
-
-        // Search for a restaurant
-        Route::get('search-restaurant', 'searchRestaurant');
-
-        // View all restaurants (does not depend on customer ID)
-        Route::get('restaurants', 'viewAllRestaurants');
     });
+
+
+
+
+
 
 
 

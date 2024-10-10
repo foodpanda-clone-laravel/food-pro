@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Customer;
 
 use App\Services\Customer\CustomerService;
 use App\Helpers\Helpers;
+use App\Http\Requests\BaseRequest;
+use App\DTO\CustomerDTO;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 
 class CustomerController extends Controller
@@ -22,11 +25,9 @@ class CustomerController extends Controller
     {
         try {
             $orders = $this->customerService->getOrderHistory($customerId);
-            return Helpers::sendSuccessResponse(200, 'Order history retrieved successfully', $orders);
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order history retrieved successfully', $orders);
         } catch (Exception $e) {
-            $requestId = Str::uuid();
-            Helpers::createErrorLogs($e, $requestId);
-            return Helpers::sendFailureResponse(500, 'Failed to retrieve order history', ['request_id' => $requestId]);
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to retrieve order history');
         }
     }
 
@@ -34,26 +35,25 @@ class CustomerController extends Controller
     {
         try {
             $menus = $this->customerService->getMenus();
-            return Helpers::sendSuccessResponse(200, 'Menus retrieved successfully', $menus);
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Menus retrieved successfully', $menus);
         } catch (Exception $e) {
-            $requestId = Str::uuid();
-            Helpers::createErrorLogs($e, $requestId);
-            return Helpers::sendFailureResponse(500, 'Failed to retrieve menus', ['request_id' => $requestId]);
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to retrieve menus');
         }
     }
 
     public function searchRestaurant(Request $request)
     {
+        $validatedData = $request->getValidatedData();
+
+        if ($validator->fails()) {
+            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Validation failed', $validator->errors());
+        }
+
         try {
-            $validated = $request->validate([
-                'search_term' => 'required|string|min:1',
-            ]);
-            $restaurants = $this->customerService->searchRestaurant($validated['search_term']);
-            return Helpers::sendSuccessResponse(200, 'Restaurants retrieved successfully', $restaurants);
+            $restaurants = $this->customerService->searchRestaurant($request->input('search_term'));
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurants retrieved successfully', $restaurants);
         } catch (Exception $e) {
-            $requestId = Str::uuid();
-            Helpers::createErrorLogs($e, $requestId);
-            return Helpers::sendFailureResponse(500, 'Failed to search restaurants', ['request_id' => $requestId]);
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to search restaurants');
         }
     }
 
@@ -61,11 +61,9 @@ class CustomerController extends Controller
     {
         try {
             $favoriteRestaurants = $this->customerService->getFavoriteItems($customerId);
-            return Helpers::sendSuccessResponse(200, 'Favorite restaurants retrieved successfully', $favoriteRestaurants);
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Favorite restaurants retrieved successfully', $favoriteRestaurants);
         } catch (Exception $e) {
-            $requestId = Str::uuid();
-            Helpers::createErrorLogs($e, $requestId);
-            return Helpers::sendFailureResponse(500, 'Failed to retrieve favorite restaurants', ['request_id' => $requestId]);
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to retrieve favorite restaurants');
         }
     }
 
@@ -73,41 +71,49 @@ class CustomerController extends Controller
     {
         try {
             $rewards = $this->customerService->getRewards($customerId);
-            return Helpers::sendSuccessResponse(200, 'Rewards retrieved successfully', $rewards);
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Rewards retrieved successfully', $rewards);
         } catch (Exception $e) {
-            $requestId = Str::uuid();
-            Helpers::createErrorLogs($e, $requestId);
-            return Helpers::sendFailureResponse(500, 'Failed to retrieve rewards', ['request_id' => $requestId]);
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to retrieve rewards');
         }
     }
 
-    public function usePointsAtCheckout($customerId, Request $request)
+    public function usePointsAtCheckout(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'points' => 'required|integer|min:1',
+        ]);
+
+        if ($validator->fails()) {
+            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Validation failed', $validator->errors());
+        }
+
         try {
-            $validated = $request->validate([
-                'points' => 'required|integer|min:1',
-            ]);
-            $monetaryValue = $this->customerService->usePoints($customerId, $validated['points']);
-            return Helpers::sendSuccessResponse(200, 'Points redeemed successfully', ['monetary_value' => $monetaryValue]);
+            $monetaryValue = $this->customerService->usePoints($request->input('points'));
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Points redeemed successfully', ['monetary_value' => $monetaryValue]);
         } catch (Exception $e) {
-            $requestId = Str::uuid();
-            Helpers::createErrorLogs($e, $requestId);
-            return Helpers::sendFailureResponse(500, 'Failed to use points at checkout', ['request_id' => $requestId]);
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to use points at checkout');
         }
     }
 
-    public function updateDeliveryAddress($customerId, Request $request)
+    public function updateDeliveryAddress(BaseRequest $request, $customerId)
     {
         try {
-            $validated = $request->validate([
-                'delivery_address' => 'required|string|min:5',
-            ]);
-            $this->customerService->updateDeliveryAddress($customerId, $validated['delivery_address']);
-            return Helpers::sendSuccessResponse(200, 'Delivery address updated successfully');
+            // Use the custom method getValidatedData() instead of Validator
+            $validatedData = $request->getValidatedData();
+
+            // Create DTO from validated data
+            $customerDTO = new CustomerDTO(
+                $validatedData['address'],
+                $validatedData['delivery_address'],
+                $validatedData['favorites'] ?? null
+            );
+
+            // Call the service with the DTO
+            $this->customerService->updateCustomerInfo($customerId, $customerDTO);
+
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Delivery address updated successfully');
         } catch (Exception $e) {
-            $requestId = Str::uuid();
-            Helpers::createErrorLogs($e, $requestId);
-            return Helpers::sendFailureResponse(500, 'Failed to update delivery address', ['request_id' => $requestId]);
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to update delivery address');
         }
     }
 
@@ -115,26 +121,23 @@ class CustomerController extends Controller
     {
         try {
             $customer = $this->customerService->getProfile($customerId);
-            return Helpers::sendSuccessResponse(200, 'Customer profile retrieved successfully', $customer);
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Customer profile retrieved successfully', $customer);
         } catch (Exception $e) {
-            $requestId = Str::uuid();
-            Helpers::createErrorLogs($e, $requestId);
-            return Helpers::sendFailureResponse(500, 'Failed to retrieve customer profile', ['request_id' => $requestId]);
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to retrieve customer profile');
         }
     }
 
-    public function addFavoriteRestaurant($customerId, Request $request)
+    public function addFavoriteRestaurant(BaseRequest $request, $customerId)
     {
         try {
-            $validated = $request->validate([
-                'restaurant_id' => 'required|integer|exists:restaurants,id',
-            ]);
-            $this->customerService->addFavoriteRestaurant($customerId, $validated['restaurant_id']);
-            return Helpers::sendSuccessResponse(200, 'Restaurant added to favorites successfully');
+            $validatedData = $request->getValidatedData();
+
+            // Call service method to add favorite restaurant
+            $this->customerService->addFavoriteRestaurant($customerId, $validatedData['restaurant_id']);
+
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant added to favorites successfully');
         } catch (Exception $e) {
-            $requestId = Str::uuid();
-            Helpers::createErrorLogs($e, $requestId);
-            return Helpers::sendFailureResponse(500, 'Failed to add restaurant to favorites', ['request_id' => $requestId]);
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to add restaurant to favorites');
         }
     }
 
@@ -142,11 +145,9 @@ class CustomerController extends Controller
     {
         try {
             $this->customerService->removeFavoriteRestaurant($customerId, $restaurantId);
-            return Helpers::sendSuccessResponse(200, 'Restaurant removed from favorites successfully');
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant removed from favorites successfully');
         } catch (Exception $e) {
-            $requestId = Str::uuid();
-            Helpers::createErrorLogs($e, $requestId);
-            return Helpers::sendFailureResponse(500, 'Failed to remove restaurant from favorites', ['request_id' => $requestId]);
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to remove restaurant from favorites');
         }
     }
 
@@ -154,31 +155,23 @@ class CustomerController extends Controller
     {
         try {
             $activeOrder = $this->customerService->getActiveOrder($customerId);
-            if (!$activeOrder) {
-                return Helpers::sendFailureResponse(404, 'No active order found for the customer');
-            }
-            return Helpers::sendSuccessResponse(200, 'Active order retrieved successfully', $activeOrder);
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Active order retrieved successfully', $activeOrder);
         } catch (Exception $e) {
-            $requestId = Str::uuid();
-            Helpers::createErrorLogs($e, $requestId);
-            return Helpers::sendFailureResponse(500, 'Failed to retrieve active order', ['request_id' => $requestId]);
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to retrieve active order');
         }
     }
 
-    public function submitFeedback($customerId, Request $request)
+    public function submitFeedback(BaseRequest $request, $customerId)
     {
         try {
-            $validated = $request->validate([
-                'order_id' => 'required|exists:orders,id',
-                'rating' => 'required|integer|min:1|max:5',
-                'review' => 'nullable|string',
-            ]);
-            $feedback = $this->customerService->submitFeedback($customerId, $validated);
-            return Helpers::sendSuccessResponse(200, 'Feedback submitted successfully', $feedback);
+            $validatedData = $request->getValidatedData();
+
+            // Call the service method
+            $feedback = $this->customerService->submitFeedback($customerId, $validatedData);
+
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Feedback submitted successfully', $feedback);
         } catch (Exception $e) {
-            $requestId = Str::uuid();
-            Helpers::createErrorLogs($e, $requestId);
-            return Helpers::sendFailureResponse(500, 'Failed to submit feedback', ['request_id' => $requestId]);
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to submit feedback');
         }
     }
 
@@ -186,11 +179,9 @@ class CustomerController extends Controller
     {
         try {
             $restaurants = $this->customerService->getAllRestaurants();
-            return Helpers::sendSuccessResponse(200, 'All restaurants retrieved successfully', $restaurants);
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'All restaurants retrieved successfully', $restaurants);
         } catch (Exception $e) {
-            $requestId = Str::uuid();
-            Helpers::createErrorLogs($e, $requestId);
-            return Helpers::sendFailureResponse(500, 'Failed to retrieve all restaurants', ['request_id' => $requestId]);
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Failed to retrieve all restaurants');
         }
     }
 }
