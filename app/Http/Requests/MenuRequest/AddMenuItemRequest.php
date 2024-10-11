@@ -1,5 +1,6 @@
 <?php
 
+namespace App\Http\Requests\MenuRequest;
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -27,9 +28,10 @@ class AddMenuItemRequest extends BaseRequest
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'category' => 'required|string|max:100',
-            'serving_size' => 'nullable|string|max:50',
-            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Updated to validate image files
-            'discount' => 'nullable|numeric|min:0|max:100', // Assuming discount is a percentage
+            'variation_id' => 'nullable', // Ensure variation_id is an array, or can be null
+            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validate image files
+            'description' => 'nullable|string|max:255',
+            
         ];
     }
 
@@ -53,16 +55,13 @@ class AddMenuItemRequest extends BaseRequest
             'category.string' => 'The category must be a valid string.',
             'category.max' => 'The category cannot exceed 100 characters.',
 
-            'serving_size.string' => 'The serving size must be a valid string.',
-            'serving_size.max' => 'The serving size cannot exceed 50 characters.',
+            'variation_id.array' => 'The variations must be an array.',
+            'variation_id.*.integer' => 'Each variation must be a valid integer.',
+            'variation_id.*.exists' => 'The selected variation does not exist.',
 
             'image_path.image' => 'The file must be a valid image.',
             'image_path.mimes' => 'The image must be of type: jpeg, png, jpg, gif, svg.',
             'image_path.max' => 'The image size cannot exceed 2MB.',
-
-            'discount.numeric' => 'The discount must be a valid number.',
-            'discount.min' => 'The discount must be at least 0%.',
-            'discount.max' => 'The discount cannot exceed 100%.',
         ];
     }
 }

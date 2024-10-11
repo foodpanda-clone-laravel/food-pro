@@ -1,7 +1,7 @@
 <?php
 
+namespace App\Http\Requests\MenuRequest;
 namespace App\Http\Requests;
-
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateMenuRequest extends BaseRequest

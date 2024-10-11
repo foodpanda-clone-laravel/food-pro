@@ -64,10 +64,15 @@ class MenuService implements MenuServiceInterface
 
             $data['menu_id']=$menu->id;
 
-             
+
+
 
             // Create a DTO (Data Transfer Object) for the menu
             $menuItem= MenuItem::create((new MenuItemDTO($data))->toArray());
+
+            dd($menuItem);
+
+
 
     
 
@@ -78,7 +83,10 @@ class MenuService implements MenuServiceInterface
             // Handle the case where the menu is not found
             return ['success' => false, 'error' => 'Menu not found'];
         } catch (Exception $e) {
-            // Handle any other exceptions
+
+            dd($e);
+
+            
         }
     }
 
@@ -151,6 +159,7 @@ class MenuService implements MenuServiceInterface
             return response()->json([
                 'success' => true,
                 'message' => 'Variation saved successfully!',
+                'data' => $variation,
             ]);
         } else {
             // If isChoice is not 1, create an Addon

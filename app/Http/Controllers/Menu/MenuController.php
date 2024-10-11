@@ -8,12 +8,12 @@ use App\DTO\MenuItemDTO;
 use App\DTO\VariationDTO;
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AddMenuItemRequest;
-use App\Http\Requests\AddOnRequest;
-use App\Http\Requests\CreateMenuRequest;
-use App\Http\Requests\StoreChoicesRequest;
-use App\Http\Requests\UpdateMenuItemRequest;
-use App\Http\Requests\UpdateMenuRequest;
+use App\Http\Requests\MenuRequest\AddMenuItemRequest;
+use App\Http\Requests\MenuRequest\AddOnRequest;
+use App\Http\Requests\MenuRequest\CreateMenuRequest;
+use App\Http\Requests\MenuRequest\StoreChoicesRequest;
+use App\Http\Requests\MenuRequest\UpdateMenuItemRequest;
+use App\Http\Requests\MenuRequest\UpdateMenuRequest;
 use App\Models\Addon;
 use App\Models\Branch;
 use App\Models\Menu;
@@ -49,18 +49,23 @@ class MenuController extends Controller
         }
 
     public function addMenuItem(AddMenuItemRequest $request, $menu_id){
+    /**
+     * Add a menu item to a menu
+     *
+     * @param AddMenuItemRequest $request
+     * @param int $menu_id
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+
 
         $result = $this->menuService->addMenuItem($request->getValidatedData(), $menu_id);
 
-        if ($result['success']) {
-            return Helpers::sendSuccessResponse(200, 'Menu item created successfully', $result['menuItem']);
-        } else {
-            // Return an error response
-            return Helpers::sendFailureResponse(400, $result['error']);
+       return ($result);
 
 
     }
-}
+
 
     public function getMenu($menu_id){
         $menu = Menu::findorfail($menu_id);
@@ -123,12 +128,12 @@ class MenuController extends Controller
 {
 
 
-    $data = $request->validated(); // Validate the request data using your request class
 
         // Call the service to save the choice
         $result = $this->menuService->storeChoices($request->validationData(), $menu_id);
+        $data = $result->getData(true); 
 
-        return ($result);
+        return Helpers::sendSuccessResponse(200, 'Choices saved successfully', $data['data']);
 }
 
 

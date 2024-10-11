@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string('name');
             $table->float('price');
             $table->string('category');
-            $table->string('serving_size');
+            $table->string('description')->nullable();
             $table->string('image_path');
-            $table->float('discount')->nullable();
+            $table->json('variation_id')->nullable()->default(null);
             $table->foreign('menu_id')->references('id')->on('menus')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();

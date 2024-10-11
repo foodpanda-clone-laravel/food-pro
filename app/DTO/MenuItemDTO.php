@@ -8,19 +8,21 @@ class MenuItemDTO extends BaseDTO
     public string $name;
     public float $price;
     public string $category;
-    public string $serving_size;
-    public string $image_path;
-    public ?float $discount=null; 
+    public ?string $description;
+    public ?string $variation_id; // Keep this as an array
+    public ?string $image_path;
 
-    public function __construct($data) {
-        // Check if data keys exist, and if not, set defaults or throw an exception
+    public function __construct(array $data) {
+       
+
         $this->menu_id = $data["menu_id"];
-        $this->name = $data["name"] ;
-        $this->price = $data["price"] ;
+        $this->name = $data["name"];
+        $this->price = $data["price"];
+        $this->description = $data["description"] ?? null;
         $this->category = $data["category"];
-        $this->serving_size = $data["serving_size"] ;
-        $this->image_path = $data["image_path"] ;
-        $this->discount = $data["discount"] ?? null;  // discount is nullable, so default to null
+        $this->image_path = $data["image_path"] ?? null;
+
+        // Directly assign variation_id as an array
+        dd($this->variation_id = json_encode($data["variation_id"])) ?? null; // This can be an array or null
     }
 }
-
