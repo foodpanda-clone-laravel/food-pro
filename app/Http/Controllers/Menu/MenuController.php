@@ -43,6 +43,8 @@ class MenuController extends Controller
         } else {
             // Return an error response
             return Helpers::sendFailureResponse(400, $result['error']);
+
+            
         }
         }
 
