@@ -1,9 +1,7 @@
 <?php
 
 namespace App\Http\Requests\MenuRequest;
-namespace App\Http\Requests;
-
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
 class AddMenuItemRequest extends BaseRequest
 {
@@ -29,9 +27,9 @@ class AddMenuItemRequest extends BaseRequest
             'price' => 'required|numeric|min:0',
             'category' => 'required|string|max:100',
             'variation_id' => 'nullable', // Ensure variation_id is an array, or can be null
-            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validate image files
+            'image_path' => 'required',
+            // 'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validate image files
             'description' => 'nullable|string|max:255',
-            
         ];
     }
 
