@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Menu;
 
 use App\DTO\AddonDTO;
 use App\DTO\MenuDTO;
@@ -29,7 +29,7 @@ class MenuService implements MenuServiceInterface
 
             // Find the restaurant owner
             $owner = RestaurantOwner::where('user_id', $user->id)->firstOrFail();
-            
+
 
             // Find the restaurant associated with the owner
             $restaurant = Restaurant::where('owner_id', $owner->id)->firstOrFail();
@@ -74,7 +74,7 @@ class MenuService implements MenuServiceInterface
 
 
 
-    
+
 
             // Return the created menu item
             return ['success' => true, 'menuItem' => $menuItem];
@@ -86,7 +86,7 @@ class MenuService implements MenuServiceInterface
 
             dd($e);
 
-            
+
         }
     }
 
@@ -96,12 +96,12 @@ class MenuService implements MenuServiceInterface
         try {
             // Find the menu item
             $menu_item = MenuItem::findOrFail($menu_item_id);
-    
+
             $data['menu_item_id']=$menu_item->id;
 
 
             $addOn = Addon::create((new AddonDTO($data))->toArray());
-    
+
             return ['success' => true, 'addon' => $addOn]; // Return the addon
         } catch (Exception $e) {
             return ['success' => false, 'error' => 'Unable to create addon'];
@@ -152,10 +152,10 @@ class MenuService implements MenuServiceInterface
 
 
         if ($data['isChoice'] == 1) {
-        
-            $variation= Variation::create((new VariationDTO($data))->toArray()); 
-            
-    
+
+            $variation= Variation::create((new VariationDTO($data))->toArray());
+
+
             return response()->json([
                 'success' => true,
                 'message' => 'Variation saved successfully!',
@@ -163,9 +163,9 @@ class MenuService implements MenuServiceInterface
             ]);
         } else {
             // If isChoice is not 1, create an Addon
-            $addOn= Addon::create((new AddonDTO($data))->toArray());        
-    
-    
+            $addOn= Addon::create((new AddonDTO($data))->toArray());
+
+
             return response()->json([
                 'success' => true,
                 'message' => 'Addon saved successfully!',
@@ -175,10 +175,10 @@ class MenuService implements MenuServiceInterface
     }
 
 
-    
 
 
-    
+
+
 
 
 }
