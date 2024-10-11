@@ -2,13 +2,10 @@
 
 namespace App\Services;
 
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use PhpParser\Node\Stmt\TryCatch;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use Spatie\Permission\Models\Role;
-
+use App\Services\Cart\ShoppingSessionService;
 class UserService
 {
     public function loginUser(array $credentials)
@@ -25,9 +22,14 @@ class UserService
 
         $permissions = $user->permissions->toArray();
         $permissions = array_column($permissions, 'name');
+        if($roleName == 'Restaurant Owner'){
+            $data['restaurant_id'] = $user->restaurnat;
+        }
 
 
         $result = ['role' => $roleName, 'permissions' => $permissions, 'access_token' => $token, 'user_id' => $user_id];
+
+
         return $result;
     }
 
