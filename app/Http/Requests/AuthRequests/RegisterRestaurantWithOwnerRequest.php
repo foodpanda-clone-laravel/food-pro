@@ -39,7 +39,15 @@ class RegisterRestaurantWithOwnerRequest extends BaseRequest
     {
         return [
             'cnic.unique' => 'The CNIC is already registered.',
-            'user_id.exists' => 'The user must be a valid registered user.',
+            'user_id' => 'required|exists:users,id',
+            'email' => 'The Email you have entered is alread exists! Try another Email.',
+            'phone_number'=>'Phone Number is required! Enter Phone Number',
+            'bank_name'=>'Bank Name is required! Enter Bank Name',
+            'iban'=>'iban number is required! Enter Iban number',
+            'address'=>'Address is required! Enter your Address',
+
+
+
         ];
     }
 }

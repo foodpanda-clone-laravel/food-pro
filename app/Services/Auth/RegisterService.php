@@ -14,7 +14,10 @@ use App\DTO\RestaurantDTO;
 use App\DTO\RestaurantOwnerDTO;
 use App\DTO\BranchDTO;
 use App\DTO\CustomerDTO;
+use App\Models\Customer;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Log;
+
 
 use Spatie\Permission\Models\Role;
 class RegisterService implements RegisterServiceInterface
@@ -35,6 +38,7 @@ class RegisterService implements RegisterServiceInterface
         $user = User::create($userDTO->toArray());
         return $user;
     }
+    
     public function createRestaurantWithOwner(array $data)
     {
         try {
@@ -74,20 +78,32 @@ class RegisterService implements RegisterServiceInterface
             'branch' => $branch,
         ];
     }
+    protected function createCustomer($data)
+    {
+        $customerDTO = new CustomerDTO($data);
+        return Customer::create($customerDTO->toArray());
+    }
     public function register($data)
-        {
-            try{
-                DB::beginTransaction();
-                $user = $this->createUser(new UserDTO($data));
-                $this->assignRoleWithDirectPermissions($user, 'Customer');
+{
+    try {
+        DB::beginTransaction();
 
-                DB::commit();
-                return $user;
-            }
-            catch (\Exception $e) {
-                DB::rollBack();
-                return false;
-            }
-        }
+        $user = $this->createUser(new UserDTO($data));
+        $this->assignRoleWithDirectPermissions($user, 'Customer');
+
+        $data['user_id'] = $user->id;
+        $this->createCustomer($data);
+
+        DB::commit();
+
+        return $user;
+    } catch (\Exception $e) {
+        DB::rollBack();
+        dd($e);
+        Log::error('Registration failed: ' . $e->getMessage());
+        return false;
+    }
+}
+
 
 }
