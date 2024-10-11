@@ -27,16 +27,16 @@ Route::post('/login', [UserController::class, 'login']);
 Route::middleware(['request.logs', 'jwt'])->group(function () {
     Route::prefix('customers')->group(function () {
         Route::controller(CustomerController::class)->group(function () {
-            Route::get('{customerId}/orders', 'orderHistory');
-            Route::get('{customerId}/favorites', 'favoriteItems');
-            Route::get('{customerId}/rewards', 'viewRewards');
-            Route::post('{customerId}/use-points', 'usePointsAtCheckout');
-            Route::patch('{customerId}/update-address', 'updateCustomerAddress')->name('updateCustomerAddress');
-            Route::get('{customerId}', 'viewProfile');
-            Route::post('{customerId}/favorite-restaurants', 'addFavoriteRestaurant');
-            Route::delete('{customerId}/favorite-restaurants/{restaurantId}', 'removeFavoriteRestaurant');
-            Route::get('{customerId}/active-order', 'activeOrder');
-            Route::post('{customerId}/feedback', 'submitFeedback');
+            Route::get('orders', 'orderHistory');
+            Route::get('favorites', 'favoriteItems');
+            Route::get('rewards', 'viewRewards');
+            Route::post('use-points', 'usePointsAtCheckout');
+            Route::patch('update-address', 'updateCustomerAddress')->name('updateCustomerAddress');
+            Route::get('profile', 'viewProfile');
+            Route::post('favorite-restaurants', 'addFavoriteRestaurant');
+            Route::delete('favorite-restaurants', 'removeFavoriteRestaurant');
+            Route::get('active-order', 'activeOrder');
+            Route::post('feedback', 'submitFeedback');
             Route::get('menus', 'viewMenus');
             Route::get('search-restaurant', 'searchRestaurant');
             Route::get('restaurants', 'viewAllRestaurants');

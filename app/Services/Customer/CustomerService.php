@@ -8,9 +8,11 @@ use App\Models\Menu;
 use App\Models\Restaurant;
 use App\Models\Reward;
 use App\Models\Rating;
+use App\Models\Favourite;
 use App\DTO\CustomerDTO;
 use App\Helpers\Helpers;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Str;
 
@@ -38,9 +40,14 @@ class CustomerService implements CustomerServiceInterface
 
   public function getFavoriteItems($customerId)
   {
-    $customer = Customer::findOrFail($customerId);
-    $favorites = explode(',', $customer->favorites);
-    return Restaurant::whereIn('id', $favorites)->get();
+    $favoriteRestaurantIds = Favourite::where('customer_id', $customerId)
+      ->pluck('restaurant_id');
+
+    $restaurants = Restaurant::whereIn('id', $favoriteRestaurantIds)
+      ->select('id', 'name', 'logo_path', 'cuisine', 'opening_time', 'closing_time')
+      ->get();
+
+    return $restaurants;
   }
 
   public function getRewards($customerId)
@@ -68,11 +75,11 @@ class CustomerService implements CustomerServiceInterface
   {
     $customer = Customer::findOrFail($customerId);
 
-    // Only update provided fields
-    if ($customerDTO->address) {
+    // Only update the fields that are provided in the DTO
+    if (!empty($customerDTO->address)) {
       $customer->address = $customerDTO->address;
     }
-    if ($customerDTO->delivery_address) {
+    if (!empty($customerDTO->delivery_address)) {
       $customer->delivery_address = $customerDTO->delivery_address;
     }
     if ($customerDTO->favorites !== null) {
@@ -80,7 +87,10 @@ class CustomerService implements CustomerServiceInterface
     }
 
     $customer->save();
+
+    return $customer;
   }
+
 
   public function getProfile($customerId)
   {
@@ -89,24 +99,26 @@ class CustomerService implements CustomerServiceInterface
 
   public function addFavoriteRestaurant($customerId, $restaurantId)
   {
-    $customer = Customer::findOrFail($customerId);
-    $favorites = explode(',', $customer->favorites);
-    if (!in_array($restaurantId, $favorites)) {
-      $favorites[] = $restaurantId;
+    $exists = Favourite::where('customer_id', $customerId)
+      ->where('restaurant_id', $restaurantId)
+      ->exists();
+
+    if (!$exists) {
+      Favourite::create([
+        'customer_id' => $customerId,
+        'restaurant_id' => $restaurantId
+      ]);
     }
-    $customer->favorites = implode(',', $favorites);
-    $customer->save();
+    return $this->getFavoriteItems($customerId);
   }
 
   public function removeFavoriteRestaurant($customerId, $restaurantId)
   {
-    $customer = Customer::findOrFail($customerId);
-    $favorites = explode(',', $customer->favorites);
-    if (($key = array_search($restaurantId, $favorites)) !== false) {
-      unset($favorites[$key]);
-    }
-    $customer->favorites = implode(',', $favorites);
-    $customer->save();
+    Favourite::where('customer_id', $customerId)
+      ->where('restaurant_id', $restaurantId)
+      ->delete();
+
+    return $this->getFavoriteItems($customerId);
   }
 
   public function getActiveOrder($customerId)
