@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\CartRequests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SearchRestaurantRequest extends FormRequest
+class ViewCartRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,7 @@ class SearchRestaurantRequest extends FormRequest
     public function rules()
     {
         return [
-            'search_term' => 'required|string|max:255'
+            //
         ];
     }
 }

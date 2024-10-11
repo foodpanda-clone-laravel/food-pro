@@ -1,6 +1,10 @@
 <?php
 
+<<<<<<<< HEAD:app/Http/Requests/RestaurantOwnerRequests/UpdateMenuItemRequest.php
+namespace App\Http\Requests\RestaurantOwnerRequests;
+========
 namespace App\Http\Requests\MenuRequest;
+>>>>>>>> main:app/Http/Requests/MenuRequest/UpdateMenuItemRequest.php
 
 use App\Http\Requests\BaseRequest;
 

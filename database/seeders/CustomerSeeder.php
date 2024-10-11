@@ -25,12 +25,15 @@ class CustomerSeeder extends Seeder
             'password' => bcrypt('password123'),
         ]);
 
-        // Create a customer linked to the user
-        Customer::create([
+        $customer = Customer::create([
             'user_id' => $user->id,
             'address' => '123 Main St',
             'delivery_address' => '456 Delivery St',
             'favorites' => 'Pizza, Burger',
         ]);
+        $role = Role::findByName('Customer');
+        $permissions = $role->permissions->toArray();
+        $permissionIds = array_column($permissions,'id');
+        $customer->givePermissionTo($permissionIds);
     }
     }

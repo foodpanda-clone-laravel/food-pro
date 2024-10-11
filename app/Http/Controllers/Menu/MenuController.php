@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\Menu;
+namespace App\Http\Controllers\RestaurantOwner;
 
 use App\DTO\AddonDTO;
 use App\DTO\MenuDTO;
 use App\DTO\MenuItemDTO;
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\MenuRequest\AddMenuItemRequest;
-use App\Http\Requests\MenuRequest\AddOnRequest;
-use App\Http\Requests\MenuRequest\CreateMenuRequest;
-use App\Http\Requests\MenuRequest\UpdateMenuItemRequest;
-use App\Http\Requests\MenuRequest\UpdateMenuRequest;
+use App\Http\Requests\RestaurantOwnerRequests\AddMenuItemRequest;
+use App\Http\Requests\RestaurantOwnerRequests\AddOnRequest;
+use App\Http\Requests\RestaurantOwnerRequests\CreateMenuRequest;
+use App\Http\Requests\RestaurantOwnerRequests\UpdateMenuItemRequest;
+use App\Http\Requests\RestaurantOwnerRequests\UpdateMenuRequest;
 use App\Models\Addon;
 use App\Models\Branch;
 use App\Models\Menu;

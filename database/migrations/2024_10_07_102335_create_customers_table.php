@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('address');
-            $table->string('delivery_address');
+            $table->string('address')->nullable()->default(null);
+            $table->string('delivery_address')->nullable()->default(null);
             $table->string('favorites'); // is there a way to store favorites restaurant ids in one column
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->softDeletes();

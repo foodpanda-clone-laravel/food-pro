@@ -45,41 +45,18 @@ class Handler extends ExceptionHandler
     {
 
         $this->renderable(function (TokenInvalidException $e, $request) {
-            return response()->json(['error'=>'Invalid token'],401);
+            return response()->json(['error' => 'Invalid token'], 401);
 
         });
         $this->renderable(function (TokenExpiredException $e, $request) {
-            return response()->json(['error'=>'Invalid token'],401);
+            return response()->json(['error' => 'Invalid token'], 401);
 
-            
-        });
-        $this->renderable(function(JWTException $exception, $request){
-            return response()->json(['error'=>'Unauthorized access'], 401);
-        });
 
-        $this->renderable(function(QueryException $exception, $request){
-        
-            Helpers::createErrorLogs($exception, $request->request_id);
-            
-            return response()->json(['error'=>'internal server error'], 500);
         });
-        
-        $this->renderable(function(Error $error, $request){
-        
-            Helpers::createErrorLogs($error, $request->request_id);
-            return response()->json(['error'=>'internal server error'], 500);
+        $this->renderable(function (JWTException $exception, $request) {
+            return response()->json(['error' => 'Unauthorized access'], 401);
         });
-       
     }
-    // public function render($request, Throwable $exception)
-    // {
-            
-    
-    //         Helpers::createErrorLogs($exception, $request->request_id);
-    //         return response()->json(['error'=>'internal server error'], 500);
+}
 
-    //     }
-    
-    }
 
-    
