@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Orders\CartController;
 use App\Http\Controllers\RestaurantOwner\MenuController;
 use Illuminate\Http\Request;
@@ -9,6 +8,7 @@ use Illuminate\Database\QueryException;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Auth\RegisterController;
 
 
 /*
