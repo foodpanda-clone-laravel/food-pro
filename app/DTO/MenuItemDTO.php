@@ -8,25 +8,21 @@ class MenuItemDTO extends BaseDTO
     public string $name;
     public float $price;
     public string $category;
-    public string $serving_size;
-    public string $image_path;
-    public ?float $discount; 
+    public ?string $description;
+    public ?string $variation_id; // Keep this as an array
+    public ?string $image_path;
 
-    public function __construct(
-        int $menu_id,
-        string $name,
-        float $price,
-        string $category,
-        string $serving_size,
-        string $image_path,
-        ?float $discount =0
-    ) {
-        $this->menu_id = $menu_id;
-        $this->name = $name;
-        $this->price = $price;
-        $this->category = $category;
-        $this->serving_size = $serving_size;
-        $this->image_path = $image_path;
-        $this->discount = $discount;
+    public function __construct(array $data) {
+
+
+        $this->menu_id = $data["menu_id"];
+        $this->name = $data["name"];
+        $this->price = $data["price"];
+        $this->description = $data["description"] ?? null;
+        $this->category = $data["category"];
+        $this->image_path = $data["image_path"] ?? null;
+
+        // Directly assign variation_id as an array
+            dd($this->variation_id = json_encode($data["variation_id"])) ?? null; // This can be an array or null
     }
 }
