@@ -44,13 +44,17 @@ class AppServiceProvider extends ServiceProvider
 		);
 
 		$this->app->bind(
+
 			\App\Interfaces\Cart\ShoppingSessionServiceInterface::class,
 			\App\Services\Cart\ShoppingSessionService::class
 		);
 
 		$this->app->bind(
 			\App\Interfaces\ShoppingSessionServiceInterface::class,
-			\App\Services\Cart\ShoppingSessionService::class
+			\App\Services\Cart\ShoppingSessionService::class,
+      
+			\App\Interfaces\menu\MenuServiceInterface::class,
+			\App\Services\menu\MenuService::class
 		);
     }
 

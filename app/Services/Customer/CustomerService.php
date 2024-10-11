@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 use Exception;
 use Illuminate\Support\Str;
 
-use App\Interfaces\CustomerServiceInterface;
+use App\Interfaces\Customer\CustomerServiceInterface;
 
 class CustomerService implements CustomerServiceInterface
 {
@@ -75,11 +75,10 @@ class CustomerService implements CustomerServiceInterface
   {
     $customer = Customer::findOrFail($customerId);
 
-    // Only update the fields that are provided in the DTO
-    if (!empty($customerDTO->address)) {
+    if ($customerDTO->address) {
       $customer->address = $customerDTO->address;
     }
-    if (!empty($customerDTO->delivery_address)) {
+    if ($customerDTO->delivery_address) {
       $customer->delivery_address = $customerDTO->delivery_address;
     }
     if ($customerDTO->favorites !== null) {
@@ -87,10 +86,7 @@ class CustomerService implements CustomerServiceInterface
     }
 
     $customer->save();
-
-    return $customer;
   }
-
 
   public function getProfile($customerId)
   {

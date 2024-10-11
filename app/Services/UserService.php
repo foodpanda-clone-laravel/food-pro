@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Auth;
+use PhpParser\Node\Stmt\TryCatch;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Services\Cart\ShoppingSessionService;
 class UserService
@@ -16,7 +17,7 @@ class UserService
         $user = Auth::user();
         $token = JWTAuth::fromUser($user);
         $user_id = $user->id;
-        $roleName= $user->roles->pluck('name')[0];
+        $roleName = $user->roles->pluck('name')[0];
 
 
         $permissions = $user->permissions->toArray();
@@ -32,4 +33,13 @@ class UserService
         return $result;
     }
 
+    public function logoutUser()
+    {
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
 }
