@@ -8,6 +8,8 @@ use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\AuthController;
+
 use App\Http\Controllers\Menu\MenuController;
 
 /*
