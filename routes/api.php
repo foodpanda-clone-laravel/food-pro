@@ -21,7 +21,7 @@ use App\Http\Controllers\Orders\CartController;
 |
 */
 
-Route::post('register', [RegisterController::class, 'signup']);
+Route::post('/register', [RegisterController::class, 'signup']);
 Route::post('/register-business', [RegisterController::class, 'registerRestaurantWithOwner']);
 Route::post('/login', [UserController::class, 'login']);
 
