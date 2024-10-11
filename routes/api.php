@@ -49,10 +49,16 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
         return response()->json($request->auth);
 
     });
+     Route::post('create-menu/{branch_id}',[MenuController::class, 'createMenu']);
+        Route::post('add-item/menu/{menu_id}', [MenuController::class, 'addMenuItem']);
+        Route::post('add-addon/menu/{menu_item_id}', [MenuController::class, 'addOns']);
+        Route::post('update-menu/{menu_item}', [MenuController::class, 'updateMenu']);
+        Route::post('update-menu-item/{menu_item_id}', [MenuController::class, 'updateMenuItem']);
+        Route::post('add-choice/{menu_id}', [MenuController::class, 'storeChoices']);
 
     Route::controller(ForgotPasswordController::class)->group(function () {
         Route::post('/forgot-password', 'submitForgotPasswordForm')->name('password.email');
-        ;
+        
         Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
     });
 
