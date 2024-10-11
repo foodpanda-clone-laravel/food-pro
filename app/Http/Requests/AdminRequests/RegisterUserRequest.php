@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\AdminRequests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
 class RegisterUserRequest extends BaseRequest
 {
@@ -16,8 +16,9 @@ class RegisterUserRequest extends BaseRequest
         return [
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',  // Unique email check
-            'password' => 'required|string|min:8|confirmed', // Password confirmation check
+            'email' => 'required|email|unique:users,email',  
+            'password' => 'required|string|min:8|confirmed', 
+          
         ];
     }
 

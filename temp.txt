@@ -1,0 +1,40 @@
+const productImage = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTa9Qq1rV_svdydH5u3O8r5ZmT8udMBnSuKeA&s';
+const productName = 'Summer Deal 1';
+const discountedPrice = 475.16;
+const originalPrice = 774;
+const productDescription = 'Chicken Sub & 345ml Drink';
+
+
+ {
+    title: 'Choose Your Sub',
+    selectLimit: 1,
+    required: true,
+    selectedOption: null,
+    options: [
+      { name: 'Tikka', price: 'Free', popular: true },
+      { name: 'BBQ', price: 'Free', popular: false },
+      { name: 'Roasted Chicken Breast', price: 'Free', popular: false },
+      { name: 'Chicken Chapli', price: 'Free', popular: false },
+    ],
+  },
+  {
+    title: 'Choose Your Drink',
+    selectLimit: 1,
+    required: true,
+    selectedOption: null,
+    options: [
+      { name: 'Coca Cola', price: 'Free', popular: true },
+      { name: 'Pepsi', price: 'Free', popular: false },
+      { name: 'Sprite', price: 'Free', popular: false },
+    ],
+  },
+  {
+    title: 'Choose Your Extras',
+    selectLimit: 1,
+    required: false,
+    selectedOption: null,
+    options: [
+      { name: 'Extra Cheese', price: 'Rs. 50', popular: false },
+      { name: 'Extra Mayo', price: 'Rs. 30', popular: false },
+    ],
+  }

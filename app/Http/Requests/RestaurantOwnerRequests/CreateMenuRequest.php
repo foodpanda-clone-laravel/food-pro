@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+<<<<<<<< HEAD:app/Http/Requests/RestaurantOwnerRequests/CreateMenuRequest.php
+namespace App\Http\Requests\RestaurantOwnerRequests;
+========
+namespace App\Http\Requests\MenuRequest;
+>>>>>>>> main:app/Http/Requests/MenuRequest/CreateMenuRequest.php
 
-use Faker\Provider\Base;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Http\Requests\BaseRequest;
 
 class CreateMenuRequest extends BaseRequest
 {
@@ -49,5 +50,5 @@ class CreateMenuRequest extends BaseRequest
         ];
     }
 
-   
+
 }

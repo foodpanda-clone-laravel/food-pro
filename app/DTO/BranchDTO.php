@@ -9,15 +9,10 @@ class BranchDTO extends BaseDTO
     public string $city;
     public int $restaurant_id;
 
-    public function __construct(
-        string $address,
-        string $postal_code,
-        string $city,
-        int $restaurant_id
-    ) {
-        $this->address = $address;
-        $this->postal_code = $postal_code;
-        $this->city = $city;
-        $this->restaurant_id = $restaurant_id;
+    public function __construct($data) {
+        $this->address = $data["address"];
+        $this->postal_code = $data["postal_code"];
+        $this->city = $data["city"];
+        $this->restaurant_id = $data["restaurant_id"];
     }
 }

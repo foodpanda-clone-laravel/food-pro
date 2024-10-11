@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Requests;
+<<<<<<<< HEAD:app/Http/Requests/RestaurantOwnerRequests/AddOnRequest.php
+namespace App\Http\Requests\RestaurantOwnerRequests;
+========
+namespace App\Http\Requests\MenuRequest;
+>>>>>>>> main:app/Http/Requests/MenuRequest/AddOnRequest.php
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
 class AddOnRequest extends FormRequest
 {
@@ -52,5 +54,5 @@ class AddOnRequest extends FormRequest
         ];
     }
 
-   
+
 }

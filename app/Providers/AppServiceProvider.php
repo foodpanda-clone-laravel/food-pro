@@ -19,6 +19,29 @@ class AppServiceProvider extends ServiceProvider
 			\App\Interfaces\BaseServiceInterface::class,
 			\App\Services\BaseService::class
 		);
+
+		$this->app->bind(
+			\App\Interfaces\Orders\OrderServiceInterface::class,
+			\App\Services\Orders\OrderService::class
+		);
+
+
+		
+
+		$this->app->bind(
+			\App\Interfaces\Cart\CartServiceInterface::class,
+			\App\Services\Cart\CartService::class
+		);
+
+		$this->app->bind(
+			\App\Interfaces\BaseServiceInterface::class,
+			\App\Services\BaseService::class
+		);
+
+		$this->app->bind(
+			\App\Interfaces\Auth\RegisterServiceInterface::class,
+			\App\Services\Auth\RegisterService::class
+		);
     }
 
     /**

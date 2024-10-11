@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Auth;
 use Illuminate\Support\Facades\Password;
 
 use App\Interfaces\ResetPasswordServiceInterface;
@@ -11,7 +11,7 @@ class ResetPasswordService implements ResetPasswordServiceInterface
     public function submitForgotPasswordForm($data){
         $email = $data['email'];
         $status=  Password::sendResetLink(
-                ['email'=>'hadia81492gmail.com']
+                ['email'=>$email]
             );
         dd($status);
         return $status === Password::RESET_LINK_SENT

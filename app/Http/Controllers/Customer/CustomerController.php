@@ -3,21 +3,20 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Helpers\Helpers;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CustomerRequests\AddFavoriteRestaurantRequest;
+use App\Http\Requests\CustomerRequests\SearchRestaurantRequest;
+use App\Http\Requests\CustomerRequests\SubmitFeedbackRequest;
+use App\Http\Requests\CustomerRequests\UpdateDeliveryAddressRequest;
+use App\Http\Requests\CustomerRequests\UsePointsRequest;
 use App\Models\Customer;
-use App\Models\Order;
 use App\Models\Menu;
+use App\Models\Order;
+use App\Models\Rating;
 use App\Models\Restaurant;
 use App\Models\Reward;
-use App\Models\Rating;
-use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Str;
-use App\Http\Requests\SearchRestaurantRequest;
-use App\Http\Requests\AddFavoriteRestaurantRequest;
-use App\Http\Requests\UsePointsRequest;
-use App\Http\Requests\UpdateDeliveryAddressRequest;
-use App\Http\Requests\SubmitFeedbackRequest;
-use App\Http\Controllers\Controller;
 
 
 class CustomerController extends Controller
