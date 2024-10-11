@@ -6,15 +6,16 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRestaurantWithOwnerRequest extends BaseRequest
 {
-    public function authorize()
-    {
-        return true;
-    }
+
 
     public function rules()
     {
         return [
-            // Owner information
+            'first_name' => 'required|string|max:255',  
+            'last_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email', 
+            'password' => 'required|string|min:8',
+            'phone_number'=>'required|string|max:11',
             'cnic' => 'required|string|max:15|unique:restaurant_owners,cnic',
             'bank_name' => 'required|string|max:255',
             'iban' => 'required|string|max:34',
@@ -35,7 +36,15 @@ class RegisterRestaurantWithOwnerRequest extends BaseRequest
     {
         return [
             'cnic.unique' => 'The CNIC is already registered.',
-            'user_id.exists' => 'The user must be a valid registered user.',
+            'user_id' => 'required|exists:users,id',
+            'email' => 'The Email you have entered is alread exists! Try another Email.',
+            'phone_number'=>'Phone Number is required! Enter Phone Number',
+            'bank_name'=>'Bank Name is required! Enter Bank Name',
+            'iban'=>'iban number is required! Enter Iban number',
+            'address'=>'Address is required! Enter your Address',
+
+
+
         ];
     }
 }
