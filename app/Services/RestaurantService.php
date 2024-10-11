@@ -21,7 +21,6 @@ class RestaurantService
         DB::beginTransaction();
         
         try {
-            // Create the User
             $userDTO = new UserDTO(
                 first_name: $data['first_name'],
                 last_name: $data['last_name'],
@@ -31,7 +30,6 @@ class RestaurantService
             );
             $user = User::create($userDTO->toArray());
 
-            // Create the Restaurant Owner
             $restaurantOwnerDTO = new RestaurantOwnerDTO(
                 cnic: $data['cnic'],
                 user_id: $user->id, 
@@ -41,7 +39,6 @@ class RestaurantService
             );
             $owner = RestaurantOwner::create($restaurantOwnerDTO->toArray());
 
-            // Create the Restaurant
             $restaurantDTO = new RestaurantDTO(
                 name: $data['name'],
                 owner_id: $owner->id, 
@@ -53,7 +50,6 @@ class RestaurantService
             );
             $restaurant = Restaurant::create($restaurantDTO->toArray());
 
-            // Create the Branch
             $branchDTO = new BranchDTO(
                 address: $data['address'],
                 postal_code: $data['postal_code'],
@@ -62,7 +58,6 @@ class RestaurantService
             );
             $branch = Branch::create($branchDTO->toArray());
 
-            // Commit the transaction if all queries are successful
             DB::commit();
 
             return [
@@ -73,7 +68,6 @@ class RestaurantService
             ];
 
         } catch (Exception $e) {
-            // Rollback the transaction in case of error
             DB::rollBack();
 
             logger()->error('Error in creating restaurant and owner: ' . $e->getMessage(), [

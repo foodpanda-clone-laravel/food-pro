@@ -17,18 +17,14 @@ class RestaurantController extends Controller
         $this->restaurantService = $restaurantService;
     }
 
-    // Register restaurant and owner together
     public function registerRestaurantWithOwner(RegisterRestaurantWithOwnerRequest $request): JsonResponse
     {
-        // Call the service to create restaurant and owner
         $result = $this->restaurantService->createRestaurantWithOwner($request->getValidatedData());
 
-        // Check if there was an error in the result
         if (isset($result['error'])) {
             return Helpers::sendFailureResponse(500, $result['error']);
         }
 
-        // Ensure the required keys are present in the result array
         if (!isset($result['Restaurant_Owner'], $result['restaurant'], $result['user'], $result['branch'])) {
             return Helpers::sendFailureResponse(500, 'Incomplete data returned. Please try again.');
         }

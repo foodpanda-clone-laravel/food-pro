@@ -21,7 +21,6 @@ class UserController extends Controller
     }
 
     /**
-     * Handle user registration.
      *
      * @param RegisterUserRequest $request
      * @return JsonResponse
@@ -34,10 +33,8 @@ class UserController extends Controller
         // Check if user already exists
      
 
-        // Create the user
-        $user = $this->userService->createUser($request->validated());
+        $user = $this->userService->createUser($request->getValidatedData());
 
-        // Send success response
         return Helpers::sendSuccessResponse(201, 'User registered successfully', ['user' => $user]);
     }
 
@@ -49,18 +46,14 @@ class UserController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        // Remove all single line comments @junaidsajidkhan 
 
-        // Validate credentials and attempt login
-        $credentials = $request->validated();
+        $credentials = $request->getValidatedData();
         $result = $this->userService->loginUser($credentials);
 
-        // If authentication fails, send failure response
         if (!$result) {
-            return Helpers::sendFailureResponse(401, 'Unauthorized');
+            return Helpers::sendFailureResponse(401, 'Email or password is in correct');
         }
 
-        // If authentication succeeds, send success response with token
         return Helpers::sendSuccessResponse(
             200,
             'Logged in successfully',
