@@ -1,24 +1,23 @@
 <?php
 
-namespace App\Http\Controllers\RestaurantOwner;
+namespace App\Http\Controllers\Menu;
 
 use App\DTO\AddonDTO;
 use App\DTO\MenuDTO;
 use App\DTO\MenuItemDTO;
 use App\Helpers\Helpers;
-use App\Http\Requests\AddMenuItemRequest;
-use App\Http\Requests\AddOnRequest;
-use App\Http\Requests\CreateMenuRequest;
-use App\Http\Requests\UpdateMenuItemRequest;
-use App\Http\Requests\UpdateMenuRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\MenuRequest\AddMenuItemRequest;
+use App\Http\Requests\MenuRequest\AddOnRequest;
+use App\Http\Requests\MenuRequest\CreateMenuRequest;
+use App\Http\Requests\MenuRequest\UpdateMenuItemRequest;
+use App\Http\Requests\MenuRequest\UpdateMenuRequest;
 use App\Models\Addon;
 use App\Models\Branch;
 use App\Models\Menu;
 use App\Models\MenuItem;
 use App\Models\Restaurant;
 use App\Models\RestaurantOwner;
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class MenuController extends Controller
 {
@@ -26,7 +25,7 @@ class MenuController extends Controller
     {
         $user = auth()->user();
 
-    
+
 
         // Find the restaurant owner
         $owner = RestaurantOwner::where('user_id', $user->id)->firstOrFail();
@@ -53,7 +52,7 @@ class MenuController extends Controller
 
         return Helpers::sendSuccessResponse(200, 'Menu created successfully', $menu);
 
-        
+
 
 
     }
@@ -104,16 +103,16 @@ class MenuController extends Controller
 
        return Helpers::sendSuccessResponse(200, 'Addon created successfully', $addOn);
 
-        
 
-        
+
+
     }
 
     public function updateMenu(UpdateMenuRequest $request, $menu_id){
         $menu = Menu::findOrFail($menu_id);
 
         $menu->update($request->only(['name', 'description']));
-    
+
        return Helpers::sendSuccessResponse(200, 'Menu updated successfully', $menu);
     }
 
@@ -121,19 +120,19 @@ class MenuController extends Controller
     {
         // Find the menu
         $menu = Menu::findOrFail($menu_id);
-    
+
         // Find the menu item within the specified menu
         $menu_item = MenuItem::where('menu_id', $menu_id)->findOrFail($menu_item_id);
-    
+
         // Update the menu item with validated data
         $menu_item->update($request->validated());
-    
+
         return response()->json([
             'message' => 'Menu item updated successfully.',
             'menu_item' => $menu_item,
         ]);
     }
-    
+
 
     public function deleteMenu($menu_id){
         $menu = Menu::findorfail($menu_id);
@@ -148,5 +147,5 @@ class MenuController extends Controller
 
 
 
-    
+
 }

@@ -1,12 +1,11 @@
 <?php
 
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Customer\CustomerController;
+use App\Http\Requests\MenuRequest\RestaurantOwner\RestaurantController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Database\QueryException;
-use App\Http\Controllers\Customer\CustomerController;
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\RestaurantOwner\RestaurantController;
-use App\Http\Controllers\Auth\UserController;
 
 
 /*
@@ -73,13 +72,13 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
     // Test user route (authenticated)
     Route::get('/user', function (Request $request) {
         return response()->json($request->auth);
-        
+
     });
 
     Route::controller(ForgotPasswordController::class)->group(function(){
         Route::post('/forgot-password', 'submitForgotPasswordForm')->name('password.email');;
         Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
-    });  
+    });
 
 });
 

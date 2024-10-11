@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\RestaurantOwner;
+namespace App\Http\Requests\MenuRequest\RestaurantOwner;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRestaurantWithOwnerRequest;
 use App\Services\RestaurantService;
 use Illuminate\Http\JsonResponse;
-use App\Http\Controllers\Controller;
 
 class RestaurantController extends Controller
 {
