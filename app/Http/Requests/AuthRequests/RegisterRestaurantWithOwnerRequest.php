@@ -3,6 +3,7 @@
 namespace App\Http\Requests\AuthRequests;
 
 use App\Http\Requests\BaseRequest;
+use App\Rules\ValidateTimeRule;
 
 class RegisterRestaurantWithOwnerRequest extends BaseRequest
 {
@@ -25,8 +26,8 @@ class RegisterRestaurantWithOwnerRequest extends BaseRequest
             'address' => 'required|string|max:255',
             'postal_code' => 'required|string|max:20',
             'city' => 'required|string|max:255',
-            'opening_time' => 'nullable|date_format:H:i',
-            'closing_time' => 'nullable|date_format:H:i',
+            'opening_time' => ['required', new ValidateTimeRule()],
+            'closing_time' => ['required', new ValidateTimeRule()],
             'cuisine' => 'required|string|max:255',
             'business_type' => 'required|string|max:255',
             // implement validation logic for business type from database enum values

@@ -1,12 +1,8 @@
 <?php
 
-<<<<<<<< HEAD:app/Http/Requests/RestaurantOwnerRequests/UpdateMenuRequest.php
-namespace App\Http\Requests\RestaurantOwnerRequests;
-========
 namespace App\Http\Requests\MenuRequest;
->>>>>>>> main:app/Http/Requests/MenuRequest/UpdateMenuRequest.php
-
 use App\Http\Requests\BaseRequest;
+use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateMenuRequest extends BaseRequest
 {

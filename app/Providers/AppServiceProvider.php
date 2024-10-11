@@ -42,6 +42,11 @@ class AppServiceProvider extends ServiceProvider
 			\App\Interfaces\Auth\RegisterServiceInterface::class,
 			\App\Services\Auth\RegisterService::class
 		);
+
+		$this->app->bind(
+			\App\Interfaces\menu\MenuServiceInterface::class,
+			\App\Services\menu\MenuService::class
+		);
     }
 
     /**

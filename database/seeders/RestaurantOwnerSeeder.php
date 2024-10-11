@@ -7,7 +7,7 @@ use App\Models\RestaurantOwner;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use App\Models\Branch;
-
+use Illuminate\Support\Facades\DB;
 class RestaurantOwnerSeeder extends Seeder
 {
     /**
@@ -17,38 +17,43 @@ class RestaurantOwnerSeeder extends Seeder
      */
     public function run()
     {
-        // Create a user first
-        $user = User::create([
-            'email' => 'shahidkapoor@example.com',
-            'first_name' => 'shahid',
-            'last_name' => 'kapoor',
-            'phone_number' => '1234567890',
-            'password' => bcrypt('password123'),
-        ]);
+        try {
+            DB::beginTransaction();
+            // Create a user first
+            $user = User::create([
+                'email' => 'hadiya@example.com',
+                'first_name' => 'hadiya',
+                'last_name' => 'asif',
+                'phone_number' => '1234567890',
+                'password' => bcrypt('password123'),
+            ]);
 
-       $owner = RestaurantOwner::create([
-            'cnic' => '12345-6789012-4',
-            'user_id' =>$user->id,
-            'bank_name' => 'Meezan Bank',
-            'iban' => 'PK36SCBL0000001123456902',
-            'account_owner_title' => 'shahid Shah',
-        ]);
+            $owner = RestaurantOwner::create([
+                'cnic' => '12345-6789012-4',
+                'user_id' => $user->id,
+                'bank_name' => 'Meezan Bank',
+                'iban' => 'PK36SCBL0000001123456902',
+                'account_owner_title' => 'shahid Shah',
+            ]);
 
 
-        $restaurant= Restaurant::create([
-            'name' => $user->first_name.' '.$user->last_name,
-            'owner_id' => $owner->id,
-            'opening_time' => '2024-10-01 09:00:00',
-            'closing_time' => '2024-10-01 22:00:00',
-            'cuisine' => 'Italian',
-            'logo_path' => null, // Assuming no logo yet
-            'business_type' => 'Restaurant',
-        ]);
-        Branch::create([
-            'address'=>'programmers force',
-            'city'=>'lahore',
-            'postal_code'=>'54000',
-            'restaurant_id'=>$restaurant->id,
-        ]);
+            $restaurant = Restaurant::create([
+                'name' => 'OPTP',
+                'owner_id' => $owner->id,
+                'opening_time' => '09:00',
+                'closing_time' => '22:00',
+                'cuisine' => 'Italian',
+                'logo_path' => null, // Assuming no logo yet
+                'business_type' => 'Restaurant',
+            ]);
+            Branch::create([
+                'address' => 'programmers force',
+                'city' => 'lahore',
+                'postal_code' => '54000',
+                'restaurant_id' => $restaurant->id,
+            ]);
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
     }
 }
