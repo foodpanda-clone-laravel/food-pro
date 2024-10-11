@@ -18,8 +18,9 @@ class RegisterController extends Controller
 
     public function registerRestaurantWithOwner(RegisterRestaurantWithOwnerRequest $request)
     {
-        // resolve validation error for
+
         $data  = $request->getValidatedData();
+
         $result = $this->registerService->createRestaurantWithOwner($data);
         if($result){
             return Helpers::sendSuccessResponse(201, 'Restaurant and owner registered successfully', $result);
