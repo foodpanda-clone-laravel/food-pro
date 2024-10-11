@@ -6,14 +6,14 @@ use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthRequests\ForgotPasswordRequest;
 use App\Http\Requests\AuthRequests\ResetPasswordRequest;
-use App\Services\ResetPasswordService;
+use App\Services\Auth\ResetPasswordService;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 
 
 class ForgotPasswordController extends Controller
 {
-    private $passwordService;
+    protected $passwordService;
     public function __construct(ResetPasswordService $service){
         $this->passwordService = $service;
     }
@@ -31,7 +31,7 @@ class ForgotPasswordController extends Controller
 
     }
     public function submitResetPasswordForm(ResetPasswordRequest $request){
-        $data = $request->validated();
+        $data = $request->getValidatedData();
         $status = Password::reset(
             $data,
             function ($user, $password) {
@@ -40,7 +40,6 @@ class ForgotPasswordController extends Controller
                 ])->setRememberToken(Str::random(60));
 
                 $user->save();
-
             }
         );
         return $status === Password::PASSWORD_RESET

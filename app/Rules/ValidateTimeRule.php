@@ -25,7 +25,10 @@ class ValidateTimeRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        //
+        $pattern = '/^(0[1-9]|1[0-2]):[0-5][0-9]\s?(AM|PM)$/i';
+
+        // Check if the value matches the regex
+        return preg_match($pattern, $value);
     }
 
     /**
@@ -35,6 +38,7 @@ class ValidateTimeRule implements Rule
      */
     public function message()
     {
-        return 'The validation error message.';
+        return 'The :attribute must be a valid time in 12-hour format (e.g., 09:00 AM or 05:30 PM).';
+
     }
 }

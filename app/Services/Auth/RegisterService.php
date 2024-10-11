@@ -48,6 +48,7 @@ class RegisterService implements RegisterServiceInterface
             $data['owner_id'] = $owner->id;
             $logoPath = $data['logo_path']->store('logos', 'public'); // Save file to 'storage/app/public/logos'
             $data['logo_path'] = $logoPath;
+
             $restaurantDTO = new RestaurantDTO($data);
             $restaurant = Restaurant::create($restaurantDTO->toArray());
             $data['restaurant_id'] = $restaurant->id;
