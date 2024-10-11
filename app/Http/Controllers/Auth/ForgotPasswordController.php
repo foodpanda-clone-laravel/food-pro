@@ -18,12 +18,9 @@ class ForgotPasswordController extends Controller
         $this->passwordService = $service;
     }
     public function submitForgotPasswordForm(ForgotPasswordRequest $request){
-        $validatedData = $request->validated();
-        $email = $validatedData['email'];
-        // sends a pasword reset link to the provided email
-
+        $data = $request->getValidatedData();
         $status = Password::sendResetLink(
-           ["email"=>$email]
+           $data
         );
         return $status === Password::RESET_LINK_SENT
         ? Helpers::sendSuccessResponse(200, 'Success')

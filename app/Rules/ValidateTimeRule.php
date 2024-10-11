@@ -25,7 +25,7 @@ class ValidateTimeRule implements Rule
      */
     public function passes($attribute, $value)
     {
-        $pattern = '/^(0[1-9]|1[0-2]):[0-5][0-9]\s?(AM|PM)$/i';
+        $pattern = '/^(?:[01]\d|2[0-3]):[0-5]\d$/';
 
         // Check if the value matches the regex
         return preg_match($pattern, $value);
