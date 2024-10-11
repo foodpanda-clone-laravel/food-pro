@@ -7,10 +7,10 @@ use App\Helpers\Helpers;
 use App\DTO\CustomerDTO;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Http\Requests\Customer\UpdateCustomerAddressRequest;
-use App\Http\Requests\Customer\AddFavoriteRestaurantRequest;
-use App\Http\Requests\Customer\UsePointsRequest;
-use App\Http\Requests\Customer\SubmitFeedbackRequest;
+use App\Http\Requests\CustomerRequests\UpdateCustomerAddressRequest;
+use App\Http\Requests\CustomerRequests\AddFavoriteRestaurantRequest;
+use App\Http\Requests\CustomerRequests\UsePointsRequest;
+use App\Http\Requests\CustomerRequests\SubmitFeedbackRequest;
 use App\Http\Controllers\Controller;
 
 class CustomerController extends Controller
@@ -20,13 +20,6 @@ class CustomerController extends Controller
     public function __construct(CustomerService $customerService)
     {
         $this->customerService = $customerService;
-    }
-
-    public function orderHistory(Request $request)
-    {
-        $customerId = $request->get('customer_id');
-        $orders = $this->customerService->getOrderHistory($customerId);
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order history retrieved successfully', $orders);
     }
 
     public function viewMenus()
@@ -70,22 +63,23 @@ class CustomerController extends Controller
         $validatedData = $request->getValidatedData();
         $isDefaultAddress = $request->routeIs('updateCustomerDefaultAddress');
 
-        // Ensure at least one of address or delivery_address is provided
-        if (empty($validatedData['address']) && empty($validatedData['delivery_address'])) {
-            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'At least one of address or delivery address must be provided');
+        $data = [
+            'user_id' => $customerId,
+            'address' => $validatedData['address'] ?? null,
+            'delivery_address' => $isDefaultAddress ? null : ($validatedData['delivery_address'] ?? null),
+            'favorites' => $validatedData['favorites'] ?? null
+        ];
+
+        // Ensure either address or delivery_address is present
+        if (is_null($data['address']) && is_null($data['delivery_address'])) {
+            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Either address or delivery address must be provided.');
         }
 
-        $customerDTO = new CustomerDTO(
-            $validatedData['address'] ?? null,
-            $isDefaultAddress ? null : ($validatedData['delivery_address'] ?? null),
-            $validatedData['favorites'] ?? null
-        );
+        $customerDTO = new CustomerDTO($data);
 
         $this->customerService->updateCustomerInfo($customerId, $customerDTO);
 
-        $updatedCustomer = $this->customerService->getProfile($customerId);
-
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Customer address updated successfully', $updatedCustomer);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Customer address updated successfully');
     }
 
     public function viewProfile(Request $request)
@@ -115,13 +109,6 @@ class CustomerController extends Controller
         $favoriteRestaurants = $this->customerService->removeFavoriteRestaurant($customerId, $restaurantId);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant removed from favorites successfully', $favoriteRestaurants);
-    }
-
-    public function activeOrder(Request $request)
-    {
-        $customerId = $request->get('customer_id');
-        $activeOrder = $this->customerService->getActiveOrder($customerId);
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Active order retrieved successfully', $activeOrder);
     }
 
     public function submitFeedback(SubmitFeedbackRequest $request)

@@ -63,7 +63,7 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
 
         Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
     });
-    Route::controller(CartController::class)->group(function(){
+    Route::controller(CartController::class)->group(function () {
         Route::get('/session', 'getShoppingSession');
     });
 });
