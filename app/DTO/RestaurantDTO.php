@@ -12,21 +12,13 @@ class RestaurantDTO extends BaseDTO
     public ?string $logo_path;
     public string $business_type;
 
-    public function __construct(
-        string $name,
-        int $owner_id,
-        ?string $opening_time = null,
-        ?string $closing_time = null,
-        string $cuisine,
-        ?string $logo_path = null,
-        string $business_type
-    ) {
-        $this->name = $name;
-        $this->owner_id = $owner_id;
-        $this->opening_time = $opening_time;
-        $this->closing_time = $closing_time;
-        $this->cuisine = $cuisine;
-        $this->logo_path = $logo_path;
-        $this->business_type = $business_type;
+    public function __construct($data) {
+        $this->name = $data["restaurant_name"];
+        $this->owner_id = $data["owner_id"];
+        $this->opening_time = $data["opening_time"].':00';
+        $this->closing_time = $data["closing_time"].':00';
+        $this->cuisine = $data["cuisine"];
+        $this->logo_path = $data["logo_path"];
+        $this->business_type = $data["business_type"];
     }
 }
