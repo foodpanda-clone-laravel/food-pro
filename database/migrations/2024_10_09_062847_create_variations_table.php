@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('variations', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('menu_item_id'); // menu item id to insert variation against that particular item
+            $table->unsignedBigInteger('restaurant_id'); // menu item id to insert variation against that particular item
             $table->json('choice_group');
             $table->string('choice_title');
             $table->string('choice_category'); // category of the chosen item like bread, size, flavour, grilled or smoked?? etc

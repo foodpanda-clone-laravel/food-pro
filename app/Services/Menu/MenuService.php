@@ -6,7 +6,7 @@ use App\DTO\AddonDTO;
 use App\DTO\MenuDTO;
 use App\DTO\MenuItemDTO;
 use App\DTO\VariationDTO;
-use App\Interfaces\MenuServiceInterface;
+use App\Interfaces\menu\MenuServiceInterface;
 use App\Models\Addon;
 use App\Models\Branch;
 use App\Models\Menu;
@@ -27,12 +27,14 @@ class MenuService implements MenuServiceInterface
             // Get the authenticated user
             $user = Auth::user();
 
+
             // Find the restaurant owner
             $owner = RestaurantOwner::where('user_id', $user->id)->firstOrFail();
 
 
             // Find the restaurant associated with the owner
             $restaurant = Restaurant::where('owner_id', $owner->id)->firstOrFail();
+
 
             // Check if the specified branch belongs to the restaurant
             $branch = Branch::where('restaurant_id', $restaurant->id)
@@ -63,6 +65,10 @@ class MenuService implements MenuServiceInterface
             $menu = Menu::findOrFail($menu_id);
 
             $data['menu_id']=$menu->id;
+
+
+
+
 
 
 
@@ -145,10 +151,19 @@ class MenuService implements MenuServiceInterface
     }
 
 
-    public function storeChoices(array $data, int $menu_id) {
+    public function storeChoices(array $data) {
 
-        $data['menu_id']=$menu_id;
 
+
+
+            $user = Auth::user();
+
+
+            $owner = RestaurantOwner::where('user_id', $user->id)->firstOrFail();
+
+            $restaurant = Restaurant::where('owner_id', $owner->id)->firstOrFail();
+
+            $data['restaurant_id']=$restaurant->id;
 
 
         if ($data['isChoice'] == 1) {
