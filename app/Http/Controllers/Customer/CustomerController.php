@@ -5,15 +5,12 @@ namespace App\Http\Controllers\Customer;
 use App\Services\Customer\CustomerService;
 use App\Helpers\Helpers;
 use App\DTO\CustomerDTO;
-use Exception;
 use Illuminate\Http\Request;
-
+use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\Customer\UpdateCustomerAddressRequest;
 use App\Http\Requests\Customer\AddFavoriteRestaurantRequest;
 use App\Http\Requests\Customer\UsePointsRequest;
 use App\Http\Requests\Customer\SubmitFeedbackRequest;
-use Illuminate\Support\Str;
-use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 
 class CustomerController extends Controller
@@ -25,8 +22,9 @@ class CustomerController extends Controller
         $this->customerService = $customerService;
     }
 
-    public function orderHistory($customerId)
+    public function orderHistory(Request $request)
     {
+        $customerId = $request->get('customer_id');
         $orders = $this->customerService->getOrderHistory($customerId);
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order history retrieved successfully', $orders);
     }
@@ -43,68 +41,92 @@ class CustomerController extends Controller
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurants retrieved successfully', $restaurants);
     }
 
-    public function favoriteItems($customerId)
+    public function favoriteItems(Request $request)
     {
+        $customerId = $request->get('customer_id');
         $favoriteRestaurants = $this->customerService->getFavoriteItems($customerId);
+
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Favorite restaurants retrieved successfully', $favoriteRestaurants);
     }
 
-    public function viewRewards($customerId)
+    public function viewRewards(Request $request)
     {
+        $customerId = $request->get('customer_id');
         $rewards = $this->customerService->getRewards($customerId);
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Rewards retrieved successfully', $rewards);
     }
 
-    public function usePointsAtCheckout(UsePointsRequest $request, $customerId)
+    public function usePointsAtCheckout(UsePointsRequest $request)
     {
+        $customerId = $request->get('customer_id');
         $validatedData = $request->getValidatedData();
         $monetaryValue = $this->customerService->usePoints($customerId, $validatedData['points']);
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Points redeemed successfully', ['monetary_value' => $monetaryValue]);
     }
 
-    public function updateCustomerAddress(UpdateCustomerAddressRequest $request, $customerId)
+    public function updateCustomerAddress(UpdateCustomerAddressRequest $request)
     {
+        $customerId = $request->get('customer_id');
         $validatedData = $request->getValidatedData();
         $isDefaultAddress = $request->routeIs('updateCustomerDefaultAddress');
 
-        // Use route logic to determine if it's the default or delivery address being updated
+        // Ensure at least one of address or delivery_address is provided
+        if (empty($validatedData['address']) && empty($validatedData['delivery_address'])) {
+            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'At least one of address or delivery address must be provided');
+        }
+
         $customerDTO = new CustomerDTO(
-            $validatedData['address'],
-            $isDefaultAddress ? null : $validatedData['delivery_address'],
+            $validatedData['address'] ?? null,
+            $isDefaultAddress ? null : ($validatedData['delivery_address'] ?? null),
             $validatedData['favorites'] ?? null
         );
 
         $this->customerService->updateCustomerInfo($customerId, $customerDTO);
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Customer address updated successfully');
+
+        $updatedCustomer = $this->customerService->getProfile($customerId);
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Customer address updated successfully', $updatedCustomer);
     }
 
-    public function viewProfile($customerId)
+    public function viewProfile(Request $request)
     {
+        $customerId = $request->get('customer_id');
         $customer = $this->customerService->getProfile($customerId);
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Customer profile retrieved successfully', $customer);
     }
 
-    public function addFavoriteRestaurant(AddFavoriteRestaurantRequest $request, $customerId)
+    public function addFavoriteRestaurant(AddFavoriteRestaurantRequest $request)
     {
-        $validatedData = $request->getValidatedData();
-        $this->customerService->addFavoriteRestaurant($customerId, $validatedData['restaurant_id']);
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant added to favorites successfully');
+        $customerId = $request->get('customer_id');
+        $restaurantId = $request->get('restaurant_id');
+
+        $this->customerService->addFavoriteRestaurant($customerId, $restaurantId);
+
+        $favoriteRestaurants = $this->customerService->getFavoriteItems($customerId);
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant added to favorites successfully', $favoriteRestaurants);
     }
 
-    public function removeFavoriteRestaurant($customerId, $restaurantId)
+    public function removeFavoriteRestaurant(Request $request)
     {
-        $this->customerService->removeFavoriteRestaurant($customerId, $restaurantId);
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant removed from favorites successfully');
+        $customerId = $request->get('customer_id');
+        $restaurantId = $request->get('restaurant_id');
+
+        $favoriteRestaurants = $this->customerService->removeFavoriteRestaurant($customerId, $restaurantId);
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant removed from favorites successfully', $favoriteRestaurants);
     }
 
-    public function activeOrder($customerId)
+    public function activeOrder(Request $request)
     {
+        $customerId = $request->get('customer_id');
         $activeOrder = $this->customerService->getActiveOrder($customerId);
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Active order retrieved successfully', $activeOrder);
     }
 
-    public function submitFeedback(SubmitFeedbackRequest $request, $customerId)
+    public function submitFeedback(SubmitFeedbackRequest $request)
     {
+        $customerId = $request->get('customer_id');
         $validatedData = $request->getValidatedData();
         $feedback = $this->customerService->submitFeedback($customerId, $validatedData);
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Feedback submitted successfully', $feedback);
