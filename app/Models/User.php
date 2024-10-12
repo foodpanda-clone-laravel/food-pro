@@ -4,29 +4,21 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;  // Import SoftDeletes
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-
+use App\Models\ModelHasRole;
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
     use HasRoles;
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
+
     protected $guarded = [];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
@@ -51,7 +43,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne(RestaurantOwner::class);
     }
-
+    public function shoppingSession(){
+        return $this->hasOne(ShoppingSession::class);
+    }
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -60,9 +54,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [
-            'role' => $this->role,  // Assuming you have a 'role' field in your users table
-            // Add other claims if necessary
+           'role' => $this->role,
         ];
     }
-
+    public function role(){
+        return $this->hasOne(ModelHasRole::class, 'model_id', 'id');
+    }
 }

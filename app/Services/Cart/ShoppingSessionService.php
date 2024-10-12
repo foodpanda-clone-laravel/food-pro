@@ -4,16 +4,24 @@ namespace App\Services\Cart;
 
 use App\Interfaces\ShoppingSessionServiceInterface;
 use App\Models\ShoppingSession;
+use Illuminate\Support\Facades\Auth;
 
 class ShoppingSessionService implements ShoppingSessionServiceInterface
 {
-    public function getShoppingSession($user){
-        $session = ShoppingSession::query()->where('created_at','>',now()->addHours(24))->first();
-        if(!$session){
-            $session = ShoppingSession::create([
-                'user_id' => $user->id,
-            ]);
+    public function __construct(){
+    }
+
+    public static function getShoppingSession(){
+        $user = Auth::user();
+        $shoppingSession =$user->shoppingSession;
+        if(!$shoppingSession){
+            ShoppingSession::create(['user_id'=>$user->id]);
+            return [];
         }
-        return $session;
+        else{
+            return  $shoppingSession->cartItems ?? [];
+
+        }
+
     }
 }
