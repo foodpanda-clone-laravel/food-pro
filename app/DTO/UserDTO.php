@@ -1,6 +1,7 @@
 <?php
 
 namespace App\DTO;
+
 use Illuminate\Support\Facades\Hash;
 
 class UserDTO extends BaseDTO
@@ -14,8 +15,8 @@ class UserDTO extends BaseDTO
     public function __construct($data) {
         $this->first_name = $data['first_name'];
         $this->last_name = $data['last_name'];
-        $this->phone_number = $data['phone_number'] ?? null;
+        $this->phone_number = $data['phone_number'] ?? null; // Optional, defaulting to null if not provided
         $this->email = $data['email'];
-        $this->password = Hash::make($data['password']);
+        $this->password = Hash  ::make(($data['password']));
     }
 }

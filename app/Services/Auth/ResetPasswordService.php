@@ -1,9 +1,12 @@
 <?php
 
 namespace App\Services\Auth;
+use App\Helpers\Helpers;
+use App\Http\Requests\AuthRequests\ResetPasswordRequest;
 use Illuminate\Support\Facades\Password;
 
 use App\Interfaces\ResetPasswordServiceInterface;
+use Illuminate\Support\Str;
 
 class ResetPasswordService implements ResetPasswordServiceInterface
 {
@@ -13,10 +16,22 @@ class ResetPasswordService implements ResetPasswordServiceInterface
         $status=  Password::sendResetLink(
                 ['email'=>$email]
             );
-        dd($status);
         return $status === Password::RESET_LINK_SENT
                     ? back()->with(['status' => __($status)])
                     : back()->withErrors(['email' => __($status)]);
     }
+    public function resetPassword($data){
+        $status = Password::reset(
+            $data,
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => bcrypt($password)
+                ])->setRememberToken(Str::random(60));
+                $user->save();
 
+            }
+        );
+        return $status === Password::PASSWORD_RESET;
+
+    }
 }

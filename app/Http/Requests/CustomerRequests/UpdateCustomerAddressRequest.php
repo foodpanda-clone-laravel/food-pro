@@ -5,14 +5,13 @@ namespace App\Http\Requests\CustomerRequests;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Http\Requests\BaseRequest;
 
-class SubmitFeedbackRequest extends BaseRequest
+class UpdateCustomerAddressRequest extends BaseRequest
 {
     public function rules()
     {
         return [
-            'order_id' => 'required|exists:orders,id',
-            'rating' => 'required|integer|min:1|max:5',
-            'review' => 'nullable|string',
+            'address' => 'sometimes|string|min:5',
+            'delivery_address' => 'sometimes|nullable|string|min:5',
         ];
     }
 }

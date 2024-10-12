@@ -9,15 +9,10 @@ class RatingDTO extends BaseDTO
     public string $feedback;
     public int $stars; // Fixed the typo: changed 'starts' to 'stars'
 
-    public function __construct(
-        int $order_id,
-        int $user_id,
-        string $feedback,
-        int $stars
-    ) {
-        $this->order_id = $order_id;
-        $this->user_id = $user_id;
-        $this->feedback = $feedback;
-        $this->stars = $stars;
+    public function __construct(array $data) {
+        $this->order_id = $data['order_id'];
+        $this->user_id = $data['user_id'];
+        $this->feedback = $data['feedback'];
+        $this->stars = $data['stars'];
     }
 }
