@@ -22,6 +22,8 @@ use App\Http\Controllers\Menu\MenuController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+require __DIR__ . '/restaurant/restaurantapi.php';
+
 
 Route::post('/register', [RegisterController::class, 'signup']);
 Route::post('/register-business', [RegisterController::class, 'registerRestaurantWithOwner']);
