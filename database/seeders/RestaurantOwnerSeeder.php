@@ -2,12 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\Restaurant;
-use App\Models\RestaurantOwner;
-use App\Models\User;
+use App\Models\Restaurant\Branch;
+use App\Models\Restaurant\Restaurant;
+use App\Models\User\RestaurantOwner;
+use App\Models\User\User;
 use Illuminate\Database\Seeder;
-use App\Models\Branch;
 use Illuminate\Support\Facades\DB;
+
 class RestaurantOwnerSeeder extends Seeder
 {
     /**

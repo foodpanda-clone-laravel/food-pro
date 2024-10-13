@@ -3,10 +3,9 @@
 namespace App\Services\Menu;
 
 use App\Interfaces\MenuServiceV2Interface;
-use App\Models\AssignedChoiceGroup;
-use App\Models\Choice;
-use App\Models\ChoiceGroup;
-use App\Models\Menu;
+use App\Models\Menu\AssignedChoiceGroup;
+use App\Models\Menu\ChoiceGroup;
+use App\Models\Menu\Menu;
 use Illuminate\Support\Facades\DB;
 
 class MenuServiceV2 extends MenuBaseService implements MenuServiceV2Interface

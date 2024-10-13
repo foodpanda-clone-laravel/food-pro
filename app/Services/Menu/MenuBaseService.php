@@ -3,8 +3,6 @@
 namespace App\Services\Menu;
 
 use App\Interfaces\MenuBaseServiceInterface;
-use App\Models\Restaurant;
-use App\Models\RestaurantOwner;
 use Illuminate\Support\Facades\Auth;
 
 class MenuBaseService implements MenuBaseServiceInterface

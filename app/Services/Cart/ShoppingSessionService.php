@@ -4,7 +4,7 @@ namespace App\Services\Cart;
 
 use App\DTO\ShoppingSessionDTO;
 use App\Interfaces\ShoppingSessionServiceInterface;
-use App\Models\ShoppingSession;
+use App\Models\Cart\ShoppingSession;
 use Illuminate\Support\Facades\Auth;
 
 class ShoppingSessionService implements ShoppingSessionServiceInterface

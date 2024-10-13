@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('variations_v2', function (Blueprint $table) {
             $table->id();
             $table->foreignId('menu_item_id')->constrained()->onDelete('cascade'); // Foreign key to menu_items
-            $table->string('size'); // Size variation (e.g., S, M, L)
+            $table->string('size'); // Size variation (e.g., S, M, L) plates or any size or mgs
             $table->string('description');
             $table->decimal('additional_price', 8, 2)->nullable(); // Additional price for size variation
             $table->timestamps();

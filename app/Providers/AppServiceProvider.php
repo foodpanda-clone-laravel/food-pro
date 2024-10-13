@@ -58,7 +58,7 @@ class AppServiceProvider extends ServiceProvider
 
 		$this->app->bind(
 			\App\Interfaces\AddToCartServiceV2Interface::class,
-			\App\Services\AddToCartServiceV2::class
+			\App\Services\Cart\AddToCartServiceV2::class
 		);
 
 		$this->app->bind(
@@ -74,6 +74,11 @@ class AppServiceProvider extends ServiceProvider
 		$this->app->bind(
 			\App\Interfaces\AddVariationGroupRequestInterface::class,
 			\App\Services\AddVariationGroupRequest::class
+		);
+
+		$this->app->bind(
+			\App\Interfaces\CustomerOrderServiceInterface::class,
+			\App\Services\Customer\CustomerOrderService::class
 		);
     }
 

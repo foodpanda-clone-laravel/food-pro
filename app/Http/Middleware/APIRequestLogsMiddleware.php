@@ -2,9 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Logs\ApiRequestLog;
 use Closure;
 use Illuminate\Http\Request;
-use App\Models\ApiRequestLog;
+
 class APIRequestLogsMiddleware
 {
     /**

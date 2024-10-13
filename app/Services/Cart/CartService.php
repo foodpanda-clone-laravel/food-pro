@@ -2,13 +2,12 @@
 
 namespace App\Services\Cart;
 
-use App\Interfaces\Cart\CartServiceInterface;
-use App\Models\CartItem;
-use App\Models\MenuItem;
-use App\Models\ShoppingSession;
-use App\Models\Variation;
-use Illuminate\Support\Facades\Session;
 use App\DTO\CartItemDTO;
+use App\Interfaces\Cart\CartServiceInterface;
+use App\Models\Cart\CartItem;
+use App\Models\Menu\MenuItem;
+use App\Models\Menu\Variation;
+
 class CartService extends ShoppingSessionService implements CartServiceInterface
 {
     protected $shoppingSession;

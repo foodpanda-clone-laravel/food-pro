@@ -23,7 +23,8 @@ class UserService extends ShoppingSessionService
 
         // should we use jwt custom claims to store roles and permissions
         $user_id = $user->id;
-        $roleName= $user->roles->pluck('name')[0]; // this approach gives error if there are no roles assigned to the user?/
+        $roleName= $user->roles->pluck('name')[0];
+        // this approach gives error if there are no roles assigned to the user?/
         $permissions = $user->permissions->toArray();
         $permissions = array_column($permissions, 'name');
         $shoppingSession = ShoppingSessionService::getShoppingSession();

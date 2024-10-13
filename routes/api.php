@@ -23,6 +23,7 @@ use App\Http\Controllers\Menu\MenuController;
 require __DIR__ . '/restaurant/restaurantapi.php';
 
 require __DIR__ . '/order/orderapi.php';
+require __DIR__ . '/Customer/customerapi.php';
 
 Route::post('/register', [RegisterController::class, 'signup']);
 Route::post('/register-business', [RegisterController::class, 'registerRestaurantWithOwner']);

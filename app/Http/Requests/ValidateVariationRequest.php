@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Variation;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ValidateVariationRequest extends FormRequest

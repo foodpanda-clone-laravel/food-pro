@@ -10,8 +10,8 @@ use App\Http\Requests\MenuRequest\CreateMenuRequest;
 use App\Http\Requests\MenuRequest\StoreChoicesRequest;
 use App\Http\Requests\MenuRequest\UpdateMenuItemRequest;
 use App\Http\Requests\MenuRequest\UpdateMenuRequest;
-use App\Models\Menu;
-use App\Models\MenuItem;
+use App\Models\Menu\Menu;
+use App\Models\Menu\MenuItem;
 use App\Services\Menu\MenuServiceV2;
 use Illuminate\Http\Request;
 

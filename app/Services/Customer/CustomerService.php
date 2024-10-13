@@ -2,21 +2,17 @@
 
 namespace App\Services\Customer;
 
-use App\Models\Customer;
-use App\Models\Order;
-use App\Models\Menu;
-use App\Models\Restaurant;
-use App\Models\Reward;
-use App\Models\Rating;
-use App\Models\Favourite;
 use App\DTO\CustomerDTO;
 use App\Helpers\Helpers;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\DB;
-use Exception;
-use Illuminate\Support\Str;
-
 use App\Interfaces\Customer\CustomerServiceInterface;
+use App\Models\Customer\Favourite;
+use App\Models\Customer\Reward;
+use App\Models\Menu\Menu;
+use App\Models\Orders\Order;
+use App\Models\Restaurant\Rating;
+use App\Models\Restaurant\Restaurant;
+use App\Models\User\Customer;
+use Illuminate\Http\Response;
 
 class CustomerService implements CustomerServiceInterface
 {
