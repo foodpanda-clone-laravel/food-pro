@@ -31,7 +31,7 @@ class UserService extends ShoppingSessionService
         $result = ['role' => $roleName, 'permissions' => $permissions, 'access_token' => $token, 'user_id' => $user_id, 'cart_items' => $cartItems];
 
         if($roleName == 'Restaurant Owner'){
-            $result['restaurant_id'] = $user->restaurant;
+            $result['restaurant_id'] = $user->restaurantOwner->restaurant;
         }
 
         return $result;

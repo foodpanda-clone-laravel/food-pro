@@ -17,4 +17,8 @@ class MenuItem extends Model
     {
         return $this->belongsTo(Menu::class);
     }
+
+    public function choiceGroups(){
+        return $this->hasMany(ChoiceGroup::class);
+    }
 }

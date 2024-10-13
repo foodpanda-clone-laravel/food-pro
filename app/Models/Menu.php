@@ -22,4 +22,5 @@ class Menu extends Model
     {
         return $this->hasMany(MenuItem::class);
     }
+
 }

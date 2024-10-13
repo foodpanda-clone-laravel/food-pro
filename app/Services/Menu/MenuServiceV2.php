@@ -3,6 +3,11 @@
 namespace App\Services\Menu;
 
 use App\Interfaces\MenuServiceV2Interface;
+use App\Models\AssignedChoiceGroup;
+use App\Models\Choice;
+use App\Models\ChoiceGroup;
+use App\Models\Menu;
+use Illuminate\Support\Facades\DB;
 
 class MenuServiceV2 extends MenuBaseService implements MenuServiceV2Interface
 {
@@ -96,48 +101,55 @@ class MenuServiceV2 extends MenuBaseService implements MenuServiceV2Interface
     }
 
 
-    public function storeChoices(array $data) {
-
+    public function addChoiceGroup($data){
         $restaurant = MenuBaseService::getRestaurant();
         $data['restaurant_id']=$restaurant->id;
+        $choiceGroup= ChoiceGroup::create($data);
+        return $choiceGroup;
+    }
+    public function addChoiceItem($data){
+    // I want the menu item to add in the choice group , here I need validation check
+        try{
 
-        if ($data['isChoice'] == 1) {
+            $choices = json_decode($data['choices'], true);
+            $choicesToInsert = [];
 
-            $variation= Variation::create((new VariationDTO($data))->toArray());
-
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Variation saved successfully!',
-                'data' => $variation,
-            ]);
-        } else {
-            // If isChoice is not 1, create an Addon
-            $addOn= Addon::create((new AddonDTO($data))->toArray());
-
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Addon saved successfully!',
-                'data' => $addOn,
-            ]);
+            foreach ($choices as $choice) {
+                $choicesToInsert[] = [
+                    'choice_group_id' => $data['choice_group_id'],
+                    'name' => $choice['name'],
+                    'additional_price' => $choice['additional_price'],
+                ];
+            }
+            $insertedChoices  = DB::table('choices')->insert($choicesToInsert);
+            return $insertedChoices;
+        }
+        catch(\Exception $e){
+            return false;
         }
     }
-
-    public function addChoiceGroup(){
-
+    public function assignChoiceGroup($data){
+        // add validation for duplicate rows
+        // add validation for
+        $restaurant = MenuBaseService::getRestaurant();
+        // data has menu item id
+        // choice_group_id
+        return AssignedChoiceGroup::create($data);
+}
+    public function getChoiceGroupById($id){
+        return ChoiceGroup::where('id', $id)->first();
     }
-    public function addChoiceItem(){
 
-    }
-    public function getChoiceGroup(){
-
+    // function for viewing all choice groups a restaurant has created,
+    // restricted access to restaurant owner only
+    public function getAllChoiceGroupsByRestaurant(){
+        $restaurant = MenuBaseService::getRestaurant();
+        return $restaurant->load('choiceGroups.choices');
     }
     public function deleteChoiceGroup(){
 
     }
-    public function updateChoiceGroup(){
-
+    public function updateChoiceGroup($data){
     }
     public function updateChoiceItem(){
 

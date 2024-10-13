@@ -13,11 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('choice_groups', function (Blueprint $table) {
-
+        Schema::create('assigned_choice_groups', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('restaurant_id')->constrained()->onDelete('cascade');
-            $table->string('name');
+            $table->foreignId('menu_item_id')->nullable()->default(null)->constrained()->onDelete('cascade'); // Foreign key to menu_items
+            $table->foreignId('choice_group_id')->nullable()->default(null)->constrained()->onDelete('cascade'); // Foreign key to menu_items
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('choice_groups');
+        Schema::dropIfExists('assigned_choice_groups');
     }
 };

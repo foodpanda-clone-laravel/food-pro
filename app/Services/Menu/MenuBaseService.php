@@ -11,12 +11,12 @@ class MenuBaseService implements MenuBaseServiceInterface
 {
     public static function getRestaurant(){
         try{
-
             $user = Auth::user();
-            $owner = RestaurantOwner::where('user_id', $user->id)->firstOrFail();
-            return  Restaurant::where('owner_id', $owner->id)->firstOrFail();
+           return  $user->restaurantOwner->restaurant;
+
         }
         catch (\Exception $exception){
+            dd($exception);
             throw new \Exception("Restaurant not found");
 
         }

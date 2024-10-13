@@ -9,11 +9,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ShoppingSessionService implements ShoppingSessionServiceInterface
 {
-    public function __construct(){
-
-        $user = Auth::user();
-        $shoppingSession =$user->shoppingSession;
-    }
 
     public static function getShoppingSession(){
         $user = Auth::user();
