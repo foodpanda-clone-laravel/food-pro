@@ -9,6 +9,8 @@ use App\Services\Cart\CartService;
 use App\Http\Requests\CartRequests\AddToCartRequest;
 use App\Http\Requests\CartRequests\UpdateCartRequest;
 use App\Models\ShoppingSession;
+use App\Helpers\Helpers;
+use Symfony\Component\HttpFoundation\Response;
 
 class CartController extends Controller
 {
@@ -17,7 +19,14 @@ class CartController extends Controller
         $this->cartService= $cartService;
     }
     public function addToCart(AddToCartRequest $request){
-        $this->cartService->addToCart($request->getValidatedData());
+        $result = $this->cartService->addToCart($request->getValidatedData());
+        if(!$result){
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'internal server error', $result);
+        }
+        else{
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Added to cart successfully', $result);
+
+        }
     }
     public function updateCartItem(){
 
@@ -25,7 +34,7 @@ class CartController extends Controller
     public function viewCart(){
 
     }
-    
+
     // store the shopping cart session in session
     public function getShoppingSession(){
         $user= Auth::user();
@@ -35,6 +44,6 @@ class CartController extends Controller
                                             ->where('created_at','>',now()->addHours(24))
                                             ->where('user_id', $user->id)->first();
         return response($shoppingSession);
-        
+
     }
 }

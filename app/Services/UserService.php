@@ -20,25 +20,19 @@ class UserService extends ShoppingSessionService
 
         // ask sir raheel what is the better approach to get role of a user
         //$role = $user->role->roleName->name;
+
         // should we use jwt custom claims to store roles and permissions
-
-        $user_id = $user->id;
-        $roleName = $user->roles->pluck('name')[0];
-
-
         $user_id = $user->id;
         $roleName= $user->roles->pluck('name')[0]; // this approach gives error if there are no roles assigned to the user?/
         $permissions = $user->permissions->toArray();
         $permissions = array_column($permissions, 'name');
-        $cartItems = ShoppingSessionService::getShoppingSession();
+        $shoppingSession = ShoppingSessionService::getShoppingSession();
+        $cartItems = $shoppingSession->cartItems;
         $result = ['role' => $roleName, 'permissions' => $permissions, 'access_token' => $token, 'user_id' => $user_id, 'cart_items' => $cartItems];
+
         if($roleName == 'Restaurant Owner'){
-            $data['restaurant_id'] = $user->restaurnat;
+            $result['restaurant_id'] = $user->restaurant;
         }
-
-
-        $result = ['role' => $roleName, 'permissions' => $permissions, 'access_token' => $token, 'user_id' => $user_id];
-
 
         return $result;
     }

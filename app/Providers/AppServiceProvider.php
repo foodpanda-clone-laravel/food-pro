@@ -51,9 +51,29 @@ class AppServiceProvider extends ServiceProvider
 		$this->app->bind(
 			\App\Interfaces\ShoppingSessionServiceInterface::class,
 			\App\Services\Cart\ShoppingSessionService::class,
-      
+
 			\App\Interfaces\menu\MenuServiceInterface::class,
 			\App\Services\menu\MenuService::class
+		);
+
+		$this->app->bind(
+			\App\Interfaces\AddToCartServiceV2Interface::class,
+			\App\Services\AddToCartServiceV2::class
+		);
+
+		$this->app->bind(
+			\App\Interfaces\MenuServiceV2Interface::class,
+			\App\Services\Menu\MenuServiceV2::class
+		);
+
+		$this->app->bind(
+			\App\Interfaces\MenuBaseServiceInterface::class,
+			\App\Services\Menu\MenuBaseService::class
+		);
+
+		$this->app->bind(
+			\App\Interfaces\AddVariationGroupRequestInterface::class,
+			\App\Services\AddVariationGroupRequest::class
 		);
     }
 

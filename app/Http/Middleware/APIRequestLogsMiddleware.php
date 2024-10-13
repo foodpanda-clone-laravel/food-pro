@@ -16,11 +16,12 @@ class APIRequestLogsMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+        dd($request);
         $startTime = microtime(true);
         $controllerAction = optional($request->route())->getActionName();
-        
+
         $middleware = implode(',', array_keys($request->route()->middleware() ?? []));
-       
+
         $requestParams = empty($request->query())? null : $request->query();
         $requestPayload = empty($request->all()) ? null : $request->all();
         $apiRequestLog = ApiRequestLog::create([
@@ -33,6 +34,7 @@ class APIRequestLogsMiddleware
             'request_payload'=>json_encode($requestPayload),
             'request_headers'=>json_encode($request->headers->all()),
         ]);
+        dd($apiRequestLog);
         $request->request_id = $apiRequestLog->id;
         $request->start_time = $startTime;
         return $next($request);
@@ -47,7 +49,7 @@ class APIRequestLogsMiddleware
         $memoryUsage = number_format(memory_get_usage()  / 1024 / 1024, 2)." MB";
         $id = $request->request_id;
         $apiRequestLog = ApiRequestLog::where('id',$id)->first();
-        $apiRequestLog->update([ 
+        $apiRequestLog->update([
             'status'=>$status,
             'duration'=>number_format($duration, 4) . ' s',
             'response_headers'=>json_encode($response->headers->all()),
@@ -55,6 +57,6 @@ class APIRequestLogsMiddleware
             'memory_usage'=>$memoryUsage
         ]);
 
-    
+
     }
 }

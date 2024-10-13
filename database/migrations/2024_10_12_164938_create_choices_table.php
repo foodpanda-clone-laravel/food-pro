@@ -13,13 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('cart_items', function (Blueprint $table) {
+        Schema::create('choices', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('session_id');
-            $table->unsignedBigInteger('menu_item_id');
-            $table->integer('quantity');
-            $table->json('selected_variations')->nullable()->default(null);
-            $table->json('selected_addons')->nullable()->default(null);
+            $table->foreignId('choice_group_id')->constrained()->onDelete('cascade'); // Foreign key to choice_groups
+            $table->string('name');
+            $table->decimal('additional_price', 8, 2)->default(0.00); // Optional additional price
             $table->timestamps();
         });
     }
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cart_items');
+        Schema::dropIfExists('choices');
     }
 };
