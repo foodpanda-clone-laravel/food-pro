@@ -2,16 +2,15 @@
 
 namespace App\Exceptions;
 
+use Error;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
-use Illuminate\Http\Response;
 use JWTAuth;
 use Exception;
 use Tymon\JWTAuth\Exceptions\TokenInvalidException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Database\QueryException;
-use App\Models\ErrorLog;
 use App\Helpers\Helpers;
 
 class Handler extends ExceptionHandler
@@ -56,6 +55,21 @@ class Handler extends ExceptionHandler
         $this->renderable(function (JWTException $exception, $request) {
             return response()->json(['error' => 'Unauthorized access'], 401);
         });
+        $this->renderable(function (Exception $exception, $request) {
+            Helpers::createErrorLogs($exception, $request->request_id);
+            dd($exception);
+
+        });
+        $this->renderable(function (QueryException $exception, $request) {
+           Helpers::createErrorLogs($exception, $request->request_id);
+            dd($exception);
+
+        });
+        $this->renderable(function (Error $error, $request) {
+            Helpers::createErrorLogs($error, $request->request_id);
+            dd($error);
+        });
+
     }
 }
 

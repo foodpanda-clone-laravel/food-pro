@@ -21,6 +21,14 @@ use Exception;
 use Illuminate\Support\Str;
 
 use App\Interfaces\Customer\CustomerServiceInterface;
+use App\Models\Customer\Favourite;
+use App\Models\Customer\Reward;
+use App\Models\Menu\Menu;
+use App\Models\Orders\Order;
+use App\Models\Restaurant\Rating;
+use App\Models\Restaurant\Restaurant;
+use App\Models\User\Customer;
+use Illuminate\Http\Response;
 
 class CustomerService implements CustomerServiceInterface
 {

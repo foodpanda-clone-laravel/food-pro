@@ -2,55 +2,89 @@
 
 namespace App\Services;
 
-use App\Models\Restaurant;
-use App\Models\RestaurantOwner;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
+use App\DTO\BranchDTO;
+use App\DTO\RestaurantDTO;
+use App\DTO\RestaurantOwnerDTO;
+use App\DTO\UserDTO;
+use App\Models\Orders\Order;
+use App\Models\Restaurant\Branch;
+use App\Models\Restaurant\Rating;
+use App\Models\Restaurant\Restaurant;
+use App\Models\User\RestaurantOwner;
+use App\Models\User\User;
 use Exception;
-
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use App\Models\Restaurant\RevenueReport;
 class RestaurantService
 {
     public function createRestaurantWithOwner(array $data)
     {
+        DB::beginTransaction();
+
         try {
-            // Begin transaction
-            return DB::transaction(function () use ($data) {
-                // Get the logged-in user's ID
-                $userId = Auth::id();
+            $userDTO = new UserDTO($data);
+            $user = User::create($userDTO->toArray());
 
-                // Create the restaurant owner
-                $owner = RestaurantOwner::create([
-                    'cnic' => $data['cnic'],
-                    'user_id' => $userId,
-                    'bank_name' => $data['bank_name'],
-                    'iban' => $data['iban'],
-                    'account_owner_title' => $data['account_owner_title'],
-                ]);
+            $restaurantOwnerDTO = new RestaurantOwnerDTO($data);
+            $owner = RestaurantOwner::create($restaurantOwnerDTO->toArray());
 
-                // Create the restaurant
-                $restaurant = Restaurant::create([
-                    'name' => $data['name'],
-                    'owner_id' => $owner->id,
-                    'address' => $data['address'],
-                    'postal_code' => $data['postal_code'],
-                    'city' => $data['city'],
-                    'opening_time' => $data['opening_time'],
-                    'closing_time' => $data['closing_time'],
-                    'cuisine' => $data['cuisine'],
-                    'business_type' => $data['business_type'],
-                    'logo_path' => $data['logo_path'],
-                ]);
+            $restaurantDTO = new RestaurantDTO($data);
+            $restaurant = Restaurant::create($restaurantDTO->toArray());
 
-                return [
-                    'owner' => $owner,
-                    'restaurant' => $restaurant,
-                    'user_id' => $userId
-                ];
-            });
+            $branchDTO = new BranchDTO($data);
+            $branch = Branch::create($branchDTO->toArray());
+            dd($branch);
+            DB::commit();
+
+            return [
+                'Restaurant_Owner' => $owner,
+                'restaurant' => $restaurant,
+                'user' => $user,
+                'branch' => $branch
+            ];
+
         } catch (Exception $e) {
-            // Log the exception and return a meaningful response
-            logger()->error('Error in creating restaurant and owner: ' . $e->getMessage());
-            return response()->json(['error' => 'Failed to register restaurant and owner.'], 500);
+            DB::rollBack();
+
+            logger()->error('Error in creating restaurant and owner: ' . $e->getMessage(), [
+                'data' => $data,
+            ]);
+            return ['error' => 'Failed to register restaurant and owner.'];
         }
+    }
+    // get the restaurant id from order details
+    public function viewMyRestaurantRating(){
+        $user = Auth::user();
+        $restaurant = $user->restaurantOwner->restaurant;
+    // get all the orders from the restaurant inner join on ratings table
+        $ratings = Rating::where('restaurant_id', $restaurant->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return $ratings;
+    }
+    public function viewMyRevenueReport(){
+
+        $currentMonth = \Carbon\Carbon::now()->monthName;
+        $user = Auth::user();
+        $restaurant = $user->restaurantOwner->restaurant;
+        $revenue = RevenueReport::where('restaurant_id', $restaurant->id)->get();
+        $orders = Order::where('restaurant_id', $restaurant->id)
+                        ->whereMonth('created_at', now()->month)
+                        ->whereYear('created_at', now()->year)
+                        ->get();
+
+        // view order volume
+        // view top restaurants,
+        // view total revenue
+        // to get
+        /***
+         * revenue: [6000, 7500, 8000, 9500],
+         *
+         * orderVolume: [1000, 1200, 1100, 1300],
+         *
+         * topRestaurants: [15000, 14000, 13500, 12000]
+         */
+        dd($orders->toArray());
     }
 }

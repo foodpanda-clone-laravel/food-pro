@@ -1,0 +1,31 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Pizza",
+      "variations": {
+        "size": ["Small", "Medium", "Large"],
+        "crust": ["Thin", "Thick", "Stuffed"],
+        "toppings": ["Cheese", "Pepperoni", "Veggie"]
+      }
+    },
+    {
+      "id": 2,
+      "name": "Burger",
+      "variations": {
+        "patty": ["Beef", "Chicken", "Veggie"],
+        "cheese": ["Yes", "No"],
+        "extras": ["Lettuce", "Tomato"]
+      }
+    },
+    {
+      "id": 3,
+      "name": "Drinks",
+      "variations": {
+        "size": ["Small", "Medium"],
+        "type": ["Soda", "Juice"]
+      }
+    }
+    // ... more products
+  ]
+}

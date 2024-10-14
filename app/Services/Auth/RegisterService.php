@@ -2,21 +2,23 @@
 
 namespace App\Services\Auth;
 
-use App\Interfaces\Auth\RegisterServiceInterface;
-use App\Models\Restaurant;
-use App\Models\RestaurantOwner;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use App\Models\Branch;
-use App\DTO\UserDTO;
-use App\DTO\RestaurantDTO;
-use App\DTO\RestaurantOwnerDTO;
 use App\DTO\BranchDTO;
 use App\DTO\CustomerDTO;
+use App\DTO\RestaurantDTO;
+use App\DTO\RestaurantOwnerDTO;
+use App\DTO\UserDTO;
+use App\Interfaces\Auth\RegisterServiceInterface;
+use App\Models\Restaurant\Branch;
+use App\Models\Restaurant\Restaurant;
+use App\Models\User\Customer;
+use App\Models\User\RestaurantOwner;
+use App\Models\User\User;
 use Illuminate\Database\QueryException;
-
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
+
+
 class RegisterService implements RegisterServiceInterface
 {
 // here wer are creating user two times instead of repeating code we can create a protected function
@@ -35,6 +37,7 @@ class RegisterService implements RegisterServiceInterface
         $user = User::create($userDTO->toArray());
         return $user;
     }
+
     public function createRestaurantWithOwner(array $data)
     {
         try {
@@ -48,6 +51,7 @@ class RegisterService implements RegisterServiceInterface
             $data['owner_id'] = $owner->id;
             $logoPath = $data['logo_path']->store('logos', 'public'); // Save file to 'storage/app/public/logos'
             $data['logo_path'] = $logoPath;
+
             $restaurantDTO = new RestaurantDTO($data);
             $restaurant = Restaurant::create($restaurantDTO->toArray());
             $data['restaurant_id'] = $restaurant->id;
@@ -73,20 +77,32 @@ class RegisterService implements RegisterServiceInterface
             'branch' => $branch,
         ];
     }
+    protected function createCustomer($data)
+    {
+        $customerDTO = new CustomerDTO($data);
+        return Customer::create($customerDTO->toArray());
+    }
     public function register($data)
-        {
-            try{
-                DB::beginTransaction();
-                $user = $this->createUser(new UserDTO($data));
-                $this->assignRoleWithDirectPermissions($user, 'Customer');
+{
+    try {
+        DB::beginTransaction();
 
-                DB::commit();
-                return $user;
-            }
-            catch (\Exception $e) {
-                DB::rollBack();
-                return false;
-            }
-        }
+        $user = $this->createUser(new UserDTO($data));
+        $this->assignRoleWithDirectPermissions($user, 'Customer');
+
+        $data['user_id'] = $user->id;
+        $this->createCustomer($data);
+
+        DB::commit();
+
+        return $user;
+    } catch (\Exception $e) {
+        DB::rollBack();
+        dd($e);
+        Log::error('Registration failed: ' . $e->getMessage());
+        return false;
+    }
+}
+
 
 }

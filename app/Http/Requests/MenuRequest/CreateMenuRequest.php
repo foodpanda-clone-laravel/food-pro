@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Http\Requests\MenuRequest;
-namespace App\Http\Requests;
-use Faker\Provider\Base;
+use App\Http\Requests\BaseRequest;
+
+
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
