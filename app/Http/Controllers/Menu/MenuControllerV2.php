@@ -14,6 +14,7 @@ use App\Models\Menu\Menu;
 use App\Models\Menu\MenuItem;
 use App\Services\Menu\MenuServiceV2;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class MenuControllerV2 extends Controller
 {
@@ -159,6 +160,16 @@ class MenuControllerV2 extends Controller
     }
     public function updateChoiceItem(Request $request){
 
+    }
+    public function createChoiceGroup(Request $request){
+        $result  = $this->menuService->createVariation($request->all());
+        if(!$result){
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'internal srever error');
+        }
+        else{
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'created choice group successfully');
+
+        }
     }
 }
 

@@ -21,10 +21,11 @@ return new class extends Migration
 //            $table->float('price');
 //            $table->json('choice_items')->nullable()->default(null);
 //            $table->json('choice_name')->nullable()->default(null);
-////            $table->foreignId('menu_item_id')->nullable()->references('id')->on('menu_items');
+//            $table->foreignId('menu_item_id')->nullable()->references('id')->on('menu_items');
 //            $table->softDeletes();
 //            $table->timestamps();
 //        });
+
         Schema::table('addons', function (Blueprint $table) {
            $table->float('addon_price');
         });

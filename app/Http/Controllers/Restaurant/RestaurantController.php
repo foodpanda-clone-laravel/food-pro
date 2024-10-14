@@ -72,4 +72,8 @@ class RestaurantController extends Controller
         $result  =    $this->restaurantService->viewMyRestaurantRating();
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'restaurant ratings ', $result);
     }
+    public function viewMyRevenueReport(Request $request){
+        $revenue = $this->restaurantService->viewMyRevenueReport();
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'monthly revenue report', $revenue);
+    }
 }

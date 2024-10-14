@@ -85,6 +85,11 @@ class AppServiceProvider extends ServiceProvider
 			\App\Interfaces\RatingServiceInterface::class,
 			\App\Services\RatingService::class
 		);
+
+		$this->app->bind(
+			\App\Interfaces\AdminServiceInterface::class,
+			\App\Services\AdminService::class
+		);
     }
 
     /**

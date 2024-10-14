@@ -36,4 +36,7 @@ class Restaurant extends Model
     public function ratings(){
         return $this->hasMany(Rating::class);
     }
+    public function revenue(){
+        return $this->hasMany(Revenue::class);
+    }
 }

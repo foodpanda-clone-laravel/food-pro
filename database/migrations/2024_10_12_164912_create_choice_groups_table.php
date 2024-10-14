@@ -13,12 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('choice_groups', function (Blueprint $table) {
-
-            $table->id();
-            $table->foreignId('restaurant_id')->constrained()->onDelete('cascade');
-            $table->string('name');
-            $table->timestamps();
+//        Schema::create('choice_groups', function (Blueprint $table) {
+//
+//            $table->id();
+//            $table->foreignId('restaurant_id')->constrained()->onDelete('cascade');
+//            $table->string('name');
+//            $table->timestamps();
+//        });
+        Schema::table('choice_groups', function (Blueprint $table) {
+           $table->boolean('is_required')->default(false);
         });
     }
 
@@ -27,8 +30,8 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
-    {
-        Schema::dropIfExists('choice_groups');
-    }
+//    public function down()
+//    {
+//        Schema::dropIfExists('choice_groups');
+//    }
 };

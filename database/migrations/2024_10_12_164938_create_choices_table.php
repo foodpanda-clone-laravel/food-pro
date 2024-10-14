@@ -13,13 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('choices', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('choice_group_id')->constrained()->onDelete('cascade'); // Foreign key to choice_groups
-            $table->string('name');
-            $table->decimal('additional_price', 8, 2)->default(0.00); // Optional additional price
-            $table->timestamps();
+//        Schema::create('choices', function (Blueprint $table) {
+//            $table->id();
+//            $table->foreignId('choice_group_id')->constrained()->onDelete('cascade'); // Foreign key to choice_groups
+//            $table->string('name');
+//            $table->decimal('additional_price', 8, 2)->default(0.00); // Optional additional price
+//            $table->timestamps();
+//        });
+        Schema::table('choices', function (Blueprint $table) {
+           $table->decimal('size_price', 8,2)->default(0);
         });
+
     }
 
     /**
@@ -27,8 +31,8 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down()
-    {
-        Schema::dropIfExists('choices');
-    }
+//    public function down()
+//    {
+//        Schema::dropIfExists('choices');
+//    }
 };
