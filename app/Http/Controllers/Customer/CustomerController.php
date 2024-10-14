@@ -26,6 +26,18 @@ class CustomerController extends Controller
         $this->customer = $user->customer;
 
     }
+    public function editProfile(UpdateProfileRequest $request)
+    {
+        $userId = auth()->user()->id;
+        $validatedData = $request->getValidatedData();
+
+
+        $this->customerService->updateProfile($userId, $validatedData);
+
+        $updatedUser = User::with('customer')->find($userId);
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Profile updated successfully', $updatedUser);
+    }
 
     public function viewMenus()
     {
@@ -115,15 +127,15 @@ class CustomerController extends Controller
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant removed from favorites successfully', $favoriteRestaurants);
     }
-
     public function submitFeedback(SubmitFeedbackRequest $request)
     {
         $customerId = $request->get('customer_id');
         $validatedData = $request->getValidatedData();
+
         $feedback = $this->customerService->submitFeedback($customerId, $validatedData);
+
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Feedback submitted successfully', $feedback);
     }
-
     public function viewAllRestaurants()
     {
         $restaurants = $this->customerService->getAllRestaurants();
@@ -133,4 +145,12 @@ class CustomerController extends Controller
         $restaurant = $this->customerService->viewRestaurantById($request->all());
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant retrieved successfully', $restaurant);
     }
+    
+    public function viewDeals()
+    {
+        $deals = $this->customerService->getDeals();
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Deals retrieved successfully', $deals);
+    }
+
+}
 }
