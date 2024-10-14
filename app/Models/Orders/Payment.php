@@ -22,4 +22,9 @@ class Payment extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+    public function restaurant()
+    {
+        return $this->belongsTo(Restaurant::class, 'restaurant_id');
+    }
 }

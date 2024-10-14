@@ -2,8 +2,24 @@
 
 namespace App\Services\Customer;
 
+use App\Models\Customer;
+use App\Models\Order;
+use App\Models\Menu;
+use App\Models\Deal;
+use App\Models\Restaurant;
+use App\Models\Reward;
+use App\Models\Rating;
+use App\Models\Favourite;
 use App\DTO\CustomerDTO;
 use App\Helpers\Helpers;
+use App\Pipelines\FilterPipeline;
+use Illuminate\Http\Response;
+use App\Models\User;
+
+use Illuminate\Support\Facades\DB;
+use Exception;
+use Illuminate\Support\Str;
+
 use App\Interfaces\Customer\CustomerServiceInterface;
 use App\Models\Customer\Favourite;
 use App\Models\Customer\Reward;

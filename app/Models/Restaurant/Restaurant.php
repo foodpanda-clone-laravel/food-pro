@@ -26,6 +26,16 @@ class Restaurant extends Model
         return $this->hasMany(Branch::class);
     }
 
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class, 'restaurant_id');
+    }
+
+    public function deals()
+    {
+        return $this->hasMany(Deal::class, 'restaurant_id');
+    }
+
     public function menus()
     {
         return $this->hasMany(Menu::class);
