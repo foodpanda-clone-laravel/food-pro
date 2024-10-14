@@ -3,11 +3,16 @@
 namespace App\Http\Controllers\Restaurant;
 
 use App\Http\Controllers\Controller;
+use App\Services\RestaurantService;
 use Illuminate\Http\Request;
-
+use App\Helpers\Helpers;
+use Symfony\Component\HttpFoundation\Response;
 class RestaurantController extends Controller
 {
-
+    protected $restaurantService;
+    public function __construct(RestaurantService $restaurantService){
+        $this->restaurantService =$restaurantService;
+    }
     public function viewRestaurantById(){
         // return restaurant with menu with menu items with variations with variation array of size and every thing in table
         // basically do join like this restaurant->menu->menu_items->variations and addons
@@ -63,5 +68,8 @@ class RestaurantController extends Controller
     public function updateRestaurantById(){
         // can update name, branch address, opening time closing time , logo path
     }
-
+    public function viewMyRatings(Request $request){
+        $result  =    $this->restaurantService->viewMyRestaurantRating();
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'restaurant ratings ', $result);
+    }
 }

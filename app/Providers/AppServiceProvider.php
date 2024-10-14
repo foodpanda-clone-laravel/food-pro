@@ -80,6 +80,11 @@ class AppServiceProvider extends ServiceProvider
 			\App\Interfaces\CustomerOrderServiceInterface::class,
 			\App\Services\Customer\CustomerOrderService::class
 		);
+
+		$this->app->bind(
+			\App\Interfaces\RatingServiceInterface::class,
+			\App\Services\RatingService::class
+		);
     }
 
     /**

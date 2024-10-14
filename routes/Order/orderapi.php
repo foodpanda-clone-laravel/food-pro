@@ -12,5 +12,3 @@ Route::controller(CartController::class)->group(function () {
     Route::get('cart-items-total','calculateItemsTotal');
     Route::get('total', 'calculateCartTotal');
 });
-
-

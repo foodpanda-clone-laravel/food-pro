@@ -17,7 +17,6 @@ class APIRequestLogsMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        dd($request);
         $startTime = microtime(true);
         $controllerAction = optional($request->route())->getActionName();
 
@@ -35,7 +34,6 @@ class APIRequestLogsMiddleware
             'request_payload'=>json_encode($requestPayload),
             'request_headers'=>json_encode($request->headers->all()),
         ]);
-        dd($apiRequestLog);
         $request->request_id = $apiRequestLog->id;
         $request->start_time = $startTime;
         return $next($request);

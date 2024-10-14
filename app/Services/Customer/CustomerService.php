@@ -137,4 +137,15 @@ class CustomerService implements CustomerServiceInterface
   {
     return Restaurant::all();
   }
+  public function viewRestaurantById($data){
+      $restaurant = Restaurant::with('menus.menuItems')->where('id', $data['id'])->first();
+
+      $branch= $restaurant->branches->first();
+      $addressDetails = $branch->address .' '. $branch->city.' '. $branch->postal_code;
+
+      $result['restaurant_details']=$restaurant->toArray();
+      $result['restaurant_details']['address']=$addressDetails;
+      $result['ratings']=$restaurant->ratings->toArray();
+      return $result;
+  }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Models\Restaurant\Restaurant;
 use App\Services\Customer\CustomerService;
 use App\Helpers\Helpers;
 use App\DTO\CustomerDTO;
@@ -127,5 +128,9 @@ class CustomerController extends Controller
     {
         $restaurants = $this->customerService->getAllRestaurants();
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'All restaurants retrieved successfully', $restaurants);
+    }
+    public function viewRestaurantById(Request $request){
+        $restaurant = $this->customerService->viewRestaurantById($request->all());
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant retrieved successfully', $restaurant);
     }
 }

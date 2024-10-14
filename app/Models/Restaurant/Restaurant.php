@@ -33,4 +33,7 @@ class Restaurant extends Model
     public function choiceGroups(){
         return $this->hasMany(ChoiceGroup::class);
     }
+    public function ratings(){
+        return $this->hasMany(Rating::class);
+    }
 }

@@ -82,6 +82,7 @@ class CustomerOrderService extends CustomerService implements CustomerOrderServi
             $orderItem = OrderItem::create($orderItemDTO->toArray());
             $orderedItems[] = $orderItem;
         }
+            $paymentDTO =
         Db::commit();
         return $orderedItems;
         }
