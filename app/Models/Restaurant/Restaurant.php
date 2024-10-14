@@ -16,7 +16,7 @@ class Restaurant extends Model
     protected $guarded = [];
 
     // Relationships
-    public function owner()
+    public function restaurantOwner()
     {
         return $this->belongsTo(RestaurantOwner::class, 'owner_id');
     }
@@ -43,10 +43,8 @@ class Restaurant extends Model
     public function choiceGroups(){
         return $this->hasMany(ChoiceGroup::class);
     }
-    public function ratings(){
-        return $this->hasMany(Rating::class);
-    }
+
     public function revenue(){
-        return $this->hasMany(Revenue::class);
+        return $this->hasMany(RevenueReport::class);
     }
 }

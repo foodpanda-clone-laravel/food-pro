@@ -8,6 +8,7 @@ use App\Models\User\RestaurantOwner;
 use App\Models\User\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Spatie\Permission\Models\Role;
 
 class RestaurantOwnerSeeder extends Seeder
 {
@@ -57,6 +58,11 @@ class RestaurantOwnerSeeder extends Seeder
                 'delivery_fee'=>200,
                 'delivery_time'=>'45 minutes'
             ]);
+
+            $role = Role::findByName('Restaurant Owner');
+            $permissions = $role->permissions->toArray();
+            $permissionIds = array_column($permissions, 'id');
+            $user->givePermissionTo($permissionIds);
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
