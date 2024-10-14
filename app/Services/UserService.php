@@ -19,7 +19,7 @@ class UserService
         $user = Auth::user();
         $token = JWTAuth::fromUser($user);
         $user_id = $user->id;
-        $roleName= $user->roles->pluck('name')[0];
+        $roleName = $user->roles->pluck('name')[0];
 
 
         $permissions = $user->permissions->toArray();

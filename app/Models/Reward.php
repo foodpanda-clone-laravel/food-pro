@@ -19,6 +19,6 @@ class Reward extends Model
 
     public function badge()
     {
-        return $this->hasOne(Badge::class);
+        return $this->belongsTo(Badge::class, 'badge_id');
     }
 }
