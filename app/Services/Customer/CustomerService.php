@@ -16,6 +16,20 @@ use Illuminate\Http\Response;
 
 class CustomerService implements CustomerServiceInterface
 {
+
+  public function updateProfile($userId, $validatedData)
+  {
+    $user = User::findOrFail($userId);
+    $user->update($validatedData);
+
+    // If there are any customer-specific fields (like address)
+    $customerFields = array_intersect_key($validatedData, array_flip(['address', 'delivery_address', 'payment_method']));
+
+    if (!empty($customerFields)) {
+      $customer = Customer::where('user_id', $userId)->firstOrFail();
+      $customer->update($customerFields);
+    }
+  }
   public function getOrderHistory($customerId)
   {
     $customer = Customer::findOrFail($customerId);
@@ -125,27 +139,73 @@ class CustomerService implements CustomerServiceInterface
   public function submitFeedback($customerId, $data)
   {
     $customer = Customer::findOrFail($customerId);
-    return Rating::create([
+
+    $order = Order::findOrFail($data['order_id']);
+
+    $feedback = Rating::create([
       'order_id' => $data['order_id'],
+      'restaurant_id' => $order->restaurant_id,
       'user_id' => $customer->user_id,
       'feedback' => $data['review'],
       'stars' => $data['rating'],
     ]);
+
+    return [
+      'feedback' => $feedback,
+      'restaurant_id' => $order->restaurant_id
+    ];
   }
 
   public function getAllRestaurants()
   {
-    return Restaurant::all();
-  }
-  public function viewRestaurantById($data){
-      $restaurant = Restaurant::with('menus.menuItems')->where('id', $data['id'])->first();
+    $query = Restaurant::query()->with('branches:restaurant_id,delivery_fee,delivery_time');
 
-      $branch= $restaurant->branches->first();
-      $addressDetails = $branch->address .' '. $branch->city.' '. $branch->postal_code;
+    // Apply filters using the pipeline
+    $filteredRestaurants = FilterPipeline::apply($query, request()->all())->get();
 
-      $result['restaurant_details']=$restaurant->toArray();
-      $result['restaurant_details']['address']=$addressDetails;
-      $result['ratings']=$restaurant->ratings->toArray();
-      return $result;
+    return $filteredRestaurants->map(function ($restaurant) {
+      return [
+        'image' => $restaurant->logo_path,
+        'name' => $restaurant->name,
+        'cuisine' => $restaurant->cuisine,
+        'deliveryTime' => optional($restaurant->branches->first())->delivery_time ?? 'N/A',
+        'deliveryFee' => optional($restaurant->branches->first())->delivery_fee ?? 0,
+        'opening_time' => $restaurant->opening_time,
+        'closing_time' => $restaurant->closing_time,
+        'business_type' => $restaurant->business_type,
+      ];
+    });
   }
+
+  public function getDeals()
+  {
+    $deals = Deal::with([
+      'restaurant:id,name,logo_path,cuisine',
+    ])
+      ->select('id', 'name', 'restaurant_id', 'branch_id', 'discount')
+      ->get()
+      ->map(function ($deal) {
+
+        $averageRating = Rating::where('restaurant_id', $deal->restaurant_id)
+          ->select(DB::raw('AVG(stars) as average_rating'))
+          ->groupBy('restaurant_id')
+          ->pluck('average_rating')
+          ->first() ?? 0;
+
+        return [
+          'id' => $deal->id,
+          'name' => $deal->name,
+          'restaurant_id' => $deal->restaurant_id,
+          'branch_id' => $deal->branch_id,
+          'discount' => $deal->discount,
+          'average_rating' => round($averageRating, 2),
+          'restaurant_name' => optional($deal->restaurant)->name ?? 'Unknown',
+          'restaurant_logo' => optional($deal->restaurant)->logo_path ?? 'N/A',
+          'restaurant_cuisine' => optional($deal->restaurant)->cuisine ?? 'N/A',
+        ];
+      });
+
+    return $deals;
+  }
+
 }
