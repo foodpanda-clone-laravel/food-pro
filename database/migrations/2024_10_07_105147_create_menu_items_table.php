@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('menu_id');
             $table->string('name');
-            $table->float('price');
+            $table->float('price'); // base price
             $table->string('category');
             $table->string('serving_size');
             $table->string('image_path');

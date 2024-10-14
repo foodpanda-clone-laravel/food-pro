@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Models\Restaurant\Restaurant;
 use App\Services\Customer\CustomerService;
 use App\Helpers\Helpers;
 use App\DTO\CustomerDTO;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\CustomerRequests\UpdateCustomerAddressRequest;
 use App\Http\Requests\CustomerRequests\AddFavoriteRestaurantRequest;
@@ -16,10 +18,13 @@ use App\Http\Controllers\Controller;
 class CustomerController extends Controller
 {
     protected $customerService;
-
+    protected $customer;
     public function __construct(CustomerService $customerService)
     {
         $this->customerService = $customerService;
+        $user  = Auth::user();
+        $this->customer = $user->customer;
+
     }
 
     public function viewMenus()
@@ -123,5 +128,9 @@ class CustomerController extends Controller
     {
         $restaurants = $this->customerService->getAllRestaurants();
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'All restaurants retrieved successfully', $restaurants);
+    }
+    public function viewRestaurantById(Request $request){
+        $restaurant = $this->customerService->viewRestaurantById($request->all());
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant retrieved successfully', $restaurant);
     }
 }

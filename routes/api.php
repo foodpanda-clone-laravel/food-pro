@@ -3,12 +3,10 @@
 use App\Http\Controllers\Orders\CartController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Database\QueryException;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Menu\MenuController;
 
 
@@ -24,6 +22,8 @@ use App\Http\Controllers\Menu\MenuController;
 */
 require __DIR__ . '/restaurant/restaurantapi.php';
 
+require __DIR__ . '/order/orderapi.php';
+require __DIR__ . '/Customer/customerapi.php';
 
 Route::post('/register', [RegisterController::class, 'signup']);
 Route::post('/register-business', [RegisterController::class, 'registerRestaurantWithOwner']);
@@ -63,7 +63,6 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
 
     Route::controller(ForgotPasswordController::class)->group(function () {
         Route::post('/forgot-password', 'submitForgotPasswordForm')->name('password.email');
-
         Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
     });
     Route::controller(CartController::class)->group(function () {

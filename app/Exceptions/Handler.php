@@ -55,8 +55,9 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Unauthorized access'], 401);
         });
         $this->renderable(function (Exception $exception, $request) {
-            dd($exception);
 //            Helpers::createErrorLogs($exception, $request->request_id);
+            dd($exception);
+
         });
         $this->renderable(function (QueryException $exception, $request) {
             dd($exception);

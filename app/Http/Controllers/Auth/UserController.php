@@ -21,7 +21,6 @@ class UserController extends Controller
     {
         $credentials = $request->getValidatedData();
         $result = $this->userService->loginUser($credentials);
-
         if (!$result) {
 
             return Helpers::sendFailureResponse(401, 'Invalid Credentials');

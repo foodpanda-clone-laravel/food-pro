@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers\Menu;
 
-use App\DTO\AddonDTO;
-use App\DTO\MenuDTO;
-use App\DTO\MenuItemDTO;
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MenuRequest\AddMenuItemRequest;
@@ -13,14 +10,9 @@ use App\Http\Requests\MenuRequest\CreateMenuRequest;
 use App\Http\Requests\MenuRequest\StoreChoicesRequest;
 use App\Http\Requests\MenuRequest\UpdateMenuItemRequest;
 use App\Http\Requests\MenuRequest\UpdateMenuRequest;
-use App\Models\Addon;
-use App\Models\Branch;
-use App\Models\Menu;
-use App\Models\MenuItem;
-use App\Models\Restaurant;
-use App\Models\RestaurantOwner;
+use App\Models\Menu\Menu;
+use App\Models\Menu\MenuItem;
 use App\Services\Menu\MenuService;
-use Illuminate\Http\Request;
 
 class MenuController extends Controller
 {
@@ -44,7 +36,7 @@ class MenuController extends Controller
             // Return an error response
             return Helpers::sendFailureResponse(400, $result['error']);
 
-            
+
         }
         }
 
@@ -76,7 +68,7 @@ class MenuController extends Controller
     {
         // Call the service to create the addon
         $result = $this->menuService->createAddon($request->validationData(), $menu_item_id);
-    
+
         // Handle success or failure
         if ($result['success']) {
             // Access the 'addon' key instead of 'menuItem'
@@ -86,7 +78,7 @@ class MenuController extends Controller
             return Helpers::sendFailureResponse(400, $result['error']);
         }
     }
-    
+
     public function updateMenu(UpdateMenuRequest $request, $menu_id)
     {
         // Call the service to update the menu
@@ -111,7 +103,7 @@ class MenuController extends Controller
             return Helpers::sendFailureResponse(400, $result['error']);
         }
     }
-    
+
 
     public function deleteMenu($menu_id){
         $menu = Menu::findorfail($menu_id);
@@ -131,7 +123,7 @@ class MenuController extends Controller
 
         // Call the service to save the choice
         $result = $this->menuService->storeChoices($request->validationData(), $menu_id);
-        $data = $result->getData(true); 
+        $data = $result->getData(true);
 
         return Helpers::sendSuccessResponse(200, 'Choices saved successfully', $data['data']);
 }
@@ -140,4 +132,4 @@ class MenuController extends Controller
         }
 
 
-        
+
