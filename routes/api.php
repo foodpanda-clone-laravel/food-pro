@@ -20,10 +20,12 @@ use App\Http\Controllers\Menu\MenuController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
 require __DIR__ . '/restaurant/restaurantapi.php';
 
 require __DIR__ . '/order/orderapi.php';
 require __DIR__ . '/Customer/customerapi.php';
+require __DIR__ . '/hibaCustomerRoutes/customer.php';
 
 Route::post('/register', [RegisterController::class, 'signup']);
 Route::post('/register-business', [RegisterController::class, 'registerRestaurantWithOwner']);
@@ -31,24 +33,6 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout']);
 
 Route::middleware(['request.logs', 'jwt'])->group(function () {
-    Route::prefix('customers')->group(function () {
-        Route::controller(CustomerController::class)->group(function () {
-            Route::get('orders', 'orderHistory');
-            Route::get('favorites', 'favoriteItems');
-            Route::get('rewards', 'viewRewards');
-            Route::post('use-points', 'usePointsAtCheckout');
-            Route::patch('update-address', 'updateCustomerAddress')->name('updateCustomerAddress');
-            Route::get('profile', 'viewProfile');
-            Route::post('favorite-restaurants', 'addFavoriteRestaurant');
-            Route::delete('favorite-restaurants', 'removeFavoriteRestaurant');
-            Route::get('active-order', 'activeOrder');
-            Route::post('feedback', 'submitFeedback');
-            Route::get('menus', 'viewMenus');
-            Route::get('search-restaurant', 'searchRestaurant');
-            Route::get('restaurants', 'viewAllRestaurants');
-        });
-    });
-
 
     // Test user route (authenticated)
     Route::get('/user', function (Request $request) {
