@@ -6,35 +6,58 @@ use App\DTO\BranchDTO;
 use App\DTO\RestaurantDTO;
 use App\DTO\RestaurantOwnerDTO;
 use App\DTO\UserDTO;
-use App\Models\Orders\Order;
-use App\Models\Restaurant\Branch;
-use App\Models\Restaurant\Rating;
-use App\Models\Restaurant\Restaurant;
-use App\Models\User\RestaurantOwner;
-use App\Models\User\User;
-use Exception;
-use Illuminate\Support\Facades\Auth;
+use App\Models\Restaurant;
+use App\Models\RestaurantOwner;
+use App\Models\Branch;
 use Illuminate\Support\Facades\DB;
-use App\Models\Restaurant\RevenueReport;
+use Illuminate\Support\Facades\Auth;
+use Exception;
+use App\Models\User;
+
 class RestaurantService
 {
     public function createRestaurantWithOwner(array $data)
     {
         DB::beginTransaction();
-
+        
         try {
-            $userDTO = new UserDTO($data);
+            $userDTO = new UserDTO(
+                first_name: $data['first_name'],
+                last_name: $data['last_name'],
+                email: $data['email'],
+                password: $data['password'],
+                phone_number:$data['phone_number']
+            );
             $user = User::create($userDTO->toArray());
 
-            $restaurantOwnerDTO = new RestaurantOwnerDTO($data);
+            $restaurantOwnerDTO = new RestaurantOwnerDTO(
+                cnic: $data['cnic'],
+                user_id: $user->id, 
+                bank_name: $data['bank_name'],
+                iban: $data['iban'],
+                account_owner_title: $data['account_owner_title']
+            );
             $owner = RestaurantOwner::create($restaurantOwnerDTO->toArray());
 
-            $restaurantDTO = new RestaurantDTO($data);
+            $restaurantDTO = new RestaurantDTO(
+                name: $data['name'],
+                owner_id: $owner->id, 
+                opening_time: $data['opening_time'],
+                closing_time: $data['closing_time'],
+                cuisine: $data['cuisine'],
+                business_type: $data['business_type'],
+                logo_path: $data['logo_path']
+            );
             $restaurant = Restaurant::create($restaurantDTO->toArray());
 
-            $branchDTO = new BranchDTO($data);
+            $branchDTO = new BranchDTO(
+                address: $data['address'],
+                postal_code: $data['postal_code'],
+                city: $data['city'],
+                restaurant_id: $restaurant->id 
+            );
             $branch = Branch::create($branchDTO->toArray());
-            dd($branch);
+
             DB::commit();
 
             return [
@@ -52,39 +75,5 @@ class RestaurantService
             ]);
             return ['error' => 'Failed to register restaurant and owner.'];
         }
-    }
-    // get the restaurant id from order details
-    public function viewMyRestaurantRating(){
-        $user = Auth::user();
-        $restaurant = $user->restaurantOwner->restaurant;
-    // get all the orders from the restaurant inner join on ratings table
-        $ratings = Rating::where('restaurant_id', $restaurant->id)
-            ->orderBy('created_at', 'desc')
-            ->get();
-        return $ratings;
-    }
-    public function viewMyRevenueReport(){
-
-        $currentMonth = \Carbon\Carbon::now()->monthName;
-        $user = Auth::user();
-        $restaurant = $user->restaurantOwner->restaurant;
-        $revenue = RevenueReport::where('restaurant_id', $restaurant->id)->get();
-        $orders = Order::where('restaurant_id', $restaurant->id)
-                        ->whereMonth('created_at', now()->month)
-                        ->whereYear('created_at', now()->year)
-                        ->get();
-
-        // view order volume
-        // view top restaurants,
-        // view total revenue
-        // to get
-        /***
-         * revenue: [6000, 7500, 8000, 9500],
-         *
-         * orderVolume: [1000, 1200, 1100, 1300],
-         *
-         * topRestaurants: [15000, 14000, 13500, 12000]
-         */
-        dd($orders->toArray());
     }
 }

@@ -1,24 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\Customer;
+namespace App\Http\Controllers\Orders;
 
-use App\DTO\OrderDTO;
-use App\Models\Cart\CartItem;
-use App\Models\Orders\Order;
-use App\Models\Restaurant\Branch;
-use App\Models\Restaurant\Restaurant;
-use App\Services\Customer\CustomerOrderService;
 use App\Services\Customer\CustomerService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Helpers\Helpers;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Symfony\Component\HttpFoundation\Response;
-use App\Services\Cart\AddToCartServiceV2;
 
-class OrderController extends CustomerController
+class OrderController extends Controller
 {
+    protected $customerService;
+    public function __construct(CustomerService $customerService)
+    {
+        $this->customerService = $customerService;
+    }
 
     public function orderHistory(Request $request)
     {
@@ -34,19 +30,8 @@ class OrderController extends CustomerController
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Active order retrieved successfully', $activeOrder);
     }
 
-    public function checkout(CustomerOrderService $customerOrderService)
+    public function createOrder()
     {
-        $data = $customerOrderService->checkout();
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order summary', $data);
-    }
-    public function createOrder(CustomerOrderService $customerOrderService){
-        $data = $customerOrderService->createOrder();
-        if($data){
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order created successfully', $data);
-        }
-        else{
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not process your order');
-        }
 
     }
     public function cancelOrder()

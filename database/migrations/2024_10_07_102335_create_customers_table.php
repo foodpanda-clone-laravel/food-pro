@@ -23,9 +23,6 @@ return new class extends Migration
             $table->softDeletes();
             $table->timestamps();
         });
-        Schema::table('customers', function (Blueprint $table) {
-            $table->enum('payment_method',['Cash On Delivery'])->default('Cash On Delivery'); // not updatable
-        });
     }
 
     /**
