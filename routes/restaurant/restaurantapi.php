@@ -17,6 +17,8 @@ Route::group(['middleware' => 'request.logs',], function () {
     });
     Route::controller(RevenueController::class)->group(function(){
         Route::get('/my-revenue', 'viewMyRevenue');
+        Route::get('/', 'viewMyRevenue');
+
     });
 });
 

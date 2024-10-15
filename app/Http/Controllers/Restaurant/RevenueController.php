@@ -12,6 +12,26 @@ class RevenueController extends Controller
     // admin dashboard
     public function viewRestaurantsRevenue(){
 
+        try{
+            // get current months order and revenue
+            $currentMonth = \Carbon\Carbon::now()->monthName;
+            $orders = Order::where('restaurant_id', $restaurant->id)
+                ->whereMonth('created_at', now()->month)
+                ->whereYear('created_at', now()->year)
+                ->get()->toArray();
+            $amount= array_column($orders, 'total_amount');
+            $created_at = array_column($orders, 'created_at');
+            dd($orders);
+            // order received in a day or week or month
+            $data = [
+                'revenue'=>$amount,
+                'created_at'=>$created_at,
+            ];
+            dd($data);
+        }
+        catch(\Exception $e){
+            dd($e);
+        }
     }
     // restaurant owner dashboard
     public function viewMyRevenue(Request $request){
@@ -40,9 +60,13 @@ class RevenueController extends Controller
             ->get()->toArray();
             $amount= array_column($orders, 'total_amount');
             $created_at = array_column($orders, 'created_at');
+            dd($orders);
             // order received in a day or week or month
-            dd($created_at);
-
+            $data = [
+                'revenue'=>$amount,
+                'created_at'=>$created_at,
+            ];
+            dd($data);
         }
         catch(\Exception $e){
             dd($e);
