@@ -11,6 +11,7 @@ Route::group(['middleware' => 'request.logs',], function () {
         Route::get('choice-groups','getAllChoiceGroups');
         Route::post('/create-choice-group', 'createChoiceGroup');
     });
+});
 
     Route::controller(RestaurantController::class)->group(function(){
     // restaurant owner can only view their reviews

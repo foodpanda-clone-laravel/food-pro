@@ -57,6 +57,7 @@ public function updateRestaurant(UpdateRestaurantRequest $request)
 
 
     $validatedData = $request->getValidatedData();
+
     
     // Ensure you have validation rules defined
 
@@ -65,13 +66,11 @@ public function updateRestaurant(UpdateRestaurantRequest $request)
 
 
 
-    try {
+    
         // Call the service to update the restaurant details
         $this->restaurantService->updateRestaurant($validatedData);
         return Helpers::sendSuccessResponse(200, 'Restaurant updated successfully');
-    } catch (\Exception $e) {
-        return Helpers::sendFailureResponse(400, 'Could not update restaurant');
-    }
+     
 }
 
 }

@@ -2,14 +2,14 @@
 
 namespace App\Services\Restaurant;
 
-use App\Models\Restaurant;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\Helpers;
-use App\Models\Branch;
 use App\Models\Menu;
 use App\Models\MenuItem;
-use App\Models\RestaurantOwner;
+use App\Models\Restaurant\Branch;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User\RestaurantOwner;
+use App\Models\Restaurant\Restaurant;
 
 class RestaurantService
 {
@@ -103,12 +103,8 @@ class RestaurantService
 
         try {
 
-            $restaurant = $this->getRestaurantOwner();
-            
-        
+            $restaurant = $this->getRestaurantOwner();            
             $branch= Branch::where('restaurant_id',$restaurant->id)->first();
-
-    
 
             $restaurant->update([
                 'name' => $data['restaurant_name'] ?? $restaurant->name,
