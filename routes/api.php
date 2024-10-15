@@ -10,6 +10,8 @@ use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Menu\MenuController;
+use App\Http\Controllers\Restaurant\RestaurantController;
+
 
 
 /*
@@ -29,6 +31,9 @@ Route::post('/register', [RegisterController::class, 'signup']);
 Route::post('/register-business', [RegisterController::class, 'registerRestaurantWithOwner']);
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout']);
+
+
+
 
 Route::middleware(['request.logs', 'jwt'])->group(function () {
     Route::prefix('customers')->group(function () {
@@ -69,4 +74,7 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
     Route::controller(CartController::class)->group(function () {
         Route::get('/session', 'getShoppingSession');
     });
+
+   
+
 });

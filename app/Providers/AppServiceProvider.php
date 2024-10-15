@@ -55,6 +55,11 @@ class AppServiceProvider extends ServiceProvider
 			\App\Interfaces\menu\MenuServiceInterface::class,
 			\App\Services\menu\MenuService::class
 		);
+
+		$this->app->bind(
+			\App\Interfaces\Services\RestaurantService\RestaurantServiceInterface::class,
+			\App\Services\Services\RestaurantService\RestaurantService::class
+		);
     }
 
     /**
