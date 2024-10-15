@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\Orders\CartController;
-use App\Http\Controllers\RestaurantOwner\MenuController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Database\QueryException;
@@ -9,6 +8,10 @@ use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Menu\MenuController;
+use App\Http\Controllers\Restaurant\RestaurantController;
+
 
 
 /*
@@ -29,6 +32,10 @@ require __DIR__ . '/Customer/customerapi.php';
 Route::post('/register', [RegisterController::class, 'signup']);
 Route::post('/register-business', [RegisterController::class, 'registerRestaurantWithOwner']);
 Route::post('/login', [UserController::class, 'login']);
+Route::post('/logout', [UserController::class, 'logout']);
+
+
+
 
 Route::middleware(['request.logs', 'jwt'])->group(function () {
     Route::prefix('customers')->group(function () {
@@ -70,4 +77,7 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
     Route::controller(CartController::class)->group(function () {
         Route::get('/session', 'getShoppingSession');
     });
+
+   
+
 });

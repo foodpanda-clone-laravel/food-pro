@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Restaurant;
 
+use App\DTO\RestaurantDTO;
 use App\Http\Controllers\Controller;
 use App\Services\RestaurantService;
 use Illuminate\Http\Request;
 use App\Helpers\Helpers;
 use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\UpdateRestaurantRequest;
+
 class RestaurantController extends Controller
 {
     protected $restaurantService;
