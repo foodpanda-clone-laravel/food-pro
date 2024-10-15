@@ -13,21 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-//        Schema::create('addons', function (Blueprint $table) {
-//            $table->id();
-//            $table->string('name');
-//            $table->string('category');
-//            $table->unsignedBigInteger('restaurant_id');
-//            $table->float('price');
-//            $table->json('choice_items')->nullable()->default(null);
-//            $table->json('choice_name')->nullable()->default(null);
-//            $table->foreignId('menu_item_id')->nullable()->references('id')->on('menu_items');
-//            $table->softDeletes();
-//            $table->timestamps();
-//        });
-
-        Schema::table('addons', function (Blueprint $table) {
-           $table->float('addon_price');
+        Schema::create('addons', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('category');
+            $table->unsignedBigInteger('restaurant_id');
+            $table->float('price');
+            $table->foreign('menu_item_id')->references('id')->on('menu_items');
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -36,8 +30,8 @@ return new class extends Migration
      *
      * @return void
      */
-//    public function down()
-//    {
-//        Schema::dropIfExists('addons');
-//    }
+    public function down()
+    {
+        Schema::dropIfExists('addons');
+    }
 };

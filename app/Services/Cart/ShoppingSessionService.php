@@ -2,22 +2,18 @@
 
 namespace App\Services\Cart;
 
-use App\DTO\ShoppingSessionDTO;
 use App\Interfaces\ShoppingSessionServiceInterface;
-use App\Models\Cart\ShoppingSession;
-use Illuminate\Support\Facades\Auth;
+use App\Models\ShoppingSession;
 
 class ShoppingSessionService implements ShoppingSessionServiceInterface
 {
-
-    public static function getShoppingSession(){
-        $user = Auth::user();
-        $shoppingSession =$user->shoppingSession;
-        if(!$shoppingSession){
-            $sessionDTO = new ShoppingSessionDTO(['user_id'=>$user->id]);
-            $shoppingSession = ShoppingSession::create($sessionDTO->toArray());
+    public function getShoppingSession($user){
+        $session = ShoppingSession::query()->where('created_at','>',now()->addHours(24))->first();
+        if(!$session){
+            $session = ShoppingSession::create([
+                'user_id' => $user->id,
+            ]);
         }
-        return $shoppingSession;
+        return $session;
     }
-
 }
