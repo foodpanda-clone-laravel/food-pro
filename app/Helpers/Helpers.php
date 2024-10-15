@@ -37,6 +37,7 @@ class Helpers{
 
     }
     public static function createErrorLogs($exception, $requestId){
+        dd($exception);
         ErrorLog::create([
             'function_name'=>$exception->getTrace()[0]['function'],
             'line_number'=>$exception->getLine(),

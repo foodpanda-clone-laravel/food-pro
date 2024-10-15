@@ -14,5 +14,7 @@ class BranchDTO extends BaseDTO
         $this->postal_code = $data["postal_code"];
         $this->city = $data["city"];
         $this->restaurant_id = $data["restaurant_id"];
+        $this->delivery_fee = $data["delivery_fee"]??0;
+        $this->delivery_time = $data["delivery_time"]??'Standard delivery 15 to 30 minutes';
     }
 }

@@ -19,6 +19,6 @@ class RestaurantOwner extends Model
         return $this->belongsTo(User::class);
     }
     public function restaurant(){
-        return $this->hasOne(Restaurant::class,'owner_id','id');
+        return $this->hasOne(Restaurant::class, 'owner_id');
     }
 }

@@ -3,7 +3,7 @@
 namespace App\Models\User;
 
 use App\Models\Cart\ShoppingSession;
-use App\Models\ModelHasRole;
+use App\Models\Restaurant\Restaurant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -12,11 +12,13 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+
 // Import SoftDeletes
 class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
     use HasRoles;
+
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     protected $guarded = [];
 
@@ -58,7 +60,5 @@ class User extends Authenticatable implements JWTSubject
            'role' => $this->role,
         ];
     }
-    public function role(){
-        return $this->hasOne(ModelHasRole::class, 'model_id', 'id');
-    }
+
 }
