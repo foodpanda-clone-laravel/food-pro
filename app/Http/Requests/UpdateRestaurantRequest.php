@@ -1,10 +1,7 @@
 <?php
-
 namespace App\Http\Requests;
-
 use App\Http\Requests\BaseRequest;
 use App\Rules\ValidateTimeRule;
-
 class UpdateRestaurantRequest extends BaseRequest
 {
     /**
@@ -16,7 +13,6 @@ class UpdateRestaurantRequest extends BaseRequest
     {
         return true;
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
@@ -30,9 +26,6 @@ class UpdateRestaurantRequest extends BaseRequest
             'closing_time' => 'nullable|',
             'logo_path' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
             'address' => 'nullable|string|max:255'
-
-
-
         ];
     }
 }
