@@ -26,6 +26,8 @@ use App\Http\Controllers\Restaurant\RestaurantController;
 */
 require __DIR__ . '/restaurant/restaurantapi.php';
 
+require __DIR__ . '/order/orderapi.php';
+require __DIR__ . '/Customer/customerapi.php';
 
 Route::post('/register', [RegisterController::class, 'signup']);
 Route::post('/register-business', [RegisterController::class, 'registerRestaurantWithOwner']);
@@ -58,6 +60,7 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
     // Test user route (authenticated)
     Route::get('/user', function (Request $request) {
         return response()->json($request->auth);
+
     });
     Route::post('create-menu/{branch_id}', [MenuController::class, 'createMenu']);
     Route::post('add-item/menu/{menu_id}', [MenuController::class, 'addMenuItem']);

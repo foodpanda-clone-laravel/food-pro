@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Error;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use JWTAuth;
@@ -54,18 +55,20 @@ class Handler extends ExceptionHandler
         $this->renderable(function (JWTException $exception, $request) {
             return response()->json(['error' => 'Unauthorized access'], 401);
         });
-//         $this->renderable(function (\Exception $exception, $request) {
-//             // dd($exception);
-// //            Helpers::createErrorLogs($exception, $request->request_id);
-//         });
-//         $this->renderable(function (QueryException $exception, $request) {
-//             dd($exception);
-// //            Helpers::createErrorLogs($exception, $request->request_id);
-//         });
-//         $this->renderable(function (Error $error, $request) {
-//             dd($error);
-// //            Helpers::createErrorLogs($error, $request->request_id);
-//         });
+        $this->renderable(function (Exception $exception, $request) {
+            Helpers::createErrorLogs($exception, $request->request_id);
+            dd($exception);
+
+        });
+        $this->renderable(function (QueryException $exception, $request) {
+           Helpers::createErrorLogs($exception, $request->request_id);
+            dd($exception);
+
+        });
+        $this->renderable(function (Error $error, $request) {
+            Helpers::createErrorLogs($error, $request->request_id);
+            dd($error);
+        });
 
     }
 }
