@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers\Restaurant;
 
+use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Models\Orders\Order;
 use App\Models\Restaurant\RevenueReport;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 class RevenueController extends Controller
 {
     // admin dashboard
     public function viewRestaurantsRevenue(){
-
         try{
             // get current months order and revenue
             $currentMonth = \Carbon\Carbon::now()->monthName;
@@ -21,13 +24,13 @@ class RevenueController extends Controller
                 ->get()->toArray();
             $amount= array_column($orders, 'total_amount');
             $created_at = array_column($orders, 'created_at');
-            dd($orders);
+//            dd($orders);
             // order received in a day or week or month
             $data = [
                 'revenue'=>$amount,
                 'created_at'=>$created_at,
             ];
-            dd($data);
+            return $amount;
         }
         catch(\Exception $e){
             dd($e);
@@ -52,7 +55,7 @@ class RevenueController extends Controller
             $user = Auth::user();
             $restaurant = $user->restaurantOwner->restaurant;
             // write base query
-            // then group by weekly, monthly or weekly using pipes
+            // then group by daily weekly, monthly or weekly using pipes
             // default is monthly
             $orders = Order::where('restaurant_id', $restaurant->id)
                 ->whereMonth('created_at', now()->month)
@@ -60,13 +63,25 @@ class RevenueController extends Controller
             ->get()->toArray();
             $amount= array_column($orders, 'total_amount');
             $created_at = array_column($orders, 'created_at');
-            dd($orders);
             // order received in a day or week or month
             $data = [
-                'revenue'=>$amount,
-                'created_at'=>$created_at,
+                'total_revenue'=>[
+                    'revenue'=>$amount,
+                    'created_at'=>$created_at,]
             ];
-            dd($data);
+            $orderVolumes = DB::table('orders')
+                ->select(DB::raw('DATE(created_at) as order_date'), DB::raw('COUNT(*) as order_count'))
+                ->whereYear('created_at', Carbon::now()->year)
+                ->groupBy(DB::raw('DATE(created_at)'))
+                ->orderBy('order_date')
+                ->get()->toArray();
+            $orderVolume = array_column($orderVolumes, 'order_count');
+            $orderDate = array_column($orderVolumes, 'order_date');
+            $data['order_volume']=[
+                'order_date'=>$orderDate,
+                'order_count'=>$orderVolume,
+            ];
+            return Helpers::sendSuccessResponse(200, 'revenue', $data);
         }
         catch(\Exception $e){
             dd($e);
