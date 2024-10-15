@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Customer;
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\User\Customer;
+use App\Models\User\User;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 

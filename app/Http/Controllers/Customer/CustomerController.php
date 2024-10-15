@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Models\Restaurant\Restaurant;
 use App\Services\Customer\CustomerService;
 use App\Helpers\Helpers;
 use App\DTO\CustomerDTO;
 use Illuminate\Http\Request;
+use App\Models\User;
+
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\CustomerRequests\UpdateCustomerAddressRequest;
 use App\Http\Requests\CustomerRequests\AddFavoriteRestaurantRequest;
+use App\Http\Requests\CustomerRequests\UpdateProfileRequest;
 use App\Http\Requests\CustomerRequests\UsePointsRequest;
 use App\Http\Requests\CustomerRequests\SubmitFeedbackRequest;
 use App\Http\Controllers\Controller;
@@ -16,10 +21,26 @@ use App\Http\Controllers\Controller;
 class CustomerController extends Controller
 {
     protected $customerService;
-
+    protected $customer;
     public function __construct(CustomerService $customerService)
     {
         $this->customerService = $customerService;
+        $user  = Auth::user();
+        $this->customer = $user->customer;
+
+    }
+
+    public function editProfile(UpdateProfileRequest $request)
+    {
+        $userId = auth()->user()->id;
+        $validatedData = $request->getValidatedData();
+
+
+        $this->customerService->updateProfile($userId, $validatedData);
+
+        $updatedUser = User::with('customer')->find($userId);
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Profile updated successfully', $updatedUser);
     }
 
     public function viewMenus()
@@ -110,18 +131,38 @@ class CustomerController extends Controller
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant removed from favorites successfully', $favoriteRestaurants);
     }
-
     public function submitFeedback(SubmitFeedbackRequest $request)
     {
         $customerId = $request->get('customer_id');
         $validatedData = $request->getValidatedData();
+
         $feedback = $this->customerService->submitFeedback($customerId, $validatedData);
+
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Feedback submitted successfully', $feedback);
     }
-
     public function viewAllRestaurants()
     {
         $restaurants = $this->customerService->getAllRestaurants();
+
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'All restaurants retrieved successfully', $restaurants);
     }
+    public function viewRestaurantById(Request $request){
+        $restaurant = $this->customerService->viewRestaurantById($request->all());
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant retrieved successfully', $restaurant);
+    }
+
+    public function viewDeals()
+    {
+        $deals = $this->customerService->getDeals();
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Deals retrieved successfully', $deals);
+    }
+
+
+    public function viewDeals()
+    {
+        $deals = $this->customerService->getDeals();
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Deals retrieved successfully', $deals);
+    }
+
+}
 }

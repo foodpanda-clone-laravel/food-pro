@@ -1,9 +1,6 @@
 <?php
 namespace App\Helpers;
-use Illuminate\Support\Str;
-use App\Models\ErrorLog;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Database\QueryException;
+use App\Models\Logs\ErrorLog;
 
 class Helpers{
 
@@ -14,7 +11,7 @@ class Helpers{
                 'status'=>$status,
                 'message'=>$message,
                 'data'=>$data
-            ], $status)->withHeaders($headers)->cookie('example', 'sdkfjls');    
+            ], $status)->withHeaders($headers)->cookie('example', 'sdkfjls');
         }
         return response()->json([
             'status'=>$status,
@@ -27,7 +24,7 @@ class Helpers{
      * @param int $statusCode
      * @param string $message
      * @param array $data
-     * 
+     *
      * in case of failure response send it to error logs
      */
     public static function sendFailureResponse(int $status, string $message, $data=[])
