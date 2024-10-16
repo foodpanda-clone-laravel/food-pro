@@ -6,17 +6,13 @@ Route::group(['middleware' => 'request.logs',], function () {
     Route::controller(MenuControllerV2::class)->group(function () {
         Route::get('menu/choice-group', 'getChoiceGroupById');
         Route::post('menu/assign-choice-group', 'assignChoiceGroup');
-        Route::get('choice-groups','getAllChoiceGroups');
+        Route::get('choice-groups', 'getAllChoiceGroups');
         Route::post('/create-choice-group', 'createChoiceGroup');
     });
-    Route::get('/test-middleware', function(){
-        throw new Error('custome erro');
-        return 'test middleware';
-    });
-    Route::controller(RestaurantController::class)->group(function(){
-    // restaurant owner can only view their reviews
-       Route::get('/my-reviews', 'viewMyRatings');
-       Route::get('/my-revenue', 'viewMyRevenueReport');
+    Route::controller(RestaurantController::class)->group(function () {
+        // restaurant owner can only view their reviews
+        Route::get('/my-reviews', 'viewMyRatings');
+        Route::get('/my-revenue', 'viewMyRevenueReport');
     });
 
 });
