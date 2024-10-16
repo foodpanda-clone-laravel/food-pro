@@ -8,11 +8,11 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 class BaseRequest extends FormRequest
 {
-    
+
 // override failed validation once in base class
     protected function failedValidation(Validator $validator)
     {
-        $errors = $this->validator->errors();
+        $errors = $this->validator->errors()->all();
 
         $response =  response()->json([
             'errors'=>$errors

@@ -10,6 +10,8 @@ Route::group(['middleware' => 'request.logs',], function () {
         Route::post('menu/assign-choice-group', 'assignChoiceGroup');
         Route::get('choice-groups','getAllChoiceGroups');
         Route::post('/create-choice-group', 'createChoiceGroup');
+        Route::delete('/delete-choice-group', 'deleteChoiceGroup');
+
     });
 });
 
@@ -28,7 +30,7 @@ Route::group(['middleware' => 'api',], function () {
     Route::delete('/restaurant', [RestaurantController::class, 'deleteRestaurant']);
     Route::post('/restaurant/update', [RestaurantController::class, 'updateRestaurant']);
     Route::post('/restaurant/restore', [RestaurantController::class, 'restoreRestaurant']);
-        
+
 });
 
 

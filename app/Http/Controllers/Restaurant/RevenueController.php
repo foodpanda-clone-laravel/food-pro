@@ -60,7 +60,7 @@ class RevenueController extends Controller
             $orders = Order::where('restaurant_id', $restaurant->id)
                 ->whereMonth('created_at', now()->month)
                 ->whereYear('created_at', now()->year)
-            ->get()->toArray();
+                ->get()->toArray();
             $amount= array_column($orders, 'total_amount');
             $created_at = array_column($orders, 'created_at');
             // order received in a day or week or month

@@ -2,10 +2,12 @@
 
 namespace App\Services\Menu;
 
+use App\DTO\AddonDTO;
 use App\DTO\ChoiceGroupDTO;
 use App\DTO\ChoiceItems;
 use App\DTO\ChoiceItemsDTO;
 use App\Interfaces\MenuServiceV2Interface;
+use App\Models\Menu\Addon;
 use App\Models\Menu\AssignedChoiceGroup;
 use App\Models\Menu\Choice;
 use App\Models\Menu\ChoiceGroup;
@@ -23,7 +25,6 @@ class MenuServiceV2 extends MenuBaseService implements MenuServiceV2Interface
 
             $data['menu_item_id']=$menu_item->id;
 
-
             $addOn = Addon::create((new AddonDTO($data))->toArray());
 
             return ['success' => true, 'addon' => $addOn]; // Return the addon
@@ -38,7 +39,7 @@ class MenuServiceV2 extends MenuBaseService implements MenuServiceV2Interface
         $data['restaurant_id']=$restaurant->id;
         $choiceGroupDTO = new ChoiceGroupDTO($data);
         $choiceGroup= ChoiceGroup::create($choiceGroupDTO->toArray());
-        return $choiceGroup;
+        return $choiceGroup->toArray();
     }
     public function createVariation($data){
         // choice name
@@ -48,14 +49,21 @@ class MenuServiceV2 extends MenuBaseService implements MenuServiceV2Interface
         try{
             DB::beginTransaction();
             $choiceGroup = $this->addChoiceGroup($data);
-            $data['choice_group_id']=$choiceGroup->id;
-            // if variation is required or not ?
-            $choices = json_decode($data['choice_items'], true);
+            if($data['is_required']==0){
+                // create addons
+            }
+            else{
+
+            }
+            $data['choice_group_id']=$choiceGroup['id'];
+
+            $choices = json_decode($data['choices'], true);
+
             foreach($choices as $choice){
-                $choice['choice_group_id']=$choiceGroup->id;
+                $choice['choice_group_id']=$choiceGroup['id'];
                 $choice['choice_type']=$data['choice_type'];
-                    $choiceItemDTO = new ChoiceItemsDTO($choice);
-                    $choiceItem = Choice::create($choiceItemDTO->toArray());
+                $choiceItemDTO = new ChoiceItemsDTO($choice);
+                $choiceItem = Choice::create($choiceItemDTO->toArray());
             }
             DB::commit();
             return true;
@@ -64,7 +72,6 @@ class MenuServiceV2 extends MenuBaseService implements MenuServiceV2Interface
             DB::rollBack();
             return false;
         }
-
     }
     public function addChoiceItem($data){
     // I want the menu item to add in the choice group , here I need validation check
@@ -93,6 +100,47 @@ class MenuServiceV2 extends MenuBaseService implements MenuServiceV2Interface
         $restaurant = MenuBaseService::getRestaurant();
         return AssignedChoiceGroup::create($data);
 }
+    public function createVariationV2($data){
+        // choice name
+        // is required: true or false,
+        // choice_type:
+        // choices :[]
+        try{
+            $restaurant = MenuBaseService::getRestaurant();
+            $restaurantId = $restaurant->id;
+
+            DB::beginTransaction();
+
+            $choiceGroup = $this->addChoiceGroup($data);
+            $data['choice_group_id']=$choiceGroup['id'];
+            $choices = json_decode($data['choices'], true);
+
+            if($data['is_required']==0){
+                foreach($choices as $choice){
+                    $choice['choice_group_id']=$choiceGroup['id'];
+                    $choice['restaurant_id']=$restaurantId;
+//                    $choice['choice_type']=$data['choice_type'];  // needed for addon
+                    $addonDTO = new AddonDTO($choice);
+                    Addon::create($addonDTO->toArray());
+                }
+            }
+            else{
+                foreach($choices as $choice){
+                    $choice['choice_group_id']=$choiceGroup['id'];
+                    $choice['choice_type']=$data['choice_type'];
+                    $choiceItemDTO = new ChoiceItemsDTO($choice);
+                    $choiceItem = Choice::create($choiceItemDTO->toArray());
+                }
+            }
+            DB::commit();
+            return true;
+        }
+        catch(\Exception $e){
+            dd($e);
+            DB::rollBack();
+            return false;
+        }
+    }
     public function getChoiceGroupById($id){
         return ChoiceGroup::where('id', $id)->first();
     }
@@ -101,12 +149,42 @@ class MenuServiceV2 extends MenuBaseService implements MenuServiceV2Interface
     // restricted access to restaurant owner only
     public function getAllChoiceGroupsByRestaurant(){
         $restaurant = MenuBaseService::getRestaurant();
-        return $restaurant->load('choiceGroups.choices');
+        return $restaurant->load(['choiceGroups.choices', 'choiceGroups.addons']);
     }
-    public function deleteChoiceGroup(){
+    public function deleteChoiceGroup($data){
+        try{
 
+            $choiceGroup = ChoiceGroup::where('id', $data['id'])->firstOrFail();
+            $choiceGroup->delete();
+            return true;
+        }
+        catch(\Exception $e){
+            return false;
+        }
     }
     public function updateChoiceGroup($data){
+    }
+    public function storeChoices(array $data)
+    {
+        $restaurant = $this->getRestaurant();
+        $data['restaurant_id'] = $restaurant->id;
+        if ($data['isChoice'] == 1) {
+            // if it is compulsory add choices in choices
+            $variation = Variation::create((new VariationDTO($data))->toArray());
+            return response()->json([
+                'success' => true,
+                'message' => 'Variation saved successfully!',
+                'data' => $variation,
+            ]);
+        } else {
+            // if not add in addons
+            $addOn = Addon::create((new AddonDTO($data))->toArray());
+            return response()->json([
+                'success' => true,
+                'message' => 'Addon saved successfully!',
+                'data' => $addOn,
+            ]);
+        }
     }
     public function updateChoiceItem(){
 
