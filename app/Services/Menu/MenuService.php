@@ -167,9 +167,9 @@ class MenuService implements MenuServiceInterface
                 'variations' => $variations,
             ];
         } catch (ModelNotFoundException $e) {
-            return ['success' => false, 'error' => 'Menu item not found'];
+            dd($e);
         } catch (Exception $e) {
-            return ['success' => false, 'error' => $e->getMessage()];
-        }
+            dd($e);
+                }
     }
 }
