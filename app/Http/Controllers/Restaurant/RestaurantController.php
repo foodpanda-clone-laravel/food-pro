@@ -2,78 +2,74 @@
 
 namespace App\Http\Controllers\Restaurant;
 
+use App\DTO\RestaurantDTO;
 use App\Http\Controllers\Controller;
-use App\Services\RestaurantService;
 use Illuminate\Http\Request;
 use App\Helpers\Helpers;
-use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\UpdateRestaurantRequest;
+use App\Services\Restaurant\RestaurantService;
+
 class RestaurantController extends Controller
 {
     protected $restaurantService;
-    public function __construct(RestaurantService $restaurantService){
-        $this->restaurantService =$restaurantService;
+
+    public function __construct(RestaurantService $restaurantService)
+    {
+        $this->restaurantService = $restaurantService;
     }
-    public function viewRestaurantById(){
-        // return restaurant with menu with menu items with variations with variation array of size and every thing in table
-        // basically do join like this restaurant->menu->menu_items->variations and addons
-        // send response in data array in proper format. like
-        /**
-         * {restaurant_id: 1,
-         * restaurant_name:,
-         *  opening_time:,
-         * closing_time:,
-         * address:,
-         * rating: 5 stars,
-         * menus :{
-         *     menu_id:1,
-         *      menu_items:[
-         *                  {item_id: 1,
-         *                   name: burger,
-         *                   price: 200, // if variations are empty then send []
-         *                   variations:[
-         *                               {
-         *                                   id:1,
-         *                                   name:choose your size,
-         *                                   options:[
-         *                                           {"size":"medium", "price":500"},
-                                                        {"size":"small", "price":100"},
- *                                                      {"size":"large", "price":100"},
-         *                                           ]
-         *                               }
-         *                               ],
-         *                  addons:[
-         *                          {id:,
-         *                           options:
-         *                                  [
-         *                                                  {"mayo":500"},
-*                                                              {"extra cheese":100"},
-         *                                                       {"burger sauce":0},
-         *                                  ]
-         *                            }
-         *                           ]
-         *                                 }
-         *
-         *                   ]
-         *               }
-         *               }
-         *  ask ali for any confusion in format or how to get these fields??
-         */
-    }
-    public function deleteRestaurantById(){
-// soft delete the restaurant
-    }
-    public function restoreRestaurantById(){
-    /// restore the restaurant
-    }
-    public function updateRestaurantById(){
-        // can update name, branch address, opening time closing time , logo path
-    }
-    public function viewMyRatings(Request $request){
-        $result  =    $this->restaurantService->viewMyRestaurantRating();
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'restaurant ratings ', $result);
-    }
-    public function viewMyRevenueReport(Request $request){
-        $revenue = $this->restaurantService->viewMyRevenueReport();
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'monthly revenue report', $revenue);
+
+    // public function viewRestaurantById()
+    // {
+    //     try {
+    //         $restaurantDetails = $this->restaurantService->getRestaurantWithDetails();
+    //         return Helpers::sendSuccessResponse(200, 'Restaurant details retrieved successfully', $restaurantDetails);
+    //     } catch (\Exception $e) {
+    //         Helpers::createErrorLogs($e, request()->id);
+    //         return Helpers::sendFailureResponse(500, 'Failed to retrieve restaurant details');
+    //     }
+    // }
+    public function deleteRestaurant()
+{
+    try {
+        $this->restaurantService->softDeleteRestaurant();
+
+        return Helpers::sendSuccessResponse(200, 'Restaurant deleted successfully');
+    } catch (\Exception $e) {
+        return Helpers::sendFailureResponse(400, 'Could not delete restaurant');
     }
 }
+
+    public function restoreRestaurant()
+    {
+        try {
+            $result = $this->restaurantService->restoreRestaurant();
+            return Helpers::sendSuccessResponse(200, 'Restaurant restored successfully', $result);
+        } catch (\Exception $e) {
+            return Helpers::sendFailureResponse(400, 'Could not restore restaurant');
+        }
+    }
+
+
+    public function updateRestaurant(UpdateRestaurantRequest $request)
+    {
+        // Validate the incoming request
+
+
+        $validatedData = $request->getValidatedData();
+
+
+        // Ensure you have validation rules defined
+
+
+
+
+
+
+
+            // Call the service to update the restaurant details
+            $this->restaurantService->updateRestaurant($validatedData);
+            return Helpers::sendSuccessResponse(200, 'Restaurant updated successfully');
+
+    }
+
+    }

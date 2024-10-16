@@ -4,6 +4,7 @@ namespace App\Models\Restaurant;
 
 use App\Models\Menu\ChoiceGroup;
 use App\Models\Menu\Menu;
+use App\Models\Menu\Deal\Deal;
 use App\Models\User\RestaurantOwner;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -40,11 +41,15 @@ class Restaurant extends Model
     {
         return $this->hasMany(Menu::class);
     }
-    public function choiceGroups(){
+    public function choiceGroups()
+    {
         return $this->hasMany(ChoiceGroup::class);
     }
 
-    public function revenue(){
+
+    public function revenue()
+    {
+
         return $this->hasMany(RevenueReport::class);
     }
 }

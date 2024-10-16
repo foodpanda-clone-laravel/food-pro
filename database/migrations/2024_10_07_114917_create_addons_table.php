@@ -26,9 +26,19 @@ return new class extends Migration
 //            $table->timestamps();
 //        });
 
-        Schema::table('addons', function (Blueprint $table) {
-           $table->float('addon_price');
-        });
+//        Schema::table('addons', function (Blueprint $table) {
+//           $table->float('addon_price');
+//        });
+//        Schema::table('addons', function (Blueprint $table) {
+//           $table->foreignId('choice_group_id')->nullable()->default(null)->references('id')->on('choice_groups')->constrained()->onDelete('cascade');
+//        });
+//        Schema::table('addons', function (Blueprint $table) {
+//           $table->foreignId('choice_group_id')->nullable()->default(null)->references('id')->on('choice_groups')->constrained()->onDelete('cascade');
+//        });
+
+            //ALTER TABLE your_table_name
+        //RENAME COLUMN addon_price TO price;
+
     }
 
     /**
