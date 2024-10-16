@@ -26,6 +26,7 @@ require __DIR__ . '/restaurant/restaurantapi.php';
 require __DIR__ . '/order/orderapi.php';
 require __DIR__ . '/Customer/customerapi.php';
 require __DIR__ . '/Admin/admin.php';
+require __DIR__ . '/Menu/menu.php';
 
 Route::post('/register', [RegisterController::class, 'signup']);
 Route::post('/register-business', [RegisterController::class, 'registerRestaurantWithOwner']);
@@ -62,21 +63,6 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
     });
 
 
-    
-  
-
-
-
-    Route::post('create-menu/{branch_id}', [MenuController::class, 'createMenu']);
-    Route::post('add-item/menu/{menu_id}', [MenuController::class, 'addMenuItem']);
-    Route::post('add-addon/menu/{menu_item_id}', [MenuController::class, 'addOns']);
-    Route::post('update-menu/{menu_item}', [MenuController::class, 'updateMenu']);
-    Route::post('update-menu-item/{menu_item_id}', [MenuController::class, 'updateMenuItem']);
-    Route::post('add-choice/{menu_id}', [MenuController::class, 'storeChoices']);
-    Route::get('get-count', [MenuController::class, 'menuWithItemCount']);
-    Route::post('update-choice/{variation_id}', [MenuController::class, 'updateChoices']);
-    Route::get('menu-with-item/{menu_id}', [MenuController::class, 'getMenuwithMenuItem']);
-    Route::get('get-menu-choice/{menu_item_id}', [MenuController::class, 'getChoicesWithMenuItem']);
 
     Route::controller(ForgotPasswordController::class)->group(function () {
         Route::post('/forgot-password', 'submitForgotPasswordForm')->name('password.email');

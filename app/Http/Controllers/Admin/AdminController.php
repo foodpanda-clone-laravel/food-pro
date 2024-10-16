@@ -31,9 +31,9 @@ class AdminController extends Controller
 
 
     public function approveRequest($request_id){
-        $result= $this->adminService->approveRequest();
+        $result= $this->adminService->approveRequest($request_id);
 
-        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Restaurant applications', $result);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Your request has been approved', $result);
 
     }
 
