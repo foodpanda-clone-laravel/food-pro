@@ -6,14 +6,7 @@ use DateTime;
 
 class RestaurantDTO extends BaseDTO
 {
-    public string $name;
-    public int $owner_id;
-    public ?string $opening_time;
-    public ?string $closing_time;
-    public string $cuisine;
-    public ?string $logo_path;
-    public string $business_type;
-
+   
     public function __construct($data) {
         $this->name = $data["restaurant_name"];
         $this->owner_id = $data["owner_id"];

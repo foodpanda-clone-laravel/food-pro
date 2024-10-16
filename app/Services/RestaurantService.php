@@ -63,28 +63,5 @@ class RestaurantService
             ->get();
         return $ratings;
     }
-    public function viewMyRevenueReport(){
 
-        $currentMonth = \Carbon\Carbon::now()->monthName;
-        $user = Auth::user();
-        $restaurant = $user->restaurantOwner->restaurant;
-        $revenue = RevenueReport::where('restaurant_id', $restaurant->id)->get();
-        $orders = Order::where('restaurant_id', $restaurant->id)
-                        ->whereMonth('created_at', now()->month)
-                        ->whereYear('created_at', now()->year)
-                        ->get();
-
-        // view order volume
-        // view top restaurants,
-        // view total revenue
-        // to get
-        /***
-         * revenue: [6000, 7500, 8000, 9500],
-         *
-         * orderVolume: [1000, 1200, 1100, 1300],
-         *
-         * topRestaurants: [15000, 14000, 13500, 12000]
-         */
-        dd($orders->toArray());
-    }
 }

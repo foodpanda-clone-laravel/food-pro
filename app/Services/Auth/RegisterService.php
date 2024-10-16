@@ -42,8 +42,8 @@ class RegisterService implements RegisterServiceInterface
     {
         try {
             DB::beginTransaction();
-
-            $user = $this->createUser(new UserDTO($data));
+            $userDTO = new UserDTO($data);
+            $user = User::create($userDTO->toArray());
             $permissions = $this->assignRoleWithDirectPermissions($user, 'Restaurant Owner');
             $data['user_id']= $user->id;
             $restaurantOwnerDTO = new RestaurantOwnerDTO($data);
