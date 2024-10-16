@@ -7,6 +7,7 @@ use App\Models\Cart\CartItem;
 use App\Models\Orders\Order;
 use App\Models\Restaurant\Branch;
 use App\Models\Restaurant\Restaurant;
+use App\Http\Resources\ActiveOrderResource;
 use App\Services\Customer\CustomerOrderService;
 use App\Services\Customer\CustomerService;
 use App\Http\Controllers\Controller;
@@ -27,11 +28,15 @@ class OrderController extends CustomerController
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order history retrieved successfully', $orders);
     }
 
-    public function activeOrder(Request $request)
+    public function activeOrder()
     {
-        $customerId = $request->get('customer_id');
-        $activeOrder = $this->customerService->getActiveOrder($customerId);
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Active order retrieved successfully', $activeOrder);
+        $activeOrder = $this->customerService->getActiveOrder();
+
+        return Helpers::sendSuccessResponse(
+            Response::HTTP_OK,
+            'Active order retrieved successfully',
+            new ActiveOrderResource($activeOrder)
+        );
     }
 
     public function checkout(CustomerOrderService $customerOrderService)
@@ -39,12 +44,12 @@ class OrderController extends CustomerController
         $data = $customerOrderService->checkout();
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order summary', $data);
     }
-    public function createOrder(CustomerOrderService $customerOrderService){
+    public function createOrder(CustomerOrderService $customerOrderService)
+    {
         $data = $customerOrderService->createOrder();
-        if($data){
+        if ($data) {
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order created successfully', $data);
-        }
-        else{
+        } else {
             return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not process your order');
         }
 

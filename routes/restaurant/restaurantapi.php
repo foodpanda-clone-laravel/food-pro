@@ -8,11 +8,12 @@ Route::group(['middleware' => 'request.logs',], function () {
     Route::controller(MenuControllerV2::class)->group(function () {
         Route::get('menu/choice-group', 'getChoiceGroupById');
         Route::post('menu/assign-choice-group', 'assignChoiceGroup');
-        Route::get('choice-groups','getAllChoiceGroups');
+        Route::get('choice-groups', 'getAllChoiceGroups');
         Route::post('/create-choice-group', 'createChoiceGroup');
         Route::delete('/delete-choice-group', 'deleteChoiceGroup');
 
     });
+
 });
 
     Route::controller(RestaurantController::class)->group(function(){

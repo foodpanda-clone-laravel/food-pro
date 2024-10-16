@@ -7,7 +7,7 @@ use App\Services\Customer\CustomerService;
 use App\Helpers\Helpers;
 use App\DTO\CustomerDTO;
 use Illuminate\Http\Request;
-use App\Models\User;
+use App\Models\User\User;
 
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,9 +25,11 @@ class CustomerController extends Controller
     public function __construct(CustomerService $customerService)
     {
         $this->customerService = $customerService;
-        $user  = Auth::user();
-        $this->customer = $user->customer;
 
+        if (auth()->check()) {
+            $user = Auth::user();
+            $this->customer = $user->customer;
+        }
     }
 
     public function editProfile(UpdateProfileRequest $request)
@@ -43,9 +45,10 @@ class CustomerController extends Controller
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Profile updated successfully', $updatedUser);
     }
 
-    public function viewMenus()
+    public function viewMenus($restaurantId)
     {
-        $menus = $this->customerService->getMenus();
+        $menus = $this->customerService->getMenusByRestaurant($restaurantId);
+
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Menus retrieved successfully', $menus);
     }
 
@@ -63,20 +66,22 @@ class CustomerController extends Controller
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Favorite restaurants retrieved successfully', $favoriteRestaurants);
     }
 
-    public function viewRewards(Request $request)
+    public function viewRewards()
     {
-        $customerId = $request->get('customer_id');
-        $rewards = $this->customerService->getRewards($customerId);
+        $rewards = $this->customerService->getRewards();
+
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Rewards retrieved successfully', $rewards);
     }
 
     public function usePointsAtCheckout(UsePointsRequest $request)
     {
-        $customerId = $request->get('customer_id');
         $validatedData = $request->getValidatedData();
-        $monetaryValue = $this->customerService->usePoints($customerId, $validatedData['points']);
+
+        $monetaryValue = $this->customerService->usePoints($validatedData['points']);
+
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Points redeemed successfully', ['monetary_value' => $monetaryValue]);
     }
+
 
     public function updateCustomerAddress(UpdateCustomerAddressRequest $request)
     {
@@ -103,10 +108,11 @@ class CustomerController extends Controller
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Customer address updated successfully');
     }
 
-    public function viewProfile(Request $request)
+    public function viewProfile()
     {
-        $customerId = $request->get('customer_id');
-        $customer = $this->customerService->getProfile($customerId);
+        $userId = auth()->user()->id;
+        $customer = $this->customerService->getProfile($userId);
+
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Customer profile retrieved successfully', $customer);
     }
 
@@ -146,10 +152,11 @@ class CustomerController extends Controller
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'All restaurants retrieved successfully', $restaurants);
     }
-    public function viewRestaurantById(Request $request){
-        $restaurant = $this->customerService->viewRestaurantById($request->all());
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant retrieved successfully', $restaurant);
-    }
+    // public function viewRestaurantById(Request $request)
+    // {
+    //     $restaurant = $this->customerService->viewRestaurantById($request->all());
+    //     return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant retrieved successfully', $restaurant);
+    // }
 
     public function viewDeals()
     {
@@ -157,12 +164,4 @@ class CustomerController extends Controller
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Deals retrieved successfully', $deals);
     }
 
-
-    public function viewDeals()
-    {
-        $deals = $this->customerService->getDeals();
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Deals retrieved successfully', $deals);
-    }
-
-}
 }

@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\Orders\CartController;
+
+use App\Http\Controllers\RestaurantOwner\MenuController;
+use App\Http\Controllers\Customer\OrderController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Database\QueryException;
@@ -13,6 +17,8 @@ use App\Http\Controllers\Menu\MenuController;
 use App\Http\Controllers\Restaurant\RestaurantController;
 
 
+
+require __DIR__ . '/hibacustomerRoutes/customer.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -37,42 +43,43 @@ Route::post('/logout', [UserController::class, 'logout']);
 
 
 
-Route::middleware(['request.logs', 'jwt'])->group(function () {
-    Route::prefix('customers')->group(function () {
-        Route::controller(CustomerController::class)->group(function () {
-            Route::get('orders', 'orderHistory');
-            Route::get('favorites', 'favoriteItems');
-            Route::get('rewards', 'viewRewards');
-            Route::post('use-points', 'usePointsAtCheckout');
-            Route::patch('update-address', 'updateCustomerAddress')->name('updateCustomerAddress');
-            Route::get('profile', 'viewProfile');
-            Route::post('favorite-restaurants', 'addFavoriteRestaurant');
-            Route::delete('favorite-restaurants', 'removeFavoriteRestaurant');
-            Route::get('active-order', 'activeOrder');
-            Route::post('feedback', 'submitFeedback');
-            Route::get('menus', 'viewMenus');
-            Route::get('search-restaurant', 'searchRestaurant');
-            Route::get('restaurants', 'viewAllRestaurants');
-        });
+// Route::middleware(['request.logs', 'jwt'])->group(function () {
+
+// Customer-related routes
+Route::prefix('customers')->group(function () {
+    Route::controller(CustomerController::class)->group(function () {
+        Route::patch('edit-profile', 'editProfile');
+        Route::get('favorites', 'favoriteItems');
+        Route::get('rewards', 'viewRewards');
+        Route::post('use-points', 'usePointsAtCheckout');
+        Route::patch('update-address', 'updateCustomerAddress')->name('updateCustomerAddress');
+        Route::get('profile', 'viewProfile');
+        Route::post('favorite-restaurants', 'addFavoriteRestaurant');
+        Route::delete('favorite-restaurants', 'removeFavoriteRestaurant');
+        Route::post('feedback', 'submitFeedback');
+        Route::get('menus', 'viewMenus');
+        Route::get('search-restaurant', 'searchRestaurant');
+        Route::get('restaurants', 'viewAllRestaurants');
+        Route::get('deals', 'viewDeals');
+    });
+});
+
+// Order-related routes
+Route::prefix('orders')->group(function () {
+    Route::controller(OrderController::class)->group(function () {
+        Route::get('history', 'orderHistory');
+        Route::get('active-order', 'activeOrder');
     });
 
+});
 
-    // Test user route (authenticated)
-    Route::get('/user', function (Request $request) {
-        return response()->json($request->auth);
 
-    });
-    Route::post('create-menu/{branch_id}', [MenuController::class, 'createMenu']);
-    Route::post('add-item/menu/{menu_id}', [MenuController::class, 'addMenuItem']);
-    Route::post('add-addon/menu/{menu_item_id}', [MenuController::class, 'addOns']);
-    Route::post('update-menu/{menu_item}', [MenuController::class, 'updateMenu']);
-    Route::post('update-menu-item/{menu_item_id}', [MenuController::class, 'updateMenuItem']);
-    Route::post('add-choice/{menu_id}', [MenuController::class, 'storeChoices']);
+// Test user route (authenticated)
+Route::get('/user', function (Request $request) {
+    return response()->json($request->auth);
 
-    Route::controller(ForgotPasswordController::class)->group(function () {
-        Route::post('/forgot-password', 'submitForgotPasswordForm')->name('password.email');
 
-        Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
+    Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
     });
     Route::controller(CartController::class)->group(function () {
         Route::get('/session', 'getShoppingSession');
@@ -80,4 +87,21 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
 
    
 
+
 });
+Route::post('create-menu/{branch_id}', [MenuController::class, 'createMenu']);
+Route::post('add-item/menu/{menu_id}', [MenuController::class, 'addMenuItem']);
+Route::post('add-addon/menu/{menu_item_id}', [MenuController::class, 'addOns']);
+Route::post('update-menu/{menu_item}', [MenuController::class, 'updateMenu']);
+Route::post('update-menu-item/{menu_item_id}', [MenuController::class, 'updateMenuItem']);
+Route::post('add-choice/{menu_id}', [MenuController::class, 'storeChoices']);
+
+Route::controller(ForgotPasswordController::class)->group(function () {
+    Route::post('/forgot-password', 'submitForgotPasswordForm')->name('password.email');
+
+    Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
+});
+Route::controller(CartController::class)->group(function () {
+    Route::get('/session', 'getShoppingSession');
+});
+// });
