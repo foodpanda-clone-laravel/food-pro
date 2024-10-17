@@ -10,6 +10,9 @@ Route::group(['middleware' => 'request.logs',], function () {
         Route::post('menu/assign-choice-group', 'assignChoiceGroup');
         Route::get('choice-groups', 'getAllChoiceGroups');
         Route::post('/create-choice-group', 'createChoiceGroup');
+        Route::delete('delete-choice-group', 'deleteChoiceGroup');
+        Route::post('/update-choice-group', 'updateChoiceGroup');
+
     });
 
 });
@@ -20,16 +23,15 @@ Route::group(['middleware' => 'request.logs',], function () {
     });
     Route::controller(RevenueController::class)->group(function(){
         Route::get('/my-revenue', 'viewMyRevenue');
-        Route::get('/', 'viewMyRevenue');
 
     });
 
 Route::group(['middleware' => 'api',], function () {
     Route::get('/restaurant', [RestaurantController::class, 'viewRestaurantById']);
-    Route::delete('/restaurant', [RestaurantController::class, 'deleteRestaurant']);
-    Route::post('/restaurant/update', [RestaurantController::class, 'updateRestaurant']);
-    Route::post('/restaurant/restore', [RestaurantController::class, 'restoreRestaurant']);
-        
+    Route::delete('/deactivate-restaurant', [RestaurantController::class, 'deleteRestaurant']);
+    Route::post('/update-restaurant', [RestaurantController::class, 'updateRestaurant']);
+    Route::post('/restore-restaurant', [RestaurantController::class, 'restoreRestaurant']);
+
 });
 
 

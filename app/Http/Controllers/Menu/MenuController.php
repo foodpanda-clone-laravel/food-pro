@@ -5,12 +5,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MenuRequest\AddMenuItemRequest;
 use App\Http\Requests\MenuRequest\CreateMenuRequest;
 use App\Http\Requests\MenuRequest\StoreChoicesRequest;
+use App\Http\Requests\MenuRequest\UpdateChoiceRequest;
 use App\Http\Requests\MenuRequest\UpdateChoicesRequest;
 use App\Http\Requests\MenuRequest\UpdateMenuItemRequest;
 use App\Http\Requests\MenuRequest\UpdateMenuRequest;
-use App\Models\Menu;
-use App\Models\MenuItem;
+use App\Models\Menu\Menu;
+use App\Models\Menu\MenuItem;
 use App\Services\Menu\MenuService;
+use PHPUnit\TextUI\Help;
 use Symfony\Component\HttpFoundation\Response;
 
 class MenuController extends Controller
@@ -81,6 +83,12 @@ class MenuController extends Controller
         $menu=Menu::findorfail($menu_id);
         $menu->delete();
     }
+    public function deleteMenuItem($menu_item_id){
+        $menuItem=MenuItem::findorfail($menu_item_id);
+        $menuItem->delete();
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Menu item deleted successfully',$menuItem);
+    }
 
     public function menuWithItemCount(){
         $menuCount=$this->menuService->menuWithItemCount();
@@ -105,19 +113,18 @@ class MenuController extends Controller
     public function getChoicesWithMenuItem($menu_item_id)
     {
         $result=$this->menuService->getChoicesWithMenuItem($menu_item_id);
-        if($result['success']){
-            return Helpers::sendSuccessResponse(Response::HTTP_OK,'Menu item retrieved successfully',$result['menu_item']);
-        }else{
-            return Helpers::sendFailureResponse(400,$result['error']);
-        }
+        
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Menu item retrieved successfully',$result);
+    
 
     }
 
-    public function updateChoices(UpdateChoicesRequest $request,$variation_id)
+    public function updateChoices(UpdateChoiceRequest $request,$variation_id)
     {
         $result=$this->menuService->updateChoices($request->validationData(),$variation_id);
         return Helpers::sendSuccessResponse(Response::HTTP_OK,'Choices updated successfully',$result);
     }
+
 
 
 }

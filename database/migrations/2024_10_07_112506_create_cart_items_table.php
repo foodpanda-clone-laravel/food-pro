@@ -33,9 +33,12 @@ return new class extends Migration
 //            $table->foreignId('size_variation_id')->nullable()->default(null)->references('id')->on('variations_v2');
 //
 //        });
+//        Schema::table('cart_items', function (Blueprint $table) {
+//           $table->unsignedBigInteger('restaurant_id');
+//           $table->foreign('restaurant_id')->references('id')->on('restaurants');
+//        });
         Schema::table('cart_items', function (Blueprint $table) {
-           $table->unsignedBigInteger('restaurant_id');
-           $table->foreign('restaurant_id')->references('id')->on('restaurants');
+           $table->foreignId('choice_group_id')->onDelete('cascade');
         });
     }
 

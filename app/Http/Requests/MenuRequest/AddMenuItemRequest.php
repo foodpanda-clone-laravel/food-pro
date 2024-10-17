@@ -25,10 +25,8 @@ class AddMenuItemRequest extends BaseRequest
         return [
             'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
-            'category' => 'required|string|max:100',
             'variation_id' => 'nullable', // Ensure variation_id is an array, or can be null
-            'image_path' => 'required',
-            // 'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validate image files
+            'image_file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Validate image files
             'description' => 'nullable|string|max:255',
         ];
     }

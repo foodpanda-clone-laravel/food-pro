@@ -5,12 +5,8 @@ use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CartRequests\AddToCartRequest;
 use App\Http\Requests\CartRequests\AddToCartRequestV2;
-use App\Models\Cart\ShoppingSession;
-use App\Services\Cart\CartService;
 use App\Services\Cart\AddToCartServiceV2;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 
