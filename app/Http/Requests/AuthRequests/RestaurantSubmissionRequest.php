@@ -40,7 +40,7 @@ class RestaurantSubmissionRequest extends BaseRequest
             'account_owner_title' => 'required|string|max:255',
             'cuisine' => 'required|string|max:100',
             'restaurant_name' => 'required|string|max:255',
-            'logo_path' => 'required|string|max:255', // Adjust if using file upload validation
+            'logo_path' => 'required|mimes:jpeg,jpg,png', // Adjust if using file upload validation
         ];
     }
 }
