@@ -9,7 +9,9 @@ use App\Pipelines\FilterPipeline;
 use App\Models\User\User;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\MenuResource;
-
+use App\Http\Resources\OrderResource;
+use App\Http\Resources\RestaurantResource;
+use Illuminate\Support\Facades\Storage;
 use Exception;
 use Illuminate\Support\Str;
 use App\Interfaces\Customer\CustomerServiceInterface;
@@ -38,25 +40,26 @@ class CustomerService implements CustomerServiceInterface
       $customer->update($customerFields);
     }
   }
-  public function getOrderHistory($customerId)
+  public function getOrderHistory()
   {
-    $customer = Customer::findOrFail($customerId);
-    return Order::where('user_id', $customer->user_id)
-      ->with(['orderItems.menuItem'])
+    $user = auth()->user();
+    $customer = $user->customer;
+
+    $orders = Order::where('user_id', $customer->user_id)
+      ->where('status', 'delivered')
+      ->with(['orderItems.menuItem', 'restaurant', 'branch', 'rating'])
       ->get();
+
+    return OrderResource::collection($orders)->additional(['showRating' => true]);
   }
 
   public function getMenusByRestaurant($restaurantId)
   {
-    $menus = Menu::where('restaurant_id', $restaurantId)
-      ->with([
-        'restaurant.ratings',
-        'restaurant.branches',
-        'menuItems'
-      ])
-      ->get();
+    $restaurant = Restaurant::with([
+      'menus.menuItems'
+    ])->findOrFail($restaurantId);
 
-    return MenuResource::collection($menus);
+    return new MenuResource($restaurant);
   }
 
   public function searchRestaurant($searchTerm)
@@ -120,7 +123,7 @@ class CustomerService implements CustomerServiceInterface
 
   public function getProfile($userId)
   {
-    return Customer::with(['user:id,first_name,last_name,phone_number,email'])
+    return Customer::with('user:id,first_name,last_name,phone_number,email,email_verified_at,created_at,updated_at')
       ->where('user_id', $userId)
       ->firstOrFail();
   }
@@ -151,16 +154,15 @@ class CustomerService implements CustomerServiceInterface
 
   public function getActiveOrder()
   {
-    return Order::whereHas('user', function ($query) {
-      $query->where('id', auth()->id());
-    })
+    $user = auth()->user();
+    $customer = $user->customer;
+
+    $activeOrder = Order::where('user_id', $customer->user_id)
       ->where('status', 'in progress')
-      ->with([
-        'orderItems.menuItem',
-        'restaurant:name,id',
-        'branch:address,id'
-      ])
-      ->firstOrFail();
+      ->with(['orderItems.menuItem', 'restaurant', 'branch', 'rating'])
+      ->first();
+
+    return $activeOrder;
   }
 
   public function submitFeedback($customerId, $data)
@@ -190,26 +192,7 @@ class CustomerService implements CustomerServiceInterface
 
     $filteredRestaurants = FilterPipeline::apply($query, request()->all())->get();
 
-    return $filteredRestaurants->map(function ($restaurant) {
-      // Calculate average rating
-      $averageRating = $restaurant->ratings->avg('stars') ?? 0;
-
-      $deal = $restaurant->deals->first();
-      $discount = $deal ? $deal->discount : 0;
-
-      return [
-        'image' => $restaurant->logo_path,
-        'name' => $restaurant->name,
-        'cuisine' => $restaurant->cuisine,
-        'rating' => $averageRating,
-        'discount' => $discount,
-        'deliveryTime' => optional($restaurant->branches->first())->delivery_time ?? 'N/A',
-        'deliveryFee' => optional($restaurant->branches->first())->delivery_fee ?? 0,
-        'opening_time' => $restaurant->opening_time,
-        'closing_time' => $restaurant->closing_time,
-        'business_type' => $restaurant->business_type,
-      ];
-    });
+    return RestaurantResource::collection($filteredRestaurants);
   }
 
   public function getDeals()
@@ -227,6 +210,10 @@ class CustomerService implements CustomerServiceInterface
           ->pluck('average_rating')
           ->first() ?? 0;
 
+        $restaurantLogoUrl = $deal->restaurant && $deal->restaurant->logo_path
+          ? Storage::url($deal->restaurant->logo_path)
+          : null;
+
         return [
           'id' => $deal->id,
           'name' => $deal->name,
@@ -235,12 +222,13 @@ class CustomerService implements CustomerServiceInterface
           'discount' => $deal->discount,
           'average_rating' => round($averageRating, 2),
           'restaurant_name' => optional($deal->restaurant)->name ?? 'Unknown',
-          'restaurant_logo' => optional($deal->restaurant)->logo_path ?? 'N/A',
+          'restaurant_logo' => $restaurantLogoUrl ?? 'N/A',
           'restaurant_cuisine' => optional($deal->restaurant)->cuisine ?? 'N/A',
         ];
       });
 
     return $deals;
   }
+
 
 }
