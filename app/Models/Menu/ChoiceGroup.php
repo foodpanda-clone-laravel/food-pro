@@ -16,6 +16,9 @@ class ChoiceGroup extends Model
     public function choices(){
         return $this->hasMany(Choice::class,'choice_group_id','id');
     }
+    public function addons(){
+        return $this->hasMany(Addon::class,'choice_group_id','id');
+    }
     public function restaurant(){
         return $this->belongsTo(Restaurant::class);
     }
