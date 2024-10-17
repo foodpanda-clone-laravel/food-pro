@@ -162,6 +162,9 @@ class MenuControllerV2 extends Controller
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'deleted choice group successfully');
     }
 
+
+
+
     public function updateChoiceGroup(UpdateChoiceGroupRequest $request){
         $data = $request->getValidatedData();
         $result = $this->menuService->updateChoiceGroup($data);
