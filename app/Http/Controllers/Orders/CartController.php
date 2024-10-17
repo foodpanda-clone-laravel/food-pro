@@ -33,7 +33,10 @@ class CartController extends Controller
 
     }
 
-    public function calculateItemsTotal(){
+    public function calculateItemsTotal(AddToCartRequestV2 $request){
+        $data = $request->getValidatedData();
+        $cart = $this->addToCart();
+
         $total = $this->cartService->calculateItemsTotal();
         return response($total, Response::HTTP_OK);
     }

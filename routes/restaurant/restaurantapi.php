@@ -23,8 +23,9 @@ Route::group(['middleware' => 'request.logs',], function () {
     });
     Route::controller(RevenueController::class)->group(function(){
         Route::get('/my-revenue', 'viewMyRevenue');
-
+        Route::get('/restaurant-revenues', 'viewRestaurantRevenues');
     });
+
 
 Route::group(['middleware' => 'api',], function () {
     Route::get('/restaurant', [RestaurantController::class, 'viewRestaurantById']);

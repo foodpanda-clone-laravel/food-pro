@@ -9,18 +9,15 @@ class RestaurantResource extends JsonResource
 {
     public function toArray($request)
     {
-        // Generate the image URL for the restaurant logo
-        $logoUrl = $this->logo_path ? Storage::url($this->logo_path) : null;
-
+//        $logoPath = env('APP_URL').Storage::url($this->logo_path);
+        $logoPath = rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($this->logo_path), '/');
         // Get the first deal and calculate discount
         $deal = $this->deals->first();
         $discount = $deal ? $deal->discount : 0;
 
-        // Calculate the average rating
         $averageRating = $this->ratings->avg('stars') ?? 0;
-
         return [
-            'image' => $logoUrl, // Image URL for frontend
+            'image' => $logoPath, // Image URL for frontend
             'name' => $this->name,
             'cuisine' => $this->cuisine,
             'rating' => $averageRating,

@@ -20,9 +20,8 @@ class OrderDashboardController extends Controller
 
     public function index()
     {
-       // dd(vars: $user);
         $orders = $this->orderService->getUserOrders();
-      
+
 
         return Helpers::sendSuccessResponse(200, 'Orders Fetched Successfully', $orders);
     }
@@ -30,7 +29,7 @@ class OrderDashboardController extends Controller
     public function updateOrderStatus(UpdateOrderStatusRequest $request)
     {
         $orderId = $request->input('order_id');
-    
+
         if ($request->status === 'confirm') {
             $order = $this->orderService->confirmOrder($orderId);
             return Helpers::sendSuccessResponse(200, 'Order confirmed and marked as delivered successfully', $order);
@@ -38,7 +37,7 @@ class OrderDashboardController extends Controller
             $order = $this->orderService->cancelOrder($orderId);
             return Helpers::sendSuccessResponse(200, 'Order canceled successfully', $order);
         }
-    
+
         return Helpers::sendFailureResponse(400, 'Invalid status');
     }
 
