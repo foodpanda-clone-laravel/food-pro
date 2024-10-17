@@ -28,7 +28,6 @@ class RestaurantController extends Controller
     //         return Helpers::sendFailureResponse(500, 'Failed to retrieve restaurant details');
     //     }
     // }
-
     public function deleteRestaurant()
 {
     try {
@@ -40,37 +39,37 @@ class RestaurantController extends Controller
     }
 }
 
-public function restoreRestaurant()
-{
-    try {
-        $result = $this->restaurantService->restoreRestaurant();
-        return Helpers::sendSuccessResponse(200, 'Restaurant restored successfully', $result);
-    } catch (\Exception $e) {
-        return Helpers::sendFailureResponse(400, 'Could not restore restaurant');
+    public function restoreRestaurant()
+    {
+        try {
+            $result = $this->restaurantService->restoreRestaurant();
+            return Helpers::sendSuccessResponse(200, 'Restaurant restored successfully', $result);
+        } catch (\Exception $e) {
+            return Helpers::sendFailureResponse(400, 'Could not restore restaurant');
+        }
     }
-}
 
 
-public function updateRestaurant(UpdateRestaurantRequest $request)
-{
-    // Validate the incoming request
+    public function updateRestaurant(UpdateRestaurantRequest $request)
+    {
+        // Validate the incoming request
 
 
-    $validatedData = $request->getValidatedData();
+        $validatedData = $request->getValidatedData();
 
-    
-    // Ensure you have validation rules defined
 
-    
+        // Ensure you have validation rules defined
 
 
 
 
-    
-        // Call the service to update the restaurant details
-        $this->restaurantService->updateRestaurant($validatedData);
-        return Helpers::sendSuccessResponse(200, 'Restaurant updated successfully');
-     
-}
 
-}
+
+
+            // Call the service to update the restaurant details
+            $this->restaurantService->updateRestaurant($validatedData);
+            return Helpers::sendSuccessResponse(200, 'Restaurant updated successfully');
+
+    }
+
+    }

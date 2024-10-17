@@ -6,10 +6,12 @@ use App\DTO\BranchDTO;
 use App\DTO\CustomerDTO;
 use App\DTO\RestaurantDTO;
 use App\DTO\RestaurantOwnerDTO;
+use App\DTO\RestaurantRequestDTO;
 use App\DTO\UserDTO;
 use App\Interfaces\Auth\RegisterServiceInterface;
 use App\Models\Restaurant\Branch;
 use App\Models\Restaurant\Restaurant;
+use App\Models\Restaurant\RestaurantRequest;
 use App\Models\User\Customer;
 use App\Models\User\RestaurantOwner;
 use App\Models\User\User;
@@ -102,6 +104,22 @@ class RegisterService implements RegisterServiceInterface
         Log::error('Registration failed: ' . $e->getMessage());
         return false;
     }
+}
+
+public function submitRestaurantRequest(array $data){
+
+    try {
+        $form = new RestaurantRequestDTO($data);
+        $form = RestaurantRequest::create($form->toArray());
+    
+        return $form;
+    } catch (\Exception $e) {
+
+       return $e;
+    }
+
+
+
 }
 
 

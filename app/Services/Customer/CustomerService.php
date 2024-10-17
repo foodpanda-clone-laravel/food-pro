@@ -2,24 +2,16 @@
 
 namespace App\Services\Customer;
 
-use App\Models\Customer;
-use App\Models\Order;
-use App\Models\Menu;
-use App\Models\Deal;
-use App\Models\Restaurant;
-use App\Models\Reward;
-use App\Models\Rating;
-use App\Models\Favourite;
+use App\Models\Menu\Deal\Deal;
 use App\DTO\CustomerDTO;
 use App\Helpers\Helpers;
 use App\Pipelines\FilterPipeline;
-use Illuminate\Http\Response;
-use App\Models\User;
-
+use App\Models\User\User;
 use Illuminate\Support\Facades\DB;
+use App\Http\Resources\MenuResource;
+
 use Exception;
 use Illuminate\Support\Str;
-
 use App\Interfaces\Customer\CustomerServiceInterface;
 use App\Models\Customer\Favourite;
 use App\Models\Customer\Reward;
@@ -54,9 +46,17 @@ class CustomerService implements CustomerServiceInterface
       ->get();
   }
 
-  public function getMenus()
+  public function getMenusByRestaurant($restaurantId)
   {
-    return Menu::with('restaurant')->get();
+    $menus = Menu::where('restaurant_id', $restaurantId)
+      ->with([
+        'restaurant.ratings',
+        'restaurant.branches',
+        'menuItems'
+      ])
+      ->get();
+
+    return MenuResource::collection($menus);
   }
 
   public function searchRestaurant($searchTerm)
@@ -76,19 +76,23 @@ class CustomerService implements CustomerServiceInterface
     return $restaurants;
   }
 
-  public function getRewards($customerId)
+  public function getRewards()
   {
-    $customer = Customer::findOrFail($customerId);
-    return Reward::where('user_id', $customer->user_id)->with('badge')->get();
+    $userId = auth()->user()->id;
+
+    return Reward::where('user_id', $userId)->with('badge')->get();
   }
 
-  public function usePoints($customerId, $pointsToUse)
+  public function usePoints($pointsToUse)
   {
-    $customer = Customer::findOrFail($customerId);
-    $reward = Reward::where('user_id', $customer->user_id)->sum('points');
+    $userId = auth()->user()->id;
+
+    $reward = Reward::where('user_id', $userId)->sum('points');
+
     if ($pointsToUse > $reward) {
       return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Not enough points');
     }
+
     return $this->convertPointsToMoney($pointsToUse);
   }
 
@@ -114,9 +118,11 @@ class CustomerService implements CustomerServiceInterface
     $customer->save();
   }
 
-  public function getProfile($customerId)
+  public function getProfile($userId)
   {
-    return Customer::findOrFail($customerId);
+    return Customer::with(['user:id,first_name,last_name,phone_number,email'])
+      ->where('user_id', $userId)
+      ->firstOrFail();
   }
 
   public function addFavoriteRestaurant($customerId, $restaurantId)
@@ -143,13 +149,18 @@ class CustomerService implements CustomerServiceInterface
     return $this->getFavoriteItems($customerId);
   }
 
-  public function getActiveOrder($customerId)
+  public function getActiveOrder()
   {
-    $customer = Customer::findOrFail($customerId);
-    return Order::where('user_id', $customer->user_id)
+    return Order::whereHas('user', function ($query) {
+      $query->where('id', auth()->id());
+    })
       ->where('status', 'in progress')
-      ->with('orderItems.menuItem')
-      ->first();
+      ->with([
+        'orderItems.menuItem',
+        'restaurant:name,id',
+        'branch:address,id'
+      ])
+      ->firstOrFail();
   }
 
   public function submitFeedback($customerId, $data)
@@ -174,16 +185,24 @@ class CustomerService implements CustomerServiceInterface
 
   public function getAllRestaurants()
   {
-    $query = Restaurant::query()->with('branches:restaurant_id,delivery_fee,delivery_time');
+    $query = Restaurant::query()
+      ->with(['branches:restaurant_id,delivery_fee,delivery_time', 'ratings', 'deals']);
 
-    // Apply filters using the pipeline
     $filteredRestaurants = FilterPipeline::apply($query, request()->all())->get();
 
     return $filteredRestaurants->map(function ($restaurant) {
+      // Calculate average rating
+      $averageRating = $restaurant->ratings->avg('stars') ?? 0;
+
+      $deal = $restaurant->deals->first();
+      $discount = $deal ? $deal->discount : 0;
+
       return [
         'image' => $restaurant->logo_path,
         'name' => $restaurant->name,
         'cuisine' => $restaurant->cuisine,
+        'rating' => $averageRating,
+        'discount' => $discount,
         'deliveryTime' => optional($restaurant->branches->first())->delivery_time ?? 'N/A',
         'deliveryFee' => optional($restaurant->branches->first())->delivery_fee ?? 0,
         'opening_time' => $restaurant->opening_time,

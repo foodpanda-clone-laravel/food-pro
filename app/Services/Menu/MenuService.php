@@ -23,7 +23,7 @@ class MenuService implements MenuServiceInterface
     public function getRestaurant()
     {
         $user = Auth::user();
-        $owner = RestaurantOwner::where('user_id', $user->id)->firstOrFail();
+        $owner = $user->restaurantOwner;
         $restaurant = Restaurant::where('owner_id', $owner->id)->firstOrFail();
         return $restaurant;
     }
@@ -39,6 +39,7 @@ class MenuService implements MenuServiceInterface
                 ->firstOrFail();
             $data['branch_id'] = $branch->id;
             $data['restaurant_id'] = $restaurant->id;
+
             $menu = Menu::create((new MenuDTO($data))->toArray());
             return ['success' => true, 'menu' => $menu];
         } catch (Exception $e) {
@@ -52,6 +53,9 @@ class MenuService implements MenuServiceInterface
         try {
             $menu = Menu::findOrFail($menu_id);
             $data['menu_id'] = $menu->id;
+            $imagePath = $data['image_file']->store('menuitems', 'public'); // Save file to 'storage/app/public/logos'
+
+            $data['image_file'] = $imagePath;
             $menuItem = MenuItem::create((new MenuItemDTO($data))->toArray());
             return ['success' => true, 'menuItem' => $menuItem];
         } catch (ModelNotFoundException $e) {
@@ -167,9 +171,9 @@ class MenuService implements MenuServiceInterface
                 'variations' => $variations,
             ];
         } catch (ModelNotFoundException $e) {
-            return ['success' => false, 'error' => 'Menu item not found'];
+            dd($e);
         } catch (Exception $e) {
-            return ['success' => false, 'error' => $e->getMessage()];
-        }
+            dd($e);
+                }
     }
 }

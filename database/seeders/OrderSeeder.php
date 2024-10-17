@@ -20,8 +20,9 @@ class OrderSeeder extends Seeder
 
             for ($day = 1; $day <= $daysInMonth; $day++) {
                 foreach ($restaurants as $restaurantId) {
+                    $orderCount = rand(1, 10);
                     // Generate 10 orders for each day and restaurant
-                    for ($i = 0; $i < 10; $i++) {
+                    for ($i = 0; $i < $orderCount; $i++) {
                         $createdAt = Carbon::create($month . '-' . $day, rand(9, 20), rand(0, 59)); // Random time between 9 AM and 8 PM
                         $estimatedDeliveryTime = $createdAt->copy()->addMinutes(15); // Add 15 minutes to created_at
 

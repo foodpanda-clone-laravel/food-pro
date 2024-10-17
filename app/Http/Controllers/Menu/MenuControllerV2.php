@@ -4,12 +4,17 @@ namespace App\Http\Controllers\Menu;
 
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Customer\ProfileController;
+use App\Http\Requests\MenuRequest\AddChoiceGroupRequest;
 use App\Http\Requests\MenuRequest\AddMenuItemRequest;
 use App\Http\Requests\MenuRequest\AddOnRequest;
 use App\Http\Requests\MenuRequest\CreateMenuRequest;
+use App\Http\Requests\MenuRequest\RequireChoiceGroupIdRequest;
 use App\Http\Requests\MenuRequest\StoreChoicesRequest;
+use App\Http\Requests\MenuRequest\UpdateChoiceGroupRequest;
 use App\Http\Requests\MenuRequest\UpdateMenuItemRequest;
 use App\Http\Requests\MenuRequest\UpdateMenuRequest;
+use App\Http\Requests\ValidateVariationRequest;
 use App\Models\Menu\Menu;
 use App\Models\Menu\MenuItem;
 use App\Services\Menu\MenuServiceV2;
@@ -150,19 +155,26 @@ class MenuControllerV2 extends Controller
     }
     public function getAllChoiceGroups(){
         $result = $this->menuService->getAllChoiceGroupsByRestaurant();
-        return response($result);
+        return Helpers::sendSuccessResponse(200,'All choice Groups', $result);
     }
-    public function deleteChoiceGroup(Request $request){
+    public function deleteChoiceGroup(RequireChoiceGroupIdRequest $request){
+        $result = $this->menuService->deleteChoiceGroup($request->all());
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'deleted choice group successfully');
+    }
 
-    }
-    public function updateChoiceGroup(Request $request){
+    public function updateChoiceGroup(UpdateChoiceGroupRequest $request){
+        $data = $request->getValidatedData();
+        $result = $this->menuService->updateChoiceGroup($data);
+        if(!$result){
 
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Updated choice group successfully', $result);
+        }
+        else{
+            return Helpers::sendFailureResponse(500, 'internal server error');
+        }
     }
-    public function updateChoiceItem(Request $request){
-
-    }
-    public function createChoiceGroup(Request $request){
-        $result  = $this->menuService->createVariation($request->all());
+    public function createChoiceGroup(AddChoiceGroupRequest $request){
+        $result  = $this->menuService->createVariationV2($request->all());
         if(!$result){
             return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'internal srever error');
         }
@@ -171,6 +183,18 @@ class MenuControllerV2 extends Controller
 
         }
     }
+    public function viewMenuItemById(){
+        $result = $this->menuService->viewMenuItemById();
+        if(!$result){
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'internal server error');
+
+        }
+        else{
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'menu item', $result);
+        }
+    }
+
+
 }
 
 

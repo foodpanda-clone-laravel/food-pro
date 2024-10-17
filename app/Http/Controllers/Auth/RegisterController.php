@@ -7,6 +7,13 @@ use App\Http\Requests\AdminRequests\RegisterUserRequest;
 use App\Http\Requests\AuthRequests\RegisterRestaurantWithOwnerRequest;
 use App\Services\Auth\RegisterService;
 use App\Helpers\Helpers;
+use App\Http\Requests\AuthRequests\RestaurantSubmissionRequest;
+use Symfony\Component\HttpFoundation\Response;
+
+use GuzzleHttp\Psr7\Request;
+use Illuminate\Http\Request as HttpRequest;
+use PHPUnit\TextUI\Help;
+
 class RegisterController extends Controller
 {
     protected $registerService;
@@ -40,5 +47,15 @@ class RegisterController extends Controller
             return Helpers::sendFailureResponse(400, 'could not signup');
         }
     }
+    
+
+    public function submitRestaurantRequest(RestaurantSubmissionRequest $request){
+
+        $data  = $request->getValidatedData();
+        $result = $this->registerService->submitRestaurantRequest($data);
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Request submitted successfully', $result);
+
+ }
 
 }
