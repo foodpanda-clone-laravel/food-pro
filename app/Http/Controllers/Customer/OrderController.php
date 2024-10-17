@@ -39,6 +39,13 @@ class OrderController extends CustomerController
         return Helpers::sendFailureResponse(Response::HTTP_NOT_FOUND, 'No active order found');
     }
 
+    public function viewOrderDetails($orderId)
+    {
+        $orderDetails = $this->customerService->getOrderDetails($orderId);
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order details retrieved successfully', $orderDetails);
+    }
+
     public function checkout(CustomerOrderService $customerOrderService)
     {
         $data = $customerOrderService->checkout();
