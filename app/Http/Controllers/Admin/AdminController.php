@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\UpdateApplicationRequest;
 use App\Services\AdminService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +22,7 @@ class AdminController extends Controller
     }
 
 
+
     public function viewRestaurantApplications(){
 
         $result= $this->adminService->viewRestaurantApplications();
@@ -36,6 +38,41 @@ class AdminController extends Controller
         return Helpers::sendSuccessResponse(Response::HTTP_OK,'Your request has been approved', $result);
 
     }
+    public function rejectRequest($request_id){
+        $result= $this->adminService->rejectRequest($request_id);
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Your request has been rejected', $result);
+
+    }
+
+    public function viewAllRestaurants(){
+        $result= $this->adminService->viewAllRestaurants();
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,'All restaurants', $result);
+
+    }
+
+    public function updateRestaurantApplication(UpdateApplicationRequest $request,$request_id){
+        $data=$request->getValidatedData();
+        $result= $this->adminService->updateRestaurantApplication($data,$request_id);
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Your request has been updated', $result);
 
     
+}
+    public function viewAllOrders(){
+        $result= $this->adminService->viewAllOrders();
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,'All orders', $result);
+
+    
+}
+    public function viewOrderDetails($order_id){
+        $result= $this->adminService->viewOrderDetails();
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,'All orders', $result);
+
+    
+}
+
 }
