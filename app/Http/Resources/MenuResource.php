@@ -3,38 +3,43 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class MenuResource extends JsonResource
 {
     public function toArray($request)
     {
-        $restaurant = $this->restaurant;
-        $averageRating = $restaurant->ratings->avg('stars') ?? 0; // Average restaurant rating
-        $feedbacks = $restaurant->ratings->pluck('feedback')->all(); // Get all feedback for the restaurant
-        $branchAddress = optional($restaurant->branches->first())->address ?? 'N/A'; // Get address from the branches
-
-        // Format the menu items under the menu
-        $menuItems = $this->menuItems->map(function ($menuItem) {
-            return [
-                'menu_item_name' => $menuItem->name,
-                'price' => $menuItem->price,
-                'description' => $menuItem->description,
-                'image' => $menuItem->image_file,
-            ];
-        });
+        // Generate the logo URL using the Storage::url() function
+        $restaurantLogoUrl = $this->logo_path
+            ? Storage::url($this->logo_path)
+            : null;
 
         return [
-            'restaurant_logo' => $restaurant->logo_path,
-            'restaurant_name' => $restaurant->name,
-            'business_type' => $restaurant->business_type,
-            'cuisine' => $restaurant->cuisine,
-            'average_rating' => $averageRating,
-            'feedbacks' => $feedbacks,
-            'opening_time' => $restaurant->opening_time,
-            'closing_time' => $restaurant->closing_time,
-            'address' => $branchAddress,
-            'menu_name' => $this->name, // Current menu's name
-            'menu_items' => $menuItems, // List of menu items under this menu
+            'restaurant' => [
+                'id' => $this->id,
+                'name' => $this->name,
+                'business_type' => $this->business_type,
+                'cuisine' => $this->cuisine,
+                'average_rating' => $this->ratings->avg('stars') ?? 0,
+                'feedbacks' => $this->ratings->pluck('feedback')->all(),
+                'logo_url' => $restaurantLogoUrl,
+                'opening_time' => $this->opening_time,
+                'closing_time' => $this->closing_time,
+                'branch_address' => optional($this->branches->first())->address ?? 'N/A',
+            ],
+            'menus' => $this->menus->map(function ($menu) {
+                return [
+                    'menu_name' => $menu->name,
+                    'menu_items' => $menu->menuItems->map(function ($menuItem) {
+                        return [
+                            'menu_item_name' => $menuItem->name,
+                            'price' => $menuItem->price,
+                            'description' => $menuItem->description,
+                            'image_url' => $menuItem->image_file ? Storage::url($menuItem->image_file) : null, // Generate the URL for the menu item image
+                        ];
+                    }),
+                ];
+            }),
         ];
     }
 }

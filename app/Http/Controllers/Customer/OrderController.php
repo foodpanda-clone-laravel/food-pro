@@ -7,7 +7,7 @@ use App\Models\Cart\CartItem;
 use App\Models\Orders\Order;
 use App\Models\Restaurant\Branch;
 use App\Models\Restaurant\Restaurant;
-use App\Http\Resources\ActiveOrderResource;
+use App\Http\Resources\OrderResource;
 use App\Services\Customer\CustomerOrderService;
 use App\Services\Customer\CustomerService;
 use App\Http\Controllers\Controller;
@@ -21,10 +21,10 @@ use App\Services\Cart\AddToCartServiceV2;
 class OrderController extends CustomerController
 {
 
-    public function orderHistory(Request $request)
+    public function orderHistory()
     {
-        $customerId = $request->get('customer_id');
-        $orders = $this->customerService->getOrderHistory($customerId);
+        $orders = $this->customerService->getOrderHistory();
+
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order history retrieved successfully', $orders);
     }
 
@@ -32,11 +32,11 @@ class OrderController extends CustomerController
     {
         $activeOrder = $this->customerService->getActiveOrder();
 
-        return Helpers::sendSuccessResponse(
-            Response::HTTP_OK,
-            'Active order retrieved successfully',
-            new ActiveOrderResource($activeOrder)
-        );
+        if ($activeOrder) {
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Active order retrieved successfully', new OrderResource($activeOrder));
+        }
+
+        return Helpers::sendFailureResponse(Response::HTTP_NOT_FOUND, 'No active order found');
     }
 
     public function checkout(CustomerOrderService $customerOrderService)

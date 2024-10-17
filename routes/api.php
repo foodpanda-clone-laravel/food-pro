@@ -13,7 +13,7 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\UserController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Menu\MenuController;
+// use App\Http\Controllers\Menu\MenuController;
 use App\Http\Controllers\Restaurant\RestaurantController;
 
 
@@ -42,53 +42,18 @@ Route::post('/logout', [UserController::class, 'logout']);
 
 
 
-
-// Route::middleware(['request.logs', 'jwt'])->group(function () {
-
-// Customer-related routes
-Route::prefix('customers')->group(function () {
-    Route::controller(CustomerController::class)->group(function () {
-        Route::patch('edit-profile', 'editProfile');
-        Route::get('favorites', 'favoriteItems');
-        Route::get('rewards', 'viewRewards');
-        Route::post('use-points', 'usePointsAtCheckout');
-        Route::patch('update-address', 'updateCustomerAddress')->name('updateCustomerAddress');
-        Route::get('profile', 'viewProfile');
-        Route::post('favorite-restaurants', 'addFavoriteRestaurant');
-        Route::delete('favorite-restaurants', 'removeFavoriteRestaurant');
-        Route::post('feedback', 'submitFeedback');
-        Route::get('menus', 'viewMenus');
-        Route::get('search-restaurant', 'searchRestaurant');
-        Route::get('restaurants', 'viewAllRestaurants');
-        Route::get('deals', 'viewDeals');
-    });
-});
-
-// Order-related routes
-Route::prefix('orders')->group(function () {
-    Route::controller(OrderController::class)->group(function () {
-        Route::get('history', 'orderHistory');
-        Route::get('active-order', 'activeOrder');
-    });
-
-});
-
-
 // Test user route (authenticated)
 Route::get('/user', function (Request $request) {
     return response()->json($request->auth);
 
 
-    Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
-    });
-    Route::controller(CartController::class)->group(function () {
-        Route::get('/session', 'getShoppingSession');
-    });
-
-   
-
-
+    //Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
 });
+Route::controller(CartController::class)->group(function () {
+    Route::get('/session', 'getShoppingSession');
+});
+
+
 Route::post('create-menu/{branch_id}', [MenuController::class, 'createMenu']);
 Route::post('add-item/menu/{menu_id}', [MenuController::class, 'addMenuItem']);
 Route::post('add-addon/menu/{menu_item_id}', [MenuController::class, 'addOns']);
