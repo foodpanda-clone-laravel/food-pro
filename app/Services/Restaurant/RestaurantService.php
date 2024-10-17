@@ -52,10 +52,10 @@ class RestaurantService
     //         ]);
 
     //     } catch (\Exception $e) {
-    //         Helpers::createErrorLogs($e, request()->id); 
+    //         Helpers::createErrorLogs($e, request()->id);
     //         return Helpers::sendFailureResponse(500, 'Failed to retrieve restaurant details');
     //     }
-    // } 
+    // }
 
     /**
      * Soft delete the restaurant owned by the logged-in user
@@ -66,20 +66,12 @@ class RestaurantService
     {
         try {
             $restaurant = $this->getRestaurantOwner();
-            // $restaurant->delete();
-
+             $restaurant->delete();
             return true;
         } catch (\Exception $e) {
-            Helpers::createErrorLogs($e, request()->id);
-            throw $e;
+           dd($e);
         }
     }
-
-    /**
-     * Restore the soft-deleted restaurant owned by the logged-in user
-     *
-     * @return mixed
-     */
     public function restoreRestaurant()
     {
         try {
@@ -88,6 +80,7 @@ class RestaurantService
 
             return $restaurant; // Return the restored restaurant details if needed
         } catch (\Exception $e) {
+            dd($e);
             return Helpers::sendFailureResponse(400, 'Could not restore restaurant');
         }
     }
@@ -103,7 +96,7 @@ class RestaurantService
 
         try {
 
-            $restaurant = $this->getRestaurantOwner();            
+            $restaurant = $this->getRestaurantOwner();
             $branch= Branch::where('restaurant_id',$restaurant->id)->first();
 
             $restaurant->update([
@@ -114,7 +107,7 @@ class RestaurantService
             ]);
 
             if (isset($data['address'])) {
-                
+
                 $branch->update([
                     'address' => $data['address'],
                 ]);

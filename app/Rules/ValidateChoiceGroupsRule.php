@@ -7,26 +7,15 @@ use Illuminate\Contracts\Validation\Rule;
 
 class ValidateChoiceGroupsRule implements Rule
 {
-    /**
-     * Create a new rule instance.
-     *
-     * @return void
-     */
+
     protected $menuItemId;
 
-    // Constructor to accept menu_item_id
+    // Constructor to initialize menu_item_id
     public function __construct($menuItemId)
     {
         $this->menuItemId = $menuItemId;
     }
 
-    /**
-     * Determine if the validation rule passes.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @return bool
-     */
     public function passes($attribute, $value)
     {
         // add a unique rule for choiceGroupIds columns
@@ -50,11 +39,7 @@ class ValidateChoiceGroupsRule implements Rule
         }
     }
 
-    /**
-     * Get the validation error message.
-     *
-     * @return string
-     */
+
     public function message()
     {
         return 'The selected choice group is not valid.';
