@@ -9,6 +9,7 @@ use App\DTO\RestaurantOwnerDTO;
 use App\DTO\RestaurantRequestDTO;
 use App\DTO\UserDTO;
 use App\Interfaces\Auth\RegisterServiceInterface;
+use App\Mail\RequestRecievedMail;
 use App\Models\Restaurant\Branch;
 use App\Models\Restaurant\Restaurant;
 use App\Models\Restaurant\RestaurantRequest;
@@ -18,8 +19,10 @@ use App\Models\User\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
-
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class RegisterService implements RegisterServiceInterface
 {
@@ -109,13 +112,21 @@ class RegisterService implements RegisterServiceInterface
 public function submitRestaurantRequest(array $data){
 
     try {
+        $imagePath = $data['logo_path']->store('RestaurantLogos', 'public'); // Save file to 'storage/app/public/logos'
+
+        $data['logo_path'] = $imagePath;
         $form = new RestaurantRequestDTO($data);
         $form = RestaurantRequest::create($form->toArray());
+
+        
+
+        Mail::to($data['email'])->send(new RequestRecievedMail($data['first_name']));
+
     
         return $form;
     } catch (\Exception $e) {
 
-       return $e;
+        throw new HttpException(Response::HTTP_BAD_REQUEST, $e->getMessage());
     }
 
 

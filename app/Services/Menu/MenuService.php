@@ -52,6 +52,8 @@ class MenuService implements MenuServiceInterface
     {
         try {
             $menu = Menu::findOrFail($menu_id);
+            $imagePath = $data['image_file']->store('menuitems', 'public'); // Save file to 'storage/app/public/logos'
+            $data['image_file'] = $imagePath;
             $data['menu_id'] = $menu->id;
             $imagePath = $data['image_file']->store('menuitems', 'public'); // Save file to 'storage/app/public/logos'
 
