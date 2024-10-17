@@ -16,4 +16,7 @@ Route::controller(CartController::class)->group(function () {
 });
 Route::middleware('auth:api')->group(function () {
     Route::get('/restaurant/orders', [OrderDashboardController::class, 'index']);
+    Route::post('orders/update-status', [OrderDashboardController::class, 'updateOrderStatus']);
 });
+
+
