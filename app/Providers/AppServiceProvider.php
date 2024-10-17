@@ -60,6 +60,11 @@ class AppServiceProvider extends ServiceProvider
 			\App\Interfaces\Services\RestaurantService\RestaurantServiceInterface::class,
 			\App\Services\Services\RestaurantService\RestaurantService::class
 		);
+
+		$this->app->bind(
+			\App\Interfaces\RevenueServiceInterface::class,
+			\App\Services\RevenueService::class
+		);
     }
 
     /**

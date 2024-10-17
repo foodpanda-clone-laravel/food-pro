@@ -12,26 +12,27 @@ use App\Models\Menu\AssignedChoiceGroup;
 use App\Models\Menu\Choice;
 use App\Models\Menu\ChoiceGroup;
 use App\Models\Menu\Menu;
+use App\Models\Menu\MenuItem;
 use Illuminate\Support\Facades\DB;
 
 class MenuServiceV2 extends MenuBaseService implements MenuServiceV2Interface
 {
 
-    public function createAddon(array $data, int $menu_item_id)
-    {
-        try {
-            // Find the menu item
-            $menu_item = MenuItem::findOrFail($menu_item_id);
-
-            $data['menu_item_id']=$menu_item->id;
-
-            $addOn = Addon::create((new AddonDTO($data))->toArray());
-
-            return ['success' => true, 'addon' => $addOn]; // Return the addon
-        } catch (Exception $e) {
-            return ['success' => false, 'error' => 'Unable to create addon'];
-        }
-    }
+//    public function createAddon(array $data, int $menu_item_id)
+//    {
+//        try {
+//            // Find the menu item
+//            $menu_item = MenuItem::findOrFail($menu_item_id);
+//
+//            $data['menu_item_id']=$menu_item->id;
+//
+//            $addOn = Addon::create((new AddonDTO($data))->toArray());
+//
+//            return ['success' => true, 'addon' => $addOn]; // Return the addon
+//        } catch (Exception $e) {
+//            return ['success' => false, 'error' => 'Unable to create addon'];
+//        }
+//    }
 
 
     public function addChoiceGroup($data){
@@ -73,18 +74,18 @@ class MenuServiceV2 extends MenuBaseService implements MenuServiceV2Interface
             return false;
         }
     }
-    public function addChoiceItem($data){
+    public function addChoiceItem($data, $choices){
     // I want the menu item to add in the choice group , here I need validation check
         try{
 
-            $choices = json_decode($data['choices'], true);
+//            $choices = json_decode($choices, true);
             $choicesToInsert = [];
 
             foreach ($choices as $choice) {
                 $choicesToInsert[] = [
-                    'choice_group_id' => $data['choice_group_id'],
+                    'choice_group_id' => $data['id'],
                     'name' => $choice['name'],
-                    'additional_price' => $choice['additional_price'],
+                    'price' => $choice['price'],
                 ];
             }
             $insertedChoices  = DB::table('choices')->insert($choicesToInsert);
@@ -101,10 +102,7 @@ class MenuServiceV2 extends MenuBaseService implements MenuServiceV2Interface
         return AssignedChoiceGroup::create($data);
 }
     public function createVariationV2($data){
-        // choice name
-        // is required: true or false,
-        // choice_type:
-        // choices :[]
+
         try{
             $restaurant = MenuBaseService::getRestaurant();
             $restaurantId = $restaurant->id;
@@ -145,8 +143,7 @@ class MenuServiceV2 extends MenuBaseService implements MenuServiceV2Interface
         return ChoiceGroup::where('id', $id)->first();
     }
 
-    // function for viewing all choice groups a restaurant has created,
-    // restricted access to restaurant owner only
+
     public function getAllChoiceGroupsByRestaurant(){
         $restaurant = MenuBaseService::getRestaurant();
         return $restaurant->load(['choiceGroups.choices', 'choiceGroups.addons']);
@@ -163,47 +160,106 @@ class MenuServiceV2 extends MenuBaseService implements MenuServiceV2Interface
         }
     }
     public function updateChoiceGroup($data){
-    }
-    public function storeChoices(array $data)
-    {
-        $restaurant = $this->getRestaurant();
-        $data['restaurant_id'] = $restaurant->id;
-        if ($data['isChoice'] == 1) {
-            // if it is compulsory add choices in choices
-            $variation = Variation::create((new VariationDTO($data))->toArray());
-            return response()->json([
-                'success' => true,
-                'message' => 'Variation saved successfully!',
-                'data' => $variation,
-            ]);
-        } else {
-            // if not add in addons
-            $addOn = Addon::create((new AddonDTO($data))->toArray());
-            return response()->json([
-                'success' => true,
-                'message' => 'Addon saved successfully!',
-                'data' => $addOn,
-            ]);
+        $restaurant = MenuBaseService::getRestaurant();
+        $data['restaurant_id']=$restaurant->id;
+        // if isrequired = 0 then we have addons as stored choices else choices
+        $choiceGroup = ChoiceGroup::where('id', $data['id'])->firstOrFail();
+        $storedChoices = $choiceGroup->choices;
+
+        $userChoices = json_decode($data['choices'], true);
+        $keyedUserChoices = array_column($userChoices, null, 'id');
+        // if choice not present in db then insert it
+        // if choice present in db but not in choices array delete it
+        $storedChoicesIds = array_column($storedChoices->toArray(), 'id');
+        $choicesToUpdateIds = array_column($userChoices, 'id');
+        try{
+            DB::beginTransaction();
+            $choiceGroupDTO = new ChoiceGroupDTO($data);
+            $choiceGroup->update($choiceGroupDTO->toArray());
+            if($choiceGroup->is_required==0){
+
+            }
+            else{
+
+            }
+            if($choiceGroup->is_required==0){
+                $storedChoices = $choiceGroup->addons;
+                $storedChoicesIds = array_column($storedChoices->toArray(), 'id');
+                $choicesToUpdateIds = array_column($userChoices, 'id');
+                foreach($storedChoicesIds as $id){
+                    $choice = Addon::where('id', $id)->first();
+                    if(in_array($id, $choicesToUpdateIds)){ // if choice is present in db update it
+                        $keyedUserChoices[$id]['choice_group_id']=$data['id'];
+                        $keyedUserChoices[$id]['restaurant_id']=$data['restaurant_id'];
+                        $updateChoiceDTO = new AddonDTO($keyedUserChoices[$id]);
+                        $choice->update($updateChoiceDTO->toArray());
+                    }
+                    else{ // if choice is not pressent in db delete it
+                        $choice->delete();
+                    }
+                }
+                if(isset($data['new_choices'])){
+                    $newChoices = json_decode($data['new_choices'],true);
+                    $this->createAddon($newChoices, $choiceGroup->id, $data['restaurant_id']);
+                }
+
+            }
+            else{
+                foreach($storedChoicesIds as $id){
+                    $choice = Choice::where('id', $id)->first();
+                    if(in_array($id, $choicesToUpdateIds)){ // if choice is present in db update it
+                        $keyedUserChoices[$id]['choice_group_id']=$data['id'];
+                        $updateChoiceDTO = new ChoiceItemsDTO($keyedUserChoices[$id]);
+                        $choice->update($updateChoiceDTO->toArray());
+                    }
+                    else{ // if choice is not pressent in db delete it
+                        $choice->delete();
+                    }
+                }
+                if(isset($data['new_choices'])){
+                    $newChoices = json_decode($data['new_choices'],true);
+                    $newChoices = $this->addChoiceItem($data, $newChoices);
+                }
+
+            }
+
+            DB::commit();
         }
-    }
-    public function updateChoiceItem(){
+        catch(\Exception $e){
+            DB::rollBack();
+            dd($e);
+        }
+
 
     }
+    public function viewMenuItemById($id){
+        $menuItem = MenuItem::where('id',$id)->firstOrFail();
+        return $menuItem;
+    }
+    public function createAddon($data, $choiceGroupId, $restaurantId){
+        foreach($data as $addon){
+            $addon['choice_group_id']=$choiceGroupId;
+            $addon['restaurant_id']=$restaurantId;
+            $addonDto = new AddonDTO($addon);
+            Addon::create($addonDto->toArray());
+        }
 
-    //is addtional ka
-    /***
-     * {
-     *
-     * choicename: 'Drink Sizes',
-     *
-     * ischoice: '0',
-     * i will add is choice column to variations
-     * if choice type is size add it to variations_v2
-     *
-     * choicetype: 'additional', if choice type is additional
-     *
-     * choiceitems: [{ name: 'Small', price: 1 }, { name: 'Medium', price: 1.5 }, { name: 'Large', price: 2 }, { name: 'Medium', price: 1.5 }, { name: 'Medium', price: 1.5 }, { name: 'Medium', price: 1.5 }],
-     *
-     * }
-     */
+    }
 }
+
+//is addtional ka
+/***
+ * {
+ *
+ * choicename: 'Drink Sizes',
+ *
+ * ischoice: '0',
+ * i will add is choice column to variations
+ * if choice type is size add it to variations_v2
+ *
+ * choicetype: 'additional', if choice type is additional
+ *
+ * choiceitems: [{ name: 'Small', price: 1 }, { name: 'Medium', price: 1.5 }, { name: 'Large', price: 2 }, { name: 'Medium', price: 1.5 }, { name: 'Medium', price: 1.5 }, { name: 'Medium', price: 1.5 }],
+ *
+ * }
+ */

@@ -161,10 +161,8 @@ class MenuControllerV2 extends Controller
         $result = $this->menuService->deleteChoiceGroup($request->all());
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'deleted choice group successfully');
     }
-    public function updateChoiceGroup(Request $request){
 
-    }
-    public function updateChoiceItem(UpdateChoiceGroupRequest $request){
+    public function updateChoiceGroup(UpdateChoiceGroupRequest $request){
         $data = $request->getValidatedData();
         $result = $this->menuService->updateChoiceGroup($data);
         if(!$result){
@@ -183,6 +181,16 @@ class MenuControllerV2 extends Controller
         else{
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'created choice group successfully');
 
+        }
+    }
+    public function viewMenuItemById(){
+        $result = $this->menuService->viewMenuItemById();
+        if(!$result){
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'internal server error');
+
+        }
+        else{
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'menu item', $result);
         }
     }
 
