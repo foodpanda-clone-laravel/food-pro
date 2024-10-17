@@ -35,7 +35,6 @@ class CustomerOrderService extends CustomerService implements CustomerOrderServi
             ->select('restaurants.id','restaurants.name')
             ->join('restaurants','cart_items.restaurant_id','=','restaurants.id')
             ->groupBy('restaurant_id')->first();
-
         // as for now we have only one branch so we are searching for branch with given restaurant id
         $branch= Branch::where('restaurant_id', $restaurant->id)->first();
         $data['order_details']=[
