@@ -70,7 +70,7 @@ class CustomerOrderService extends CustomerService implements CustomerOrderServi
             $data['branch_id']=$orderSummary['restaurant_details']['branch_id'];
             $data['total_amount']=$orderSummary['order_details']['total'];
             $data['delivery_charges']=$orderSummary['delivery_details']['delivery_fee'];
-            $data['delivery_address']=$address;
+            $data['delivery_address']=$address['delivery_address'];
             $orderDTO = new OrderDTO($data);
             $order = Order::create($orderDTO->toArray());
             $orderItems = $orderSummary['order_details']['items'];
@@ -82,11 +82,14 @@ class CustomerOrderService extends CustomerService implements CustomerOrderServi
             $orderItem = OrderItem::create($orderItemDTO->toArray());
             $orderedItems[] = $orderItem;
         }
-            $paymentDTO =
+        // fix total price null
+
+//            $paymentDTO = make payment table
         Db::commit();
         return $orderedItems;
         }
         catch(\Exception $e){
+            dd($e);
             DB::rollBack();
             return false;
         }

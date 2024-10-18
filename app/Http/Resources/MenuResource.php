@@ -11,9 +11,6 @@ class MenuResource extends JsonResource
     public function toArray($request)
     {
         // Generate the logo URL using the Storage::url() function
-        $restaurantLogoUrl = $this->logo_path
-            ? Storage::url($this->logo_path)
-            : null;
 
         return [
             'restaurant' => [
@@ -22,8 +19,8 @@ class MenuResource extends JsonResource
                 'business_type' => $this->business_type,
                 'cuisine' => $this->cuisine,
                 'average_rating' => $this->ratings->avg('stars') ?? 0,
-                'feedbacks' => $this->ratings->pluck('feedback')->all(),
-                'logo_url' => $restaurantLogoUrl,
+                'feedbacks' => $this->ratings->toArray(),
+                'logo_url' => rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($this->logo_path), '/'),
                 'opening_time' => $this->opening_time,
                 'closing_time' => $this->closing_time,
                 'branch_address' => optional($this->branches->first())->address ?? 'N/A',
@@ -35,7 +32,6 @@ class MenuResource extends JsonResource
                     'menu_items' => $menu->menuItems->map(function ($menuItem) {
                         $choiceGroups = $menuItem->assignedChoiceGroups->map(function ($assignedChoiceGroup) {
                             $choiceGroup = AssignedChoiceGroup::find($assignedChoiceGroup->id)->choiceGroup;
-
                             $choices = $choiceGroup->choices->map(function ($choice) {
                                 return [
                                     'id' => $choice->id,

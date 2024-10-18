@@ -9,7 +9,7 @@ class CheckoutRequest extends BaseRequest
     public function rules()
     {
         return [
-            'delivery_details'=>'required|string',
+            'delivery_address'=>'required|string',
         ];
     }
 }
