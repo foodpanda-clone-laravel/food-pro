@@ -10,7 +10,6 @@ use App\Models\User\User;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\OrderResource;
-use App\Http\Resources\OrderDetailsResource;
 use App\Http\Resources\RestaurantResource;
 use Illuminate\Support\Facades\Storage;
 use Exception;
@@ -68,12 +67,9 @@ class CustomerService implements CustomerServiceInterface
     return Restaurant::where('name', 'like', "%{$searchTerm}%")->get();
   }
 
-  public function getFavoriteItems()
+  public function getFavoriteItems($customerId)
   {
-    $user = auth()->user();
-    $customer = $user->customer;
-
-    $favoriteRestaurantIds = Favourite::where('customer_id', $customer->id)
+    $favoriteRestaurantIds = Favourite::where('customer_id', $customerId)
       ->pluck('restaurant_id');
 
     $restaurants = Restaurant::whereIn('id', $favoriteRestaurantIds)
@@ -132,35 +128,28 @@ class CustomerService implements CustomerServiceInterface
       ->firstOrFail();
   }
 
-  public function addFavoriteRestaurant($restaurantId)
+  public function addFavoriteRestaurant($customerId, $restaurantId)
   {
-    $user = auth()->user();
-    $customer = $user->customer;
-
-    $exists = Favourite::where('customer_id', $customer->id)
+    $exists = Favourite::where('customer_id', $customerId)
       ->where('restaurant_id', $restaurantId)
       ->exists();
 
     if (!$exists) {
       Favourite::create([
-        'customer_id' => $customer->id,
+        'customer_id' => $customerId,
         'restaurant_id' => $restaurantId
       ]);
     }
-
-    return $this->getFavoriteItems();
+    return $this->getFavoriteItems($customerId);
   }
 
-  public function removeFavoriteRestaurant($restaurantId)
+  public function removeFavoriteRestaurant($customerId, $restaurantId)
   {
-    $user = auth()->user();
-    $customer = $user->customer;
-
-    Favourite::where('customer_id', $customer->id)
+    Favourite::where('customer_id', $customerId)
       ->where('restaurant_id', $restaurantId)
       ->delete();
 
-    return $this->getFavoriteItems();
+    return $this->getFavoriteItems($customerId);
   }
 
   public function getActiveOrder()
@@ -174,22 +163,6 @@ class CustomerService implements CustomerServiceInterface
       ->first();
 
     return $activeOrder;
-  }
-
-  public function getOrderDetails($orderId)
-  {
-    $user = auth()->user();
-    $customer = $user->customer;
-
-    $order = Order::where('id', $orderId)
-      ->where('user_id', $customer->user_id)
-      ->with([
-        'orderItems.menuItem',
-        'restaurant',
-        'branch',
-      ])->firstOrFail();
-
-    return new OrderDetailsResource($order);
   }
 
   public function submitFeedback($customerId, $data)

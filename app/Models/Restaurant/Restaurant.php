@@ -9,13 +9,16 @@ use App\Models\User\RestaurantOwner;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Restaurant extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
-
+    public function __construct(){
+        return $this->logo_path = rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($this->logo_path), '/');
+    }
     // Relationships
     public function restaurantOwner()
     {

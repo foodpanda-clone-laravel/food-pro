@@ -6,10 +6,9 @@ use App\DTO\BranchDTO;
 use App\DTO\RestaurantDTO;
 use App\DTO\RestaurantOwnerDTO;
 use App\DTO\UserDTO;
+use App\Http\Resources\RestaurantApplicationResource;
 use App\Interfaces\AdminServiceInterface;
 use App\Mail\AcceptedRequestMail;
-use App\Mail\RejectRequestMail;
-use App\Models\Orders\Order;
 use App\Models\Restaurant\Branch;
 use App\Models\Restaurant\Restaurant;
 use App\Models\Restaurant\RestaurantRequest;
@@ -18,6 +17,7 @@ use App\Models\User\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Nette\Utils\Random;
 use Spatie\Permission\Models\Role;
 
@@ -44,8 +44,11 @@ class AdminService implements AdminServiceInterface
 
 
         try{
-            $requests= RestaurantRequest::all();
-            return $requests;
+            $restaurantRequests= RestaurantRequest::all();
+            $restaurantRequests->each(function ($restaurant) {
+                $restaurant->logo_path = rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($restaurant->logo_path), '/');
+            });
+            return $restaurantRequests;
         }catch (Exception $e){
             dd($e);
          }
@@ -53,41 +56,32 @@ class AdminService implements AdminServiceInterface
 
     }
     public function viewAllRestaurants(){
-        $restaurants= Restaurant::all();
-        return $restaurants;
 
     }
-    public function updateRestaurantApplication(array $data,$request_id){
-
-        $request = RestaurantRequest::findorfail($request_id);  
-
-        $request->update($data);
-
-        return $request;
-
+    public function updateRestaurantApplication(){
 
     }
 
-    public function approveRequest($request_id){ 
+    public function approveRequest($request_id){
 
     // Find the student by ID
         $request = RestaurantRequest::findorfail($request_id);
-      
+
 
         $data=$request->toArray();
         $data['password']=Random::generate(8);
         $temporarayPassword= $data['password'];
-        
+
 
         DB::beginTransaction();
-        
+
 
         try {
 
             if($request->status == 'approved'){
                 throw new Exception('The restaurant is already approved.');
-                
-                
+
+
             }
 
 
@@ -133,49 +127,12 @@ class AdminService implements AdminServiceInterface
         }
     }
 
-    public function rejectRequest($request_id){
-
-        try{
-        $request = RestaurantRequest::findorfail($request_id);
-        if(!$request->status == 'pending'){
-            throw new Exception('The restaurant is already rejected or approved');
-        }
-        $request->update([
-            'status' => 'declined',
-        ]);
-
-        Mail::to($request->email)->send(new RejectRequestMail($request->first_name));
-        return $request;
-
-    }catch (Exception $e){
-        dd($e);
-    }
-}
-
-public function viewAllOrders(){
-    try{
-        $orders=Order::all();
-        return $orders;
-    }
-
-    catch (Exception $e){
-        dd($e);
-    }
-}
 
 
-public function viewOrderDetails($order_id){
 
-    try{
-        $order=Order::findorfail($order_id);
-        return $order;
 
-    }catch (Exception $e){
-        dd($e);
-    }
-    
 
-}
+
 
 
 }
