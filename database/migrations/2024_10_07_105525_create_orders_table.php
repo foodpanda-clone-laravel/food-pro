@@ -14,7 +14,7 @@ class CreateOrdersTable extends Migration
             $table->unsignedBigInteger('restaurant_id');
             $table->unsignedBigInteger('branch_id');
             $table->float('total_amount');
-            $table->enum('status', ['in progress','confirmed', 'prepared', 'delivered', 'canceled']);
+            $table->enum('status', ['in progress', 'delivered', 'canceled']);
             $table->enum('order_type', ['delivery', 'takeaway']);
             $table->float('delivery_charges');
             $table->datetime('estimated_delivery_time');

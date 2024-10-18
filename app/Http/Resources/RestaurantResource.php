@@ -17,8 +17,10 @@ class RestaurantResource extends JsonResource
 
         $averageRating = $this->ratings->avg('stars') ?? 0;
         return [
-            'image' => $logoPath, // Image URL for frontend
-            'name' => $this->name,
+            'id'=>$this->id,
+            'image' => rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($this->logo_path), '/'),
+           'name' => $this->name,
+
             'cuisine' => $this->cuisine,
             'rating' => $averageRating,
             'discount' => $discount,

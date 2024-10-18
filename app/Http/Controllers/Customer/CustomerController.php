@@ -140,10 +140,9 @@ class CustomerController extends Controller
     }
     public function submitFeedback(SubmitFeedbackRequest $request)
     {
-        $customerId = $request->get('customer_id');
         $validatedData = $request->getValidatedData();
 
-        $feedback = $this->customerService->submitFeedback($customerId, $validatedData);
+        $feedback = $this->customerService->submitFeedback($validatedData);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Feedback submitted successfully', $feedback);
     }

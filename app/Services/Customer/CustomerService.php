@@ -10,6 +10,9 @@ use App\Models\User\User;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\OrderResource;
+
+use App\Http\Resources\FeedbackResource;
+
 use App\Http\Resources\OrderDetailsResource;
 use App\Http\Resources\RestaurantResource;
 use Illuminate\Support\Facades\Storage;
@@ -77,8 +80,21 @@ class CustomerService implements CustomerServiceInterface
       ->pluck('restaurant_id');
 
     $restaurants = Restaurant::whereIn('id', $favoriteRestaurantIds)
-      ->select('id', 'name', 'logo_path', 'cuisine', 'opening_time', 'closing_time')
-      ->get();
+      ->with('ratings')
+      ->get()
+      ->map(function ($restaurant) {
+        $averageRating = $restaurant->ratings->avg('stars') ?? 0;
+
+        return [
+          'id' => $restaurant->id,
+          'name' => $restaurant->name,
+          'logo_path' => $restaurant->logo_path,
+          'cuisine' => $restaurant->cuisine,
+          'opening_time' => $restaurant->opening_time,
+          'closing_time' => $restaurant->closing_time,
+          'average_rating' => round($averageRating, 2),
+        ];
+      });
 
     return $restaurants;
   }
@@ -177,6 +193,7 @@ class CustomerService implements CustomerServiceInterface
   }
 
   public function getOrderDetails($orderId)
+
   {
     $user = auth()->user();
     $customer = $user->customer;
@@ -194,7 +211,28 @@ class CustomerService implements CustomerServiceInterface
 
   public function submitFeedback($customerId, $data)
   {
-    $customer = Customer::findOrFail($customerId);
+    $user = auth()->user();
+    $customer = $user->customer;
+
+    $order = Order::where('id', $orderId)
+      ->where('user_id', $customer->user_id)
+      ->with([
+        'orderItems.menuItem',
+        'restaurant',
+        'branch',
+      ])->firstOrFail();
+
+    return new OrderDetailsResource($order);
+  }
+
+  public function submitFeedback($data)
+  {
+    $user = auth()->user();
+    $customer = $user->customer;
+
+    if (!$customer) {
+      throw new \Exception("Customer record not found for the logged-in user.");
+    }
 
     $order = Order::findOrFail($data['order_id']);
 
@@ -206,11 +244,10 @@ class CustomerService implements CustomerServiceInterface
       'stars' => $data['rating'],
     ]);
 
-    return [
-      'feedback' => $feedback,
-      'restaurant_id' => $order->restaurant_id
-    ];
+    // Return the feedback response using FeedbackResource
+    return new FeedbackResource($feedback);
   }
+
 
   public function getAllRestaurants()
   {
