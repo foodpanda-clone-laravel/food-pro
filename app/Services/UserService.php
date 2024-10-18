@@ -25,47 +25,33 @@ class UserService extends ShoppingSessionService
 
             $result = ['role' => $roleName, 'permissions' => $permissions, 'access_token' => $token, 'user_id' => $user_id];
             if ($roleName == 'Restaurant Owner') {
-
                 // Get restaurant details or assign null if restaurantOwner or restaurant is missing
-
                 $restaurant = $user->restaurantOwner->restaurant ?? null;
-
                 $result['restaurant_details'] = $restaurant;
 
-           
-
                 if ($restaurant) {
-
                     // If branches exist, retrieve the first address details
-
                     $address = $restaurant->branches->first() ?? null;
 
-           
-
                     // Assign address details if available, otherwise null
-
                     $addressDetails = $address
-
                         ? $address->address . ' ' . $address->city . ' ' . $address->postal_code
-
                         : null;
 
-           
-
                     // Include the address in restaurant details
-
                     $result['restaurant_details']['address'] = $addressDetails;
+                }
+            }
 
-                } else if ($roleName == 'Customer'){
+            else if ($roleName == 'Customer'){
                 $shoppingSession = ShoppingSessionService::getShoppingSession();
                 $cartItems = $shoppingSession->cartItems;
                 $result['cart_items'] = $cartItems;
             }
             return $result;
         }
-    }
         catch (\Exception $e){
-//dd($e->getMessage());
+            dd($e->getMessage());
             return false;
         }
     }

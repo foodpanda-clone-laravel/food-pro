@@ -10,7 +10,9 @@ use App\Models\User\User;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\OrderResource;
+
 use App\Http\Resources\FeedbackResource;
+
 use App\Http\Resources\OrderDetailsResource;
 use App\Http\Resources\RestaurantResource;
 use Illuminate\Support\Facades\Storage;
@@ -191,6 +193,23 @@ class CustomerService implements CustomerServiceInterface
   }
 
   public function getOrderDetails($orderId)
+
+  {
+    $user = auth()->user();
+    $customer = $user->customer;
+
+    $order = Order::where('id', $orderId)
+      ->where('user_id', $customer->user_id)
+      ->with([
+        'orderItems.menuItem',
+        'restaurant',
+        'branch',
+      ])->firstOrFail();
+
+    return new OrderDetailsResource($order);
+  }
+
+  public function submitFeedback($customerId, $data)
   {
     $user = auth()->user();
     $customer = $user->customer;

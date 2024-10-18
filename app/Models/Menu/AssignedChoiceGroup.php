@@ -11,10 +11,7 @@ class AssignedChoiceGroup extends Model
     protected $guarded = [];
     public function choiceGroup(){
         // assigned choice group belongs to choice group
-        return $this->belongsTo(ChoiceGroup::class);
-    }
-    public function menuItem(){
-        return $this->belongsTo(MenuItem::class,'menu_item_id','id');
+        return $this->belongsTo(ChoiceGroup::class,'choice_group_id','id');
     }
 
 }
