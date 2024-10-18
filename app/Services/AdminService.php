@@ -1,3 +1,4 @@
+
 <?php
 
 namespace App\Services;
@@ -6,9 +7,12 @@ use App\DTO\BranchDTO;
 use App\DTO\RestaurantDTO;
 use App\DTO\RestaurantOwnerDTO;
 use App\DTO\UserDTO;
-use App\Http\Resources\RestaurantApplicationResource;
 use App\Interfaces\AdminServiceInterface;
+use App\Jobs\SendAcceptedRequestMailJob;
+use App\Jobs\SendRejectedMailJob;
 use App\Mail\AcceptedRequestMail;
+use App\Mail\RejectRequestMail;
+use App\Models\Orders\Order;
 use App\Models\Restaurant\Branch;
 use App\Models\Restaurant\Restaurant;
 use App\Models\Restaurant\RestaurantRequest;
@@ -17,7 +21,6 @@ use App\Models\User\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
 use Nette\Utils\Random;
 use Spatie\Permission\Models\Role;
 
@@ -44,11 +47,8 @@ class AdminService implements AdminServiceInterface
 
 
         try{
-            $restaurantRequests= RestaurantRequest::all();
-            $restaurantRequests->each(function ($restaurant) {
-                $restaurant->logo_path = rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($restaurant->logo_path), '/');
-            });
-            return $restaurantRequests;
+            $requests= RestaurantRequest::all();
+            return $requests;
         }catch (Exception $e){
             dd($e);
          }
@@ -56,32 +56,41 @@ class AdminService implements AdminServiceInterface
 
     }
     public function viewAllRestaurants(){
+        $restaurants= Restaurant::all();
+        return $restaurants;
 
     }
-    public function updateRestaurantApplication(){
+    public function updateRestaurantApplication(array $data,$request_id){
+
+        $request = RestaurantRequest::findorfail($request_id);  
+
+        $request->update($data);
+
+        return $request;
+
 
     }
 
-    public function approveRequest($request_id){
+    public function approveRequest($request_id){ 
 
     // Find the student by ID
         $request = RestaurantRequest::findorfail($request_id);
-
+      
 
         $data=$request->toArray();
         $data['password']=Random::generate(8);
         $temporarayPassword= $data['password'];
-
+        
 
         DB::beginTransaction();
-
+        
 
         try {
 
             if($request->status == 'approved'){
                 throw new Exception('The restaurant is already approved.');
-
-
+                
+                
             }
 
 
@@ -109,7 +118,7 @@ class AdminService implements AdminServiceInterface
             $branchDTO = new BranchDTO($data);
             $branch = Branch::create($branchDTO->toArray());
 
-            Mail::to($user->email)->send(new AcceptedRequestMail($user->first_name, $temporarayPassword,  $restaurant->name, $user->email));
+            SendAcceptedRequestMailJob::dispatch($user->first_name, $temporarayPassword,  $restaurant->name, $user->email);
             DB::commit();
 
             return [
@@ -127,14 +136,80 @@ class AdminService implements AdminServiceInterface
         }
     }
 
+    public function rejectRequest($request_id){
+
+        try{
+        $request = RestaurantRequest::findorfail($request_id);
+        if(!$request->status == 'pending'){
+            throw new Exception('The restaurant is already rejected or approved');
+        }
+        $request->update([
+            'status' => 'declined',
+        ]);
+
+        SendRejectedMailJob::dispatch($request->email, $request->name);
 
 
+        return $request;
+
+    }catch (Exception $e){
+        dd($e);
+    }
+}
+
+public function viewAllOrders(){
+    try{
+
+        $query = DB::table('users as u')
+        ->join('orders as o', 'u.id', '=', 'o.user_id')
+        ->leftJoin('customers as c', 'u.id', '=', 'c.user_id')  // Use left join here
+        ->select(
+            'o.id',
+            'u.first_name',
+            'u.phone_number',
+            'o.total_amount',
+            'o.status',
+            'o.created_at',
+            'c.address as customer_address',  // Address can be null
+            'u.id as user_id'
+        )
+        ->get();
+    
+    
 
 
+        return $query;
+    }
+
+    catch (Exception $e){
+        dd($e);
+    }
+}
 
 
+public function viewOrderDetails($order_id){
 
+    try{
+        $order=Order::findorfail($order_id);
+        return $order;
+
+    }catch (Exception $e){
+        dd($e);
+    }
+    
 
 }
 
 
+public function viewDeactivatedRestaurants()
+{
+    try {
+        // Retrieve only soft-deleted restaurants
+        $restaurants = Restaurant::onlyTrashed()->get();
+
+        return response()->json($restaurants, 200);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Failed to fetch deactivated restaurants.'], 500);
+    }
+}
+}
