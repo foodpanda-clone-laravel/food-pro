@@ -7,6 +7,8 @@ use App\DTO\RestaurantDTO;
 use App\DTO\RestaurantOwnerDTO;
 use App\DTO\UserDTO;
 use App\Interfaces\AdminServiceInterface;
+use App\Jobs\SendAcceptedRequestMailJob;
+use App\Jobs\SendRejectedMailJob;
 use App\Mail\AcceptedRequestMail;
 use App\Mail\RejectRequestMail;
 use App\Models\Orders\Order;
@@ -115,7 +117,7 @@ class AdminService implements AdminServiceInterface
             $branchDTO = new BranchDTO($data);
             $branch = Branch::create($branchDTO->toArray());
 
-            Mail::to($user->email)->send(new AcceptedRequestMail($user->first_name, $temporarayPassword,  $restaurant->name, $user->email));
+            SendAcceptedRequestMailJob::dispatch($user->first_name, $temporarayPassword,  $restaurant->name, $user->email);
             DB::commit();
 
             return [
@@ -144,7 +146,9 @@ class AdminService implements AdminServiceInterface
             'status' => 'declined',
         ]);
 
-        Mail::to($request->email)->send(new RejectRequestMail($request->first_name));
+        SendRejectedMailJob::dispatch($request->email, $request->name);
+
+
         return $request;
 
     }catch (Exception $e){
@@ -154,8 +158,26 @@ class AdminService implements AdminServiceInterface
 
 public function viewAllOrders(){
     try{
-        $orders=Order::all();
-        return $orders;
+
+        $query = DB::table('users as u')
+        ->join('orders as o', 'u.id', '=', 'o.user_id')
+        ->leftJoin('customers as c', 'u.id', '=', 'c.user_id')  // Use left join here
+        ->select(
+            'o.id',
+            'u.first_name',
+            'u.phone_number',
+            'o.total_amount',
+            'o.status',
+            'o.created_at',
+            'c.address as customer_address',  // Address can be null
+            'u.id as user_id'
+        )
+        ->get();
+    
+    
+
+
+        return $query;
     }
 
     catch (Exception $e){
@@ -178,6 +200,17 @@ public function viewOrderDetails($order_id){
 }
 
 
+public function viewDeactivatedRestaurants()
+{
+    try {
+        // Retrieve only soft-deleted restaurants
+        $restaurants = Restaurant::onlyTrashed()->get();
+
+        return response()->json($restaurants, 200);
+    } catch (\Exception $e) {
+        return response()->json(['error' => 'Failed to fetch deactivated restaurants.'], 500);
+    }
+}
 }
 
 

@@ -5,7 +5,6 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class RejectRequestMail extends Mailable
 {
@@ -15,8 +14,6 @@ class RejectRequestMail extends Mailable
 
     /**
      * Create a new message instance.
-     *
-     * @param  array  $form
      */
     public function __construct($first_name)
     {
@@ -25,13 +22,11 @@ class RejectRequestMail extends Mailable
 
     /**
      * Build the message.
-     *
-     * @return $this
      */
     public function build()
     {
-        return $this->subject($this->name . ' - Request Received')
-                    ->view('requestreject')
+        return $this->subject('Request Rejected - ' . $this->name)
+                    ->view('emails.requestreject')
                     ->with('name', $this->name);
     }
 }

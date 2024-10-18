@@ -68,11 +68,16 @@ class AdminController extends Controller
     
 }
     public function viewOrderDetails($order_id){
-        $result= $this->adminService->viewOrderDetails();
+        $result= $this->adminService->viewOrderDetails($order_id);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK,'All orders', $result);
 
-    
-}
+    }
+    public function viewDeactivatedRestaurants(){
+        $result= $this->adminService->viewDeactivatedRestaurants();
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Deactivated restaurants', $result);
+
+    }
 
 }
