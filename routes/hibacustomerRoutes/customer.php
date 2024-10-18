@@ -36,7 +36,6 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
     Route::controller(OrderController::class)->group(function () {
       Route::get('history', 'orderHistory');
       Route::get('active-order', 'activeOrder');
-      Route::get('{order_id}/details', 'viewOrderDetails');
     });
   });
 });

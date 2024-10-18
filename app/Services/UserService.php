@@ -28,21 +28,21 @@ class UserService extends ShoppingSessionService
                 // Get restaurant details or assign null if restaurantOwner or restaurant is missing
                 $restaurant = $user->restaurantOwner->restaurant ?? null;
                 $result['restaurant_details'] = $restaurant;
-            
+
                 if ($restaurant) {
                     // If branches exist, retrieve the first address details
                     $address = $restaurant->branches->first() ?? null;
-            
+
                     // Assign address details if available, otherwise null
-                    $addressDetails = $address 
-                        ? $address->address . ' ' . $address->city . ' ' . $address->postal_code 
+                    $addressDetails = $address
+                        ? $address->address . ' ' . $address->city . ' ' . $address->postal_code
                         : null;
-            
+
                     // Include the address in restaurant details
                     $result['restaurant_details']['address'] = $addressDetails;
                 }
             }
-            
+
             else if ($roleName == 'Customer'){
                 $shoppingSession = ShoppingSessionService::getShoppingSession();
                 $cartItems = $shoppingSession->cartItems;

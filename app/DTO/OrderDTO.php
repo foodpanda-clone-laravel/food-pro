@@ -13,5 +13,6 @@ class OrderDTO extends BaseDTO
         $this->order_type = 'delivery';
         $this->delivery_charges = $data['delivery_charges'];
         $this->estimated_delivery_time = now()->addMinutes(15);
+        $this->delivery_address = $data['delivery_address'];
     }
 }

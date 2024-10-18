@@ -1,3 +1,4 @@
+
 <?php
 
 namespace App\Services;
@@ -212,5 +213,3 @@ public function viewDeactivatedRestaurants()
     }
 }
 }
-
-
