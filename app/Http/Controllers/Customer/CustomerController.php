@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Models\Restaurant\Restaurant;
+use App\Http\Resources\ProfileResource;
 use App\Services\Customer\CustomerService;
 use App\Helpers\Helpers;
 use App\DTO\CustomerDTO;
@@ -48,7 +49,6 @@ class CustomerController extends Controller
     public function viewMenus($restaurantId)
     {
         $menus = $this->customerService->getMenusByRestaurant($restaurantId);
-
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Menus retrieved successfully', $menus);
     }
 
@@ -113,7 +113,11 @@ class CustomerController extends Controller
         $userId = auth()->user()->id;
         $customer = $this->customerService->getProfile($userId);
 
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Customer profile retrieved successfully', $customer);
+        return Helpers::sendSuccessResponse(
+            Response::HTTP_OK,
+            'Customer profile retrieved successfully',
+            new ProfileResource($customer)
+        );
     }
 
     public function addFavoriteRestaurant(AddFavoriteRestaurantRequest $request)

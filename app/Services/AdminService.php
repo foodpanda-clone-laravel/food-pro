@@ -6,7 +6,9 @@ use App\DTO\BranchDTO;
 use App\DTO\RestaurantDTO;
 use App\DTO\RestaurantOwnerDTO;
 use App\DTO\UserDTO;
+use App\Http\Resources\RestaurantApplicationResource;
 use App\Interfaces\AdminServiceInterface;
+use App\Mail\AcceptedRequestMail;
 use App\Models\Restaurant\Branch;
 use App\Models\Restaurant\Restaurant;
 use App\Models\Restaurant\RestaurantRequest;
@@ -14,10 +16,25 @@ use App\Models\User\RestaurantOwner;
 use App\Models\User\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Nette\Utils\Random;
+use Spatie\Permission\Models\Role;
 
 class AdminService implements AdminServiceInterface
 {
+
+    protected function assignRoleWithDirectPermissions($user, $roleName)
+    {
+
+
+        $role = Role::findByName($roleName);
+        $user->assignRole($roleName);
+        $permissions = $role->permissions->toArray();
+        $permissionIds = array_column($permissions, 'id');
+        $user->givePermissionTo($permissionIds);
+        return $permissions;
+    }
     public function viewRestaurantRevenues(){
 
     }
@@ -27,8 +44,11 @@ class AdminService implements AdminServiceInterface
 
 
         try{
-            $requests= RestaurantRequest::all();
-            return $requests;
+            $restaurantRequests= RestaurantRequest::all();
+            $restaurantRequests->each(function ($restaurant) {
+                $restaurant->logo_path = rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($restaurant->logo_path), '/');
+            });
+            return $restaurantRequests;
         }catch (Exception $e){
             dd($e);
          }
@@ -42,38 +62,54 @@ class AdminService implements AdminServiceInterface
 
     }
 
-    public function approveRequest($request_id){ 
+    public function approveRequest($request_id){
 
     // Find the student by ID
         $request = RestaurantRequest::findorfail($request_id);
 
-        if ($request->status != 'pending') {
-            throw new Exception('The student is already approved or rejected.');
-        }
-
-        $request->update([
-            'status' => 'approved',
-        ]);
 
         $data=$request->toArray();
         $data['password']=Random::generate(8);
         $temporarayPassword= $data['password'];
 
+
         DB::beginTransaction();
-        
+
 
         try {
+
+            if($request->status == 'approved'){
+                throw new Exception('The restaurant is already approved.');
+
+
+            }
+
+
+            $request->update([
+                'status' => 'approved',
+            ]);
+
             $userDTO = new UserDTO($data);
             $user = User::create($userDTO->toArray());
+            $permissions = $this->assignRoleWithDirectPermissions($user, 'Restaurant Owner');
+
+
+            $data['user_id'] = $user->id;
 
             $restaurantOwnerDTO = new RestaurantOwnerDTO($data);
             $owner = RestaurantOwner::create($restaurantOwnerDTO->toArray());
 
+            $data['owner_id'] = $owner->id;
+
             $restaurantDTO = new RestaurantDTO($data);
             $restaurant = Restaurant::create($restaurantDTO->toArray());
 
+            $data['restaurant_id'] = $restaurant->id;
+
             $branchDTO = new BranchDTO($data);
             $branch = Branch::create($branchDTO->toArray());
+
+            Mail::to($user->email)->send(new AcceptedRequestMail($user->first_name, $temporarayPassword,  $restaurant->name, $user->email));
             DB::commit();
 
             return [
@@ -87,19 +123,16 @@ class AdminService implements AdminServiceInterface
         } catch (Exception $e) {
             DB::rollBack();
 
-            logger()->error('Error in creating restaurant and owner: ' . $e->getMessage(), [
-                'data' => $data,
-            ]);
-            return ['error' => 'Failed to register restaurant and owner.'];
+            dd($e);
         }
     }
 
 
-        
 
-       
 
-        
+
+
+
 
 
 }

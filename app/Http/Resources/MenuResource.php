@@ -2,39 +2,66 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Menu\AssignedChoiceGroup;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class MenuResource extends JsonResource
 {
     public function toArray($request)
     {
-        $restaurant = $this->restaurant;
-        $averageRating = $restaurant->ratings->avg('stars') ?? 0; // Average restaurant rating
-        $feedbacks = $restaurant->ratings->pluck('feedback')->all(); // Get all feedback for the restaurant
-        $branchAddress = optional($restaurant->branches->first())->address ?? 'N/A'; // Get address from the branches
-
-        // Format the menu items under the menu
-        $menuItems = $this->menuItems->map(function ($menuItem) {
-            return [
-                'menu_item_name' => $menuItem->name,
-                'price' => $menuItem->price,
-                'description' => $menuItem->description,
-                'image' => $menuItem->image_file,
-            ];
-        });
+        // Generate the logo URL using the Storage::url() function
 
         return [
-            'restaurant_logo' => $restaurant->logo_path,
-            'restaurant_name' => $restaurant->name,
-            'business_type' => $restaurant->business_type,
-            'cuisine' => $restaurant->cuisine,
-            'average_rating' => $averageRating,
-            'feedbacks' => $feedbacks,
-            'opening_time' => $restaurant->opening_time,
-            'closing_time' => $restaurant->closing_time,
-            'address' => $branchAddress,
-            'menu_name' => $this->name, // Current menu's name
-            'menu_items' => $menuItems, // List of menu items under this menu
+            'restaurant' => [
+                'id' => $this->id,
+                'name' => $this->name,
+                'business_type' => $this->business_type,
+                'cuisine' => $this->cuisine,
+                'average_rating' => $this->ratings->avg('stars') ?? 0,
+                'feedbacks' => $this->ratings->toArray(),
+                'logo_url' => rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($this->logo_path), '/'),
+                'opening_time' => $this->opening_time,
+                'closing_time' => $this->closing_time,
+                'branch_address' => optional($this->branches->first())->address ?? 'N/A',
+            ],
+            'menus' => $this->menus->map(function ($menu) {
+                return [
+                    'menu_id' => $menu->id,
+                    'menu_name' => $menu->name,
+                    'menu_items' => $menu->menuItems->map(function ($menuItem) {
+                        $choiceGroups = $menuItem->assignedChoiceGroups->map(function ($assignedChoiceGroup) {
+                            $choiceGroup = AssignedChoiceGroup::find($assignedChoiceGroup->id)->choiceGroup;
+                            $choices = $choiceGroup->choices->map(function ($choice) {
+                                return [
+                                    'id' => $choice->id,
+                                    'name' => $choice->name,
+                                    'additional_price' => $choice->additional_price,
+                                    'size_price' => $choice->size_price,
+                                    'price' => $choice->price,
+                                ];
+                            });
+                            return [
+                                'id' => $assignedChoiceGroup->id,
+                                'menu_item_id' => $assignedChoiceGroup->menu_item_id,
+                                'choice_group_id' => $assignedChoiceGroup->choice_group_id,
+                                'created_at' => $assignedChoiceGroup->created_at,
+                                'updated_at' => $assignedChoiceGroup->updated_at,
+                                'choices' => $choices->toArray(), // Now choices will be associative
+                            ];
+                        });
+                        return [
+                            'menu_item_id' => $menuItem->id,
+                            'menu_item_name' => $menuItem->name,
+                            'choice_groups' => $choiceGroups->toArray(), // Now choice groups will be associative
+                            'price' => $menuItem->price,
+                            'description' => $menuItem->description,
+                            'image_url' => $menuItem->image_file ? Storage::url($menuItem->image_file) : null, // Generate the URL for the menu item image
+                        ];
+                    })->toArray(),
+                ];
+            })->toArray(),
+
         ];
     }
 }

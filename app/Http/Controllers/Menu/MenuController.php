@@ -12,6 +12,7 @@ use App\Http\Requests\MenuRequest\UpdateMenuRequest;
 use App\Models\Menu\Menu;
 use App\Models\Menu\MenuItem;
 use App\Services\Menu\MenuService;
+use PHPUnit\TextUI\Help;
 use Symfony\Component\HttpFoundation\Response;
 
 class MenuController extends Controller
@@ -82,6 +83,12 @@ class MenuController extends Controller
         $menu=Menu::findorfail($menu_id);
         $menu->delete();
     }
+    public function deleteMenuItem($menu_item_id){
+        $menuItem=MenuItem::findorfail($menu_item_id);
+        $menuItem->delete();
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Menu item deleted successfully',$menuItem);
+    }
 
     public function menuWithItemCount(){
         $menuCount=$this->menuService->menuWithItemCount();
@@ -106,9 +113,9 @@ class MenuController extends Controller
     public function getChoicesWithMenuItem($menu_item_id)
     {
         $result=$this->menuService->getChoicesWithMenuItem($menu_item_id);
-        
+
         return Helpers::sendSuccessResponse(Response::HTTP_OK,'Menu item retrieved successfully',$result);
-    
+
 
     }
 
@@ -121,17 +128,3 @@ class MenuController extends Controller
 
 
 }
-// public function addOns(AddOnRequest $request, $menu_item_id)
-// {
-//     // Call the service to create the addon
-//     $result = $this->menuService->createAddon($request->validationData(), $menu_item_id);
-
-//     // Handle success or failure
-//     if ($result['success']) {
-//         // Access the 'addon' key instead of 'menuItem'
-//         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Addon created successfully', $result['addon']);
-//     } else {
-//         // Return an error response
-//         return Helpers::sendFailureResponse(400, $result['error']);
-//     }
-// }
