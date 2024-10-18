@@ -20,9 +20,9 @@ class OrderService
     public function getUserOrders()
     {
         $restaurant = $this->getRestaurantOwner();
-        $query = Order::with('user.customer') // Eager load user to access address
+        $query = Order::with(['user.customer', 'orderItems.menuItem']) // Eager load necessary relationships
             ->where('restaurant_id', $restaurant->id);
-
+    
         return app(Pipeline::class)
             ->send($query)
             ->through([
@@ -30,8 +30,10 @@ class OrderService
                 \App\Pipelines\Filters\OrderTypeFilter::class,
             ])
             ->thenReturn()
-            ->paginate(10);
+            ->get(); // Fetch all orders as a collection
     }
+    
+
 
     public function confirmOrder($orderId)
     {
