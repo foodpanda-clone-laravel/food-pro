@@ -75,12 +75,14 @@ class RestaurantService
     public function restoreRestaurant()
     {
         try {
+
+            $restaurant=$this->getRestaurantOwner();
             $restaurant = $this->getRestaurantOwner()->withTrashed()->firstOrFail();
             $restaurant->restore();
 
             return $restaurant; // Return the restored restaurant details if needed
         } catch (\Exception $e) {
-            dd($e);
+              dd($e);
             return Helpers::sendFailureResponse(400, 'Could not restore restaurant');
         }
     }

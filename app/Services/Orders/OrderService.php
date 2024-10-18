@@ -3,29 +3,26 @@
 namespace App\Services\Orders;
 
 use App\Models\Orders\Order;
-use App\Models\Orders\Order as OrdersOrder;
 use App\Models\Restaurant\Restaurant;
 use App\Models\User\RestaurantOwner;
 use Illuminate\Pipeline\Pipeline;
-use App\Pipelines\Filters;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class OrderService
 {
-
     public function getRestaurantOwner()
     {
         $user = Auth::user();
         $owner = RestaurantOwner::where('user_id', $user->id)->firstOrFail();
-        $restaurant = Restaurant::where('owner_id', $owner->id)->firstOrFail();
+        return Restaurant::where('owner_id', $owner->id)->firstOrFail();
 
-        return $restaurant;
     }
+
     public function getUserOrders()
     {
-        $restaurant=$this->getRestaurantOwner();
-        $query = Order::where('restaurant_id', $restaurant->id );
+        $restaurant = $this->getRestaurantOwner();
+        $query = Order::with(['user.customer', 'orderItems.menuItem']) // Eager load necessary relationships
+            ->where('restaurant_id', $restaurant->id);
         return app(Pipeline::class)
             ->send($query)
             ->through([
@@ -33,7 +30,7 @@ class OrderService
                 \App\Pipelines\Filters\OrderTypeFilter::class,
             ])
             ->thenReturn()
-            ->paginate(10);
+            ->get(); // Fetch all orders as a collection
     }
 
     public function confirmOrder($orderId)
@@ -63,4 +60,23 @@ class OrderService
     }
 
     
+
+
+    public function confirmOrder($orderId)
+    {
+        $order = Order::findOrFail($orderId);
+        $order->status = 'delivered';
+        $order->save();
+
+        return $order;
+    }
+
+    public function cancelOrder($orderId)
+    {
+        $order = Order::findOrFail($orderId);
+        $order->status = 'canceled';
+        $order->save();
+
+        return $order;
+    }
 }
