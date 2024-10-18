@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Customer;
 
 use App\DTO\OrderDTO;
-use App\Http\Requests\CheckoutRequest;
 use App\Models\Cart\CartItem;
 use App\Models\Orders\Order;
 use App\Models\Restaurant\Branch;
@@ -40,16 +39,22 @@ class OrderController extends CustomerController
         return Helpers::sendFailureResponse(Response::HTTP_NOT_FOUND, 'No active order found');
     }
 
+    public function viewOrderDetails($orderId)
+    {
+        $orderDetails = $this->customerService->getOrderDetails($orderId);
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order details retrieved successfully', $orderDetails);
+    }
+
     public function checkout(CustomerOrderService $customerOrderService)
     {
         $data = $customerOrderService->checkout();
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order summary', $data);
     }
-    public function createOrder(CheckoutRequest $request, CustomerOrderService $customerOrderService)
+    public function createOrder(CustomerOrderService $customerOrderService)
     {
-        $data = $request->getValidatedData();
-        $result = $customerOrderService->createOrder($data);
-        if ($result) {
+        $data = $customerOrderService->createOrder();
+        if ($data) {
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order created successfully', $data);
         } else {
             return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not process your order');

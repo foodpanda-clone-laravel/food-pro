@@ -12,7 +12,8 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('get-applications', 'viewRestaurantApplications');
     Route::post('accept-application/{request_id}', 'approveRequest');
     Route::post('reject-application/{request_id}', 'rejectRequest');
-    Route::post('update-application/{request_id}', 'updateRestaurantAppgit lication');
+    Route::post('update-application/{request_id}', 'updateRestaurantApplication');
     Route::get('get-all-orders', 'viewAllOrders');
     Route::get('order-details/{order_id}', 'viewOrderDetails');
- });
+    
+ });  

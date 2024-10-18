@@ -113,9 +113,9 @@ class MenuController extends Controller
     public function getChoicesWithMenuItem($menu_item_id)
     {
         $result=$this->menuService->getChoicesWithMenuItem($menu_item_id);
-
+        
         return Helpers::sendSuccessResponse(Response::HTTP_OK,'Menu item retrieved successfully',$result);
-
+    
 
     }
 
@@ -128,3 +128,17 @@ class MenuController extends Controller
 
 
 }
+// public function addOns(AddOnRequest $request, $menu_item_id)
+// {
+//     // Call the service to create the addon
+//     $result = $this->menuService->createAddon($request->validationData(), $menu_item_id);
+
+//     // Handle success or failure
+//     if ($result['success']) {
+//         // Access the 'addon' key instead of 'menuItem'
+//         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Addon created successfully', $result['addon']);
+//     } else {
+//         // Return an error response
+//         return Helpers::sendFailureResponse(400, $result['error']);
+//     }
+// }

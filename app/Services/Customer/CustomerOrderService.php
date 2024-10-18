@@ -38,7 +38,7 @@ class CustomerOrderService extends CustomerService implements CustomerOrderServi
         // as for now we have only one branch so we are searching for branch with given restaurant id
         $branch= Branch::where('restaurant_id', $restaurant->id)->first();
         $data['order_details']=[
-            'items'=>json_decode($itemsTotal, true),
+            'items'=>$itemsTotal,
             'total'=>$total,
         ];
         $data['restaurant_details']=
@@ -61,7 +61,7 @@ class CustomerOrderService extends CustomerService implements CustomerOrderServi
         ];
         return $data;
     }
-    public function createOrder($address){
+    public function createOrder(){
         try{
             DB::beginTransaction();
             $orderSummary = $this->checkout();
@@ -70,7 +70,6 @@ class CustomerOrderService extends CustomerService implements CustomerOrderServi
             $data['branch_id']=$orderSummary['restaurant_details']['branch_id'];
             $data['total_amount']=$orderSummary['order_details']['total'];
             $data['delivery_charges']=$orderSummary['delivery_details']['delivery_fee'];
-            $data['delivery_address']=$address['delivery_address'];
             $orderDTO = new OrderDTO($data);
             $order = Order::create($orderDTO->toArray());
             $orderItems = $orderSummary['order_details']['items'];
@@ -82,14 +81,11 @@ class CustomerOrderService extends CustomerService implements CustomerOrderServi
             $orderItem = OrderItem::create($orderItemDTO->toArray());
             $orderedItems[] = $orderItem;
         }
-        // fix total price null
-
-//            $paymentDTO = make payment table
+            $paymentDTO =
         Db::commit();
         return $orderedItems;
         }
         catch(\Exception $e){
-            dd($e);
             DB::rollBack();
             return false;
         }
