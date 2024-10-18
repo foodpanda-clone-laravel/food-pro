@@ -9,14 +9,13 @@ class RestaurantResource extends JsonResource
 {
     public function toArray($request)
     {
-        $logoPath = rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($this->logo_path), '/');
         $deal = $this->deals->first();
         $discount = $deal ? $deal->discount : 0;
         $averageRating = $this->ratings->avg('stars') ?? 0;
 
         return [
             'id'=>$this->id,
-            'image' => $logoPath,
+            'image' => rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($this->logo_path), '/'),
             'name' => $this->name,
             'cuisine' => $this->cuisine,
             'rating' => $averageRating,
