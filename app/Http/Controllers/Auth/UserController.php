@@ -41,4 +41,5 @@ class UserController extends Controller
 
         return Helpers::sendSuccessResponse(200,'logged out successfully');
     }
+
 }

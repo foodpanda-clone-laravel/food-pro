@@ -58,9 +58,10 @@ class CustomerController extends Controller
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurants retrieved successfully', $restaurants);
     }
 
-    public function favoriteItems()
+    public function favoriteItems(Request $request)
     {
-        $favoriteRestaurants = $this->customerService->getFavoriteItems();
+        $customerId = $request->get('customer_id');
+        $favoriteRestaurants = $this->customerService->getFavoriteItems($customerId);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Favorite restaurants retrieved successfully', $favoriteRestaurants);
     }
@@ -121,20 +122,22 @@ class CustomerController extends Controller
 
     public function addFavoriteRestaurant(AddFavoriteRestaurantRequest $request)
     {
+        $customerId = $request->get('customer_id');
         $restaurantId = $request->get('restaurant_id');
 
-        // Use the logged-in customer's information
-        $favoriteRestaurants = $this->customerService->addFavoriteRestaurant($restaurantId);
+        $this->customerService->addFavoriteRestaurant($customerId, $restaurantId);
+
+        $favoriteRestaurants = $this->customerService->getFavoriteItems($customerId);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant added to favorites successfully', $favoriteRestaurants);
     }
 
     public function removeFavoriteRestaurant(Request $request)
     {
+        $customerId = $request->get('customer_id');
         $restaurantId = $request->get('restaurant_id');
 
-        // Use the logged-in customer's information
-        $favoriteRestaurants = $this->customerService->removeFavoriteRestaurant($restaurantId);
+        $favoriteRestaurants = $this->customerService->removeFavoriteRestaurant($customerId, $restaurantId);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant removed from favorites successfully', $favoriteRestaurants);
     }
