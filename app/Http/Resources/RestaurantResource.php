@@ -20,6 +20,7 @@ class RestaurantResource extends JsonResource
         $averageRating = $this->ratings->avg('stars') ?? 0;
 
         return [
+            'restaurant_id' => $this->id,
             'image' => $logoUrl, // Image URL for frontend
             'name' => $this->name,
             'cuisine' => $this->cuisine,

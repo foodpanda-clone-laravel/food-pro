@@ -4,6 +4,7 @@ namespace App\Models\Orders;
 
 use App\Models\Restaurant\Branch;
 use App\Models\Restaurant\Rating;
+use App\Models\User\Customer;
 use App\Models\Restaurant\Restaurant;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -41,4 +42,10 @@ class Order extends Model
     {
         return $this->hasOne(Rating::class);
     }
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'user_id', 'user_id');
+    }
+
 }

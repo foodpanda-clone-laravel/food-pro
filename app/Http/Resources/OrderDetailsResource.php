@@ -12,9 +12,10 @@ class OrderDetailsResource extends JsonResource
         return [
             'order_id' => $this->id,
             'order_image' => $this->restaurant->logo_path ? Storage::url($this->restaurant->logo_path) : null,
-            'delivery_date' => $this->delivery_date,
+            'restaurant_name' => $this->restaurant->name ?? 'N/A',
             'restaurant_branch_address' => $this->branch ? $this->branch->address : 'N/A',
-            'customer_address' => $this->customer ? $this->customer->address : 'N/A',
+            'customer_address' => $this->customer ? $this->customer->delivery_address ?? 'N/A' : 'N/A',
+            'delivery_date' => $this->created_at->format('Y-m-d H:i:s'),
             'order_items' => $this->orderItems->map(function ($orderItem) {
                 return [
                     'id' => $orderItem->id,
