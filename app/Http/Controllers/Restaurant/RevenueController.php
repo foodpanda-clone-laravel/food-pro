@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Orders\Order;
 use App\Models\Restaurant\RevenueReport;
 use Carbon\Carbon;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -28,7 +27,7 @@ class RevenueController extends Controller
             $created_at = array_column($orders, 'created_at');
             $restaurantNames = array_column($orders, 'restaurant_name');
             // order received in a day or week or month
-            $revenue = [
+            $data = [
                 'revenue'=>$amount,
                 'created_at'=>$created_at,
                 'restaurant_name'=>$restaurantNames,
@@ -49,21 +48,17 @@ class RevenueController extends Controller
                 ->whereYear('orders.created_at', Carbon::now()->year)
                 ->groupBy('restaurants.name', DB::raw('DATE(orders.created_at)'))
                 ->orderBy('order_date')
-                ->get()->toJson();
-            $orderVolumes = json_decode($orderVolumes);
+                ->get()->toArray();
+            $orderVolumes = json_decode(json_encode($orderVolumes), true);
             $orderVolume = array_column($orderVolumes, 'order_volume');
-            $orderDate = array_column($orderVolumes, 'order_date');
-            $orderVolumeRestaurantNames = array_column($orderVolumes, 'restaurant_name');
-            $orderChartDetails = [
+            $orderDate = array_column($orderVolume, 'order_date');
+            $restaurantNames = array_column($orderVolume, 'restaurant_name');
+            $data['order_volumes']=[
                 'order_date'=>$orderDate,
                 'order_volume'=>$orderVolume,
-                'restaurant_name'=>$orderVolumeRestaurantNames,
+                'restaurant_name'=>$restaurantNames,
             ];
-            $data=[
-                'revenue_details'=>$revenue,
-                'order_volume'=>$orderChartDetails
-            ];
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Revenue Reports', $data);
+            return $data;
         }
         catch(\Exception $e){
             dd($e);

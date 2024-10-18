@@ -57,8 +57,6 @@ class AdminController extends Controller
         $result= $this->adminService->updateRestaurantApplication($data,$request_id);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK,'Your request has been updated', $result);
-
-    
 }
     public function viewAllOrders(){
         $result= $this->adminService->viewAllOrders();

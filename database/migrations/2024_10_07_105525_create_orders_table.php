@@ -23,10 +23,6 @@ class CreateOrdersTable extends Migration
             $table->foreign('restaurant_id')->references('id')->on('restaurants');
             $table->foreign('branch_id')->references('id')->on('branches');
         });
-
-        Schema::table('orders', function (Blueprint $table) {
-            $table->string('delivery_address');
-        });
     }
 
     public function down()
