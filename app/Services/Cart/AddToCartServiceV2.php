@@ -28,44 +28,49 @@ class AddToCartServiceV2 implements AddToCartServiceV2Interface
          *  get the choice_id additional price
          * multiply the quantity with the menu_item id
          * and add the choice
-         */
+         */;
         $eachItemsTotal = DB::table('cart_items as cart_items')
             ->select(
                 'cart_items.menu_item_id',
                 'menu_items.name AS menu_item_name',
                 'cart_items.quantity',
                 'menu_items.price',
-                DB::raw('(menu_items.price * cart_items.quantity) + SUM(choices.additional_price) AS total_price'),
+                DB::raw('menu_items.price * cart_items.quantity + SUM(choices.additional_price * cart_items.quantity) AS total_price'),
                 DB::raw('GROUP_CONCAT(choices.name) AS choice_names')
             )
             ->join('menu_items', 'cart_items.menu_item_id', '=', 'menu_items.id')
-            ->join('choices', 'cart_items.choice_id', '=', 'choices.id')
+            ->leftJoin('choices', 'cart_items.choice_id', '=', 'choices.id') // Use LEFT JOIN in case cart_items have no choice
             ->where('cart_items.session_id', $this->shoppingSession->id)
             ->groupBy(
                 'cart_items.menu_item_id',
                 'cart_items.quantity',
-                'menu_items.name',
+                'menu_items.price',
+                'menu_items.name'
             )
-            ->get()->toArray();
-
+            ->get()->toJson();
         return $eachItemsTotal;
     }
     public function calculateCartTotal(){
 // whenever cart is updated run this query to calculate cart total,
         // also the calculate items total function
-        $totalCartPrice = DB::table(DB::raw('(SELECT cart_items.menu_item_id,
+
+            // Subquery to calculate the total price for each cart item
+            $totalCartPrice = DB::table(DB::raw('(SELECT
+                                           cart_items.menu_item_id,
                                            menu_items.name AS menu_item_name,
                                            cart_items.quantity,
-                                           (menu_items.price * cart_items.quantity) + SUM(choices.additional_price) AS total_price,
+                                           (menu_items.price * cart_items.quantity) + IFNULL(SUM(choices.additional_price * cart_items.quantity), 0) AS total_price,
                                            GROUP_CONCAT(choices.name) AS choice_names
                                     FROM cart_items
                                     INNER JOIN menu_items ON cart_items.menu_item_id = menu_items.id
-                                    INNER JOIN choices ON cart_items.choice_id = choices.id
+                                    LEFT JOIN choices ON cart_items.choice_id = choices.id
                                     WHERE cart_items.session_id = '.$this->shoppingSession->id.'
-                                    GROUP BY cart_items.menu_item_id, cart_items.quantity, menu_items.name) AS subquery'))
-            ->select(DB::raw('SUM(subquery.total_price) AS total_cart_price'))
-            ->value('total_cart_price');
-        return $totalCartPrice;
+                                    GROUP BY cart_items.menu_item_id, cart_items.quantity, menu_items.price, menu_items.name) AS subquery'))
+                ->select(DB::raw('SUM(subquery.total_price) AS total_cart_price'))
+                ->value('total_cart_price');
+
+            return $totalCartPrice;
+
     }
 
     public function addToCart($data){

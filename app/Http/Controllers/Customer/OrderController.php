@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Customer;
 
 use App\DTO\OrderDTO;
+use App\Http\Requests\CheckoutRequest;
 use App\Models\Cart\CartItem;
 use App\Models\Orders\Order;
 use App\Models\Restaurant\Branch;
@@ -44,10 +45,11 @@ class OrderController extends CustomerController
         $data = $customerOrderService->checkout();
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order summary', $data);
     }
-    public function createOrder(CustomerOrderService $customerOrderService)
+    public function createOrder(CheckoutRequest $request, CustomerOrderService $customerOrderService)
     {
-        $data = $customerOrderService->createOrder();
-        if ($data) {
+        $data = $request->getValidatedData();
+        $result = $customerOrderService->createOrder($data);
+        if ($result) {
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order created successfully', $data);
         } else {
             return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not process your order');
