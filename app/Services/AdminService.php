@@ -192,7 +192,6 @@ public function viewOrderDetails($order_id){
     try{
         $order=Order::findorfail($order_id);
         return $order;
-
     }catch (Exception $e){
         dd($e);
     }

@@ -4,7 +4,6 @@ use App\Http\Controllers\Restaurant\RestaurantController;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\Menu\MenuControllerV2;
 use \App\Http\Controllers\Restaurant\RevenueController;
-use \App\Http\Controllers\RatingsController;
 Route::group(['middleware' => 'request.logs',], function () {
     Route::controller(MenuControllerV2::class)->group(function () {
         Route::get('menu/choice-group', 'getChoiceGroupById');
@@ -18,10 +17,9 @@ Route::group(['middleware' => 'request.logs',], function () {
 
 });
 
-    Route::controller(RatingsController::class)->group(function(){
+    Route::controller(RestaurantController::class)->group(function(){
     // restaurant owner can only view their reviews
-       Route::get('/my-reviews', 'viewMyRestaurantRating');
-       Route::get('/restaurant-reviews', 'viewRestaurantReviews');
+       Route::get('/my-reviews', 'viewMyRatings');
     });
     Route::controller(RevenueController::class)->group(function(){
         Route::get('/my-revenue', 'viewMyRevenue');

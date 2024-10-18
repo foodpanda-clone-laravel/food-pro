@@ -22,7 +22,4 @@ class ChoiceGroup extends Model
     public function restaurant(){
         return $this->belongsTo(Restaurant::class);
     }
-    public function AssignedChoiceGroup(){
-        return $this->hasMany(AssignedChoiceGroup::class);
-    }
 }
