@@ -43,7 +43,7 @@ class RegisterService implements RegisterServiceInterface
         return $user;
     }
 
-    public function createRestaurantWithOwner(array $data)
+    public function createRestaurantWithOwner($data)
     {
         try {
             DB::beginTransaction();

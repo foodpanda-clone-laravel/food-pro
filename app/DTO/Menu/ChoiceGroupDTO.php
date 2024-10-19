@@ -7,7 +7,7 @@ use App\DTO\BaseDTO;
 class ChoiceGroupDTO extends BaseDTO
 {
 
-    public function __construct(array $data) {
+    public function __construct($data) {
         $this->restaurant_id= $data["restaurant_id"];
         $this->name = $data["name"];
         $this->is_required= $data["is_required"];

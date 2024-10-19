@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AdminRequests\RegisterUserRequest;
 use App\Http\Requests\AuthRequests\LoginRequest;
-use App\Services\UserService;
+use App\Services\Auth\UserService;
 use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller

@@ -15,8 +15,6 @@ class MenuBaseService implements MenuBaseServiceInterface
         }
         catch (\Exception $exception){
             dd($exception);
-            throw new \Exception("Restaurant not found");
-
         }
     }
 }

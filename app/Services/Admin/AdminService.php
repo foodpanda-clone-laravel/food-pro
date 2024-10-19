@@ -1,7 +1,6 @@
-
 <?php
 
-namespace App\Services;
+namespace App\Services\Admin;
 
 use App\DTO\Restaurant\BranchDTO;
 use App\DTO\Restaurant\RestaurantDTO;
@@ -27,7 +26,6 @@ class AdminService implements AdminServiceInterface
 
     protected function assignRoleWithDirectPermissions($user, $roleName)
     {
-
 
         $role = Role::findByName($roleName);
         $user->assignRole($roleName);

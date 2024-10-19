@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Helpers\Helpers;
-use App\Http\Requests\CheckoutRequest;
-use App\Http\Resources\OrderResource;
+use App\Http\Requests\CartRequests\CheckoutRequest;
+use App\Http\Resources\Order\OrderResource;
 use App\Services\Customer\CustomerOrderService;
 use Symfony\Component\HttpFoundation\Response;
 

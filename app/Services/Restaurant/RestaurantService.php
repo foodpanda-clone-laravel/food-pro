@@ -39,9 +39,8 @@ class RestaurantService
     public function restoreRestaurant()
     {
         try {
-
             $restaurant=$this->getRestaurantOwner();
-            $restaurant = $this->getRestaurantOwner()->withTrashed()->firstOrFail();
+//            $restaurant = $this->getRestaurantOwner()->withTrashed()->firstOrFail();
             $restaurant->restore();
 
             return $restaurant; // Return the restored restaurant details if needed

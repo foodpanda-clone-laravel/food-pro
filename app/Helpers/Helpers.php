@@ -1,5 +1,6 @@
 <?php
 namespace App\Helpers;
+use App\DTO\Log\ErrorLogDTO;
 use App\Models\Logs\ErrorLog;
 
 class Helpers{
@@ -37,14 +38,7 @@ class Helpers{
 
     }
     public static function createErrorLogs($exception, $requestId){
-        dd($exception);
-        ErrorLog::create([
-            'function_name'=>$exception->getTrace()[0]['function'],
-            'line_number'=>$exception->getLine(),
-            'file_name'=>$exception->getFile(),
-            'code'=>(int) $exception->getCode(),
-            'exception'=>$exception->getMessage(),
-            'request_id'=>$requestId,
-        ]);
+        $errorLogDto = new ErrorLogDTO($exception, $requestId);
+        ErrorLog::create($errorLogDto->toArray());
     }
 }

@@ -1,7 +1,7 @@
 <?php
-namespace App\Http\Requests;
+namespace App\Http\Requests\RestaurantRequests;
 use App\Http\Requests\BaseRequest;
-use App\Rules\ValidateTimeRule;
+
 class UpdateRestaurantRequest extends BaseRequest
 {
     /**

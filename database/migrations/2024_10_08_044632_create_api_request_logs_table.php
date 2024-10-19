@@ -20,15 +20,15 @@ return new class extends Migration
             $table->string('middleware');
             $table->string('path');
             $table->string('status')->default('pending');
-            $table->string('duration')->nullable()->default(null);
+            $table->string('duration')->nullable();
             $table->string('ip_address');
 
             $table->text('request_headers');
-            $table->text('request_payload')->nullable()->default(null);
-            $table->text('request_params')->nullable()->default(null);
-            $table->text('response_headers')->nullable()->default(null);
-            $table->text('response_json')->nullable()->default(null);
-            $table->string('memory_usage')->nullable()->default(null);
+            $table->text('request_payload')->nullable();
+            $table->text('request_params')->nullable();
+            $table->text('response_headers')->nullable();
+            $table->text('response_json')->nullable();
+            $table->string('memory_usage')->nullable();
             $table->timestamps();
         });
     }

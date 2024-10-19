@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\MenuResources;
 
 use App\Models\Menu\AssignedChoiceGroup;
 use Illuminate\Http\Resources\Json\JsonResource;

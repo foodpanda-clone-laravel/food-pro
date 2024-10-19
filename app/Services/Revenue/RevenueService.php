@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Revenue;
 
 use App\Helpers\Helpers;
 use App\Interfaces\RevenueServiceInterface;

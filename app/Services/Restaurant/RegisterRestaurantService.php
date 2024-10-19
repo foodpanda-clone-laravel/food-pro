@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Restaurant;
 
 use App\DTO\Restaurant\BranchDTO;
 use App\DTO\Restaurant\RestaurantDTO;
@@ -13,7 +13,7 @@ use App\Models\User\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
-class RestaurantService
+class RegisterRestaurantService
 {
     public function createRestaurantWithOwner(array $data)
     {
@@ -31,7 +31,6 @@ class RestaurantService
 
             $branchDTO = new BranchDTO($data);
             $branch = Branch::create($branchDTO->toArray());
-            dd($branch);
             DB::commit();
 
             return [

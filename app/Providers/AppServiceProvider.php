@@ -63,7 +63,12 @@ class AppServiceProvider extends ServiceProvider
 
 		$this->app->bind(
 			\App\Interfaces\RevenueServiceInterface::class,
-			\App\Services\RevenueService::class
+			\App\Services\Revenue\RevenueService::class
+		);
+
+		$this->app->bind(
+			\App\Interfaces\ChoiceGroupServiceInterface::class,
+			\App\Services\Menu\ChoiceGroupService::class
 		);
     }
 

@@ -18,10 +18,9 @@ return new class extends Migration
             $table->string('address');
             $table->string('postal_code');
             $table->string('city');
-            $table->unsignedBigInteger('restaurant_id');
-            $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
             $table->float('delivery_fee');
             $table->string('delivery_time')->default('Standard 15 to 30 minutes');
+            $table->foreignId('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
         });

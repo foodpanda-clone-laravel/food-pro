@@ -10,7 +10,7 @@ use App\Http\Requests\CustomerRequests\SubmitFeedbackRequest;
 use App\Http\Requests\CustomerRequests\UpdateCustomerAddressRequest;
 use App\Http\Requests\CustomerRequests\UpdateProfileRequest;
 use App\Http\Requests\CustomerRequests\UsePointsRequest;
-use App\Http\Resources\ProfileResource;
+use App\Http\Resources\Customer\ProfileResource;
 use App\Models\User\User;
 use App\Services\Customer\CustomerService;
 use Illuminate\Http\Request;

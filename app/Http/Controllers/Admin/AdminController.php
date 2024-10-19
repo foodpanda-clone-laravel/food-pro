@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateApplicationRequest;
-use App\Services\AdminService;
-use Illuminate\Http\Request;
+use App\Services\Admin\AdminService;
 use Symfony\Component\HttpFoundation\Response;
 
 

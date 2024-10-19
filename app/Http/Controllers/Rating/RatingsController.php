@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Rating;
 
-use App\Http\Requests\ViewRatingsRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\RestaurantRequests\ViewRatingsRequest;
 use App\Models\Restaurant\Rating;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class RatingsController extends Controller
