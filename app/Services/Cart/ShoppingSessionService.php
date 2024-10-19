@@ -2,7 +2,7 @@
 
 namespace App\Services\Cart;
 
-use App\DTO\ShoppingSessionDTO;
+use App\DTO\Cart\ShoppingSessionDTO;
 use App\Interfaces\ShoppingSessionServiceInterface;
 use App\Models\Cart\ShoppingSession;
 use Illuminate\Support\Facades\Auth;

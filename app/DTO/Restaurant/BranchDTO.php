@@ -1,6 +1,8 @@
 <?php
 
-namespace App\DTO;
+namespace App\DTO\Restaurant;
+
+use App\DTO\BaseDTO;
 
 class BranchDTO extends BaseDTO
 {

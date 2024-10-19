@@ -1,6 +1,8 @@
 <?php
 
-namespace App\DTO;
+namespace App\DTO\User;
+
+use App\DTO\BaseDTO;
 
 class RestaurantOwnerDTO extends BaseDTO
 {

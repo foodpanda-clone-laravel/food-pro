@@ -21,7 +21,7 @@ return new class extends Migration
             $table->time('closing_time');
             $table->string('cuisine');
             $table->string('logo_path');
-            $table->enum('business_type', ['Home Based Kitchen', 'Restaurant']);
+            $table->enum('business_type', ['kitchen', 'restaurant']);
             $table->softDeletes();
             $table->foreign('owner_id')->references('id')->on('restaurant_owners')->onDelete('cascade');
             $table->timestamps();

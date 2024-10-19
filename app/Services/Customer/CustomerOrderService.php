@@ -2,19 +2,15 @@
 
 namespace App\Services\Customer;
 
-use App\DTO\OrderDTO;
-use App\DTO\OrderItemDTO;
-use App\Helpers\Helpers;
+use App\DTO\Order\OrderDTO;
+use App\DTO\Order\OrderItemDTO;
 use App\Interfaces\CustomerOrderServiceInterface;
-use App\Models\Menu\MenuItem;
 use App\Models\Orders\Order;
 use App\Models\Orders\OrderItem;
 use App\Models\Restaurant\Branch;
 use App\Services\Cart\AddToCartServiceV2;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpFoundation\Response;
 
 class CustomerOrderService extends CustomerService implements CustomerOrderServiceInterface
 {

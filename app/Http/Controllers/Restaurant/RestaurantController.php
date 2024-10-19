@@ -2,10 +2,8 @@
 
 namespace App\Http\Controllers\Restaurant;
 
-use App\DTO\RestaurantDTO;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Helpers\Helpers;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateRestaurantRequest;
 use App\Services\Restaurant\RestaurantService;
 
@@ -55,7 +53,7 @@ class RestaurantController extends Controller
         // Validate the incoming request
 
 
-        $validatedData = $request->getValidatedData();
+        $validatedData = ;
 
 
         // Ensure you have validation rules defined

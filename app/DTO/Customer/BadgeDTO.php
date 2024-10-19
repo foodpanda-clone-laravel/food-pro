@@ -1,6 +1,8 @@
 <?php
 
-namespace App\DTO;
+namespace App\DTO\Customer;
+
+use App\DTO\BaseDTO;
 
 class BadgeDTO extends BaseDTO
 {

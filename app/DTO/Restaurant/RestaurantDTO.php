@@ -1,7 +1,9 @@
 <?php
 
-namespace App\DTO;
+namespace App\DTO\Restaurant;
 
+
+use App\DTO\BaseDTO;
 
 class RestaurantDTO extends BaseDTO
 {
@@ -13,7 +15,7 @@ class RestaurantDTO extends BaseDTO
     public string $cuisine;
     public ?string $logo_path;
     public string $business_type;
-   
+
     public function __construct($data) {
         $this->name = $data["restaurant_name"];
         $this->owner_id = $data["owner_id"];

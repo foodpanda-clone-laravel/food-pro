@@ -3,8 +3,8 @@
 namespace App\Services\Menu;
 
 use App\DTO\AddonDTO;
-use App\DTO\MenuDTO;
-use App\DTO\MenuItemDTO;
+use App\DTO\Menu\MenuDTO;
+use App\DTO\Menu\MenuItemDTO;
 use App\DTO\VariationDTO;
 use App\Interfaces\menu\MenuServiceInterface;
 use App\Models\Menu\Addon;

@@ -1,6 +1,8 @@
 <?php
 
-namespace App\DTO;
+namespace App\DTO\Restaurant;
+
+use App\DTO\BaseDTO;
 
 class RestaurantRequestDTO extends BaseDTO
 {
@@ -42,6 +44,6 @@ class RestaurantRequestDTO extends BaseDTO
         $this->cuisine = $data['cuisine'];
         $this->restaurant_name = $data['restaurant_name'];
         $this->logo_path = $data['logo_path'] ?? null;  // Optional logo path
-        $this->status = 'pending';  
+        $this->status = 'pending';
     }
 }

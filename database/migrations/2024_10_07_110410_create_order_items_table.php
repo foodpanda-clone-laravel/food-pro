@@ -22,7 +22,7 @@ return new class extends Migration
             $table->float('addon_price');
             $table->float('total_price');
             $table->string('addon_name');
-            $table->unsignedBigInteger('variation_id')->nullable()->default(null);
+            $table->unsignedBigInteger('choice_id')->nullable();
             $table->foreign('menu_item_id')->references('id')->on('menus');
             $table->foreign('order_id')->references('id')->on('orders');
             $table->timestamps();

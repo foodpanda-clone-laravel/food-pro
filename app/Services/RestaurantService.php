@@ -2,20 +2,17 @@
 
 namespace App\Services;
 
-use App\DTO\BranchDTO;
-use App\DTO\RestaurantDTO;
-use App\DTO\RestaurantOwnerDTO;
-use App\DTO\UserDTO;
-use App\Models\Orders\Order;
+use App\DTO\Restaurant\BranchDTO;
+use App\DTO\Restaurant\RestaurantDTO;
+use App\DTO\User\RestaurantOwnerDTO;
+use App\DTO\User\UserDTO;
 use App\Models\Restaurant\Branch;
-use App\Models\Restaurant\Rating;
 use App\Models\Restaurant\Restaurant;
 use App\Models\User\RestaurantOwner;
 use App\Models\User\User;
 use Exception;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Models\Restaurant\RevenueReport;
+
 class RestaurantService
 {
     public function createRestaurantWithOwner(array $data)

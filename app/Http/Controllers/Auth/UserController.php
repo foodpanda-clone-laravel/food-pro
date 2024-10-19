@@ -19,8 +19,7 @@ class UserController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $credentials = $request->getValidatedData();
-        $result = $this->userService->loginUser($credentials);
+        $result = $this->userService->loginUser($request);
         if (!$result) {
 
             return Helpers::sendFailureResponse(401, 'Invalid Credentials');

@@ -26,42 +26,6 @@ class RestaurantService
         return $restaurant;
     }
 
-    // public function getRestaurantWithDetails()
-    // {
-    //     try {
-    //         $restaurant = $this->getRestaurantOwner();
-
-    //         $menus = Menu::where("restaurant_id", $restaurant->id)->get();
-
-    //         $allMenuItems = [];
-
-    //         foreach ($menus as $menu) {
-    //             $menuItems = MenuItem::where("menu_id", $menu->id)->get();
-
-    //             $allMenuItems[] = [
-    //                 'menu_id' => $menu->id,
-    //                 'menu_name' => $menu->name,
-    //                 'items' => $menuItems
-    //             ];
-    //         }
-
-    //         return Helpers::sendSuccessResponse(200, 'Restaurant details', [
-    //             'restaurant_name' => $restaurant->name,
-    //             'restaurant_id' => $restaurant->id,
-    //             'menus' => $allMenuItems
-    //         ]);
-
-    //     } catch (\Exception $e) {
-    //         Helpers::createErrorLogs($e, request()->id);
-    //         return Helpers::sendFailureResponse(500, 'Failed to retrieve restaurant details');
-    //     }
-    // }
-
-    /**
-     * Soft delete the restaurant owned by the logged-in user
-     *
-     * @return mixed
-     */
     public function softDeleteRestaurant()
     {
         try {

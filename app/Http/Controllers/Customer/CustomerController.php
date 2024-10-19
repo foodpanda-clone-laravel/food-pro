@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers\Customer;
 
-use App\Models\Restaurant\Restaurant;
-use App\Http\Resources\ProfileResource;
-use App\Services\Customer\CustomerService;
+use App\DTO\User\CustomerDTO;
 use App\Helpers\Helpers;
-use App\DTO\CustomerDTO;
-use Illuminate\Http\Request;
-use App\Models\User\User;
-
-use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Response;
-use App\Http\Requests\CustomerRequests\UpdateCustomerAddressRequest;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CustomerRequests\AddFavoriteRestaurantRequest;
+use App\Http\Requests\CustomerRequests\SubmitFeedbackRequest;
+use App\Http\Requests\CustomerRequests\UpdateCustomerAddressRequest;
 use App\Http\Requests\CustomerRequests\UpdateProfileRequest;
 use App\Http\Requests\CustomerRequests\UsePointsRequest;
-use App\Http\Requests\CustomerRequests\SubmitFeedbackRequest;
-use App\Http\Controllers\Controller;
+use App\Http\Resources\ProfileResource;
+use App\Models\User\User;
+use App\Services\Customer\CustomerService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class CustomerController extends Controller
 {
@@ -36,10 +34,8 @@ class CustomerController extends Controller
     public function editProfile(UpdateProfileRequest $request)
     {
         $userId = auth()->user()->id;
-        $validatedData = $request->getValidatedData();
 
-
-        $this->customerService->updateProfile($userId, $validatedData);
+        $this->customerService->updateProfile($userId, $request);
 
         $updatedUser = User::with('customer')->find($userId);
 
@@ -75,9 +71,8 @@ class CustomerController extends Controller
 
     public function usePointsAtCheckout(UsePointsRequest $request)
     {
-        $validatedData = $request->getValidatedData();
 
-        $monetaryValue = $this->customerService->usePoints($validatedData['points']);
+        $monetaryValue = $this->customerService->usePoints($request['points']);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Points redeemed successfully', ['monetary_value' => $monetaryValue]);
     }
@@ -86,7 +81,6 @@ class CustomerController extends Controller
     public function updateCustomerAddress(UpdateCustomerAddressRequest $request)
     {
         $customerId = $request->get('customer_id');
-        $validatedData = $request->getValidatedData();
         $isDefaultAddress = $request->routeIs('updateCustomerDefaultAddress');
 
         $data = [
@@ -144,9 +138,8 @@ class CustomerController extends Controller
     public function submitFeedback(SubmitFeedbackRequest $request)
     {
         $customerId = $request->get('customer_id');
-        $validatedData = $request->getValidatedData();
 
-        $feedback = $this->customerService->submitFeedback($customerId, $validatedData);
+        $feedback = $this->customerService->submitFeedback($customerId, $request);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Feedback submitted successfully', $feedback);
     }

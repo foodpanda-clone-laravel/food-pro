@@ -1,6 +1,8 @@
 <?php
 
-namespace App\DTO;
+namespace App\DTO\Cart;
+
+use App\DTO\BaseDTO;
 
 class ShoppingSessionDTO extends BaseDTO
 {

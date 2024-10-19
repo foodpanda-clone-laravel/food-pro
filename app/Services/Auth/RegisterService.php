@@ -2,12 +2,12 @@
 
 namespace App\Services\Auth;
 
-use App\DTO\BranchDTO;
-use App\DTO\CustomerDTO;
-use App\DTO\RestaurantDTO;
-use App\DTO\RestaurantOwnerDTO;
-use App\DTO\RestaurantRequestDTO;
-use App\DTO\UserDTO;
+use App\DTO\Restaurant\BranchDTO;
+use App\DTO\Restaurant\RestaurantDTO;
+use App\DTO\Restaurant\RestaurantRequestDTO;
+use App\DTO\User\CustomerDTO;
+use App\DTO\User\RestaurantOwnerDTO;
+use App\DTO\User\UserDTO;
 use App\Interfaces\Auth\RegisterServiceInterface;
 use App\Mail\RequestRecievedMail;
 use App\Models\Restaurant\Branch;
@@ -118,11 +118,11 @@ public function submitRestaurantRequest(array $data){
         $form = new RestaurantRequestDTO($data);
         $form = RestaurantRequest::create($form->toArray());
 
-        
+
 
         Mail::to($data['email'])->send(new RequestRecievedMail($data['first_name']));
 
-    
+
         return $form;
     } catch (\Exception $e) {
 

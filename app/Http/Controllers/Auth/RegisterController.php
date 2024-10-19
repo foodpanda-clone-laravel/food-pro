@@ -26,9 +26,8 @@ class RegisterController extends Controller
     public function registerRestaurantWithOwner(RegisterRestaurantWithOwnerRequest $request)
     {
 
-        $data  = $request->getValidatedData();
 
-        $result = $this->registerService->createRestaurantWithOwner($data);
+        $result = $this->registerService->createRestaurantWithOwner($request);
         if($result){
             return Helpers::sendSuccessResponse(201, 'Restaurant and owner registered successfully', $result);
         }
@@ -38,8 +37,7 @@ class RegisterController extends Controller
 
     }
     public function signup(RegisterUserRequest $request){
-        $data  = $request->getValidatedData();
-        $result = $this->registerService->register($data);
+        $result = $this->registerService->register($request);
         if($result){
             return Helpers::sendSuccessResponse(200, 'User signed up successfully');
         }
@@ -47,12 +45,10 @@ class RegisterController extends Controller
             return Helpers::sendFailureResponse(400, 'could not signup');
         }
     }
-    
+
 
     public function submitRestaurantRequest(RestaurantSubmissionRequest $request){
-
-        $data  = $request->getValidatedData();
-        $result = $this->registerService->submitRestaurantRequest($data);
+        $result = $this->registerService->submitRestaurantRequest($request);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Request submitted successfully', $result);
 

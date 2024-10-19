@@ -3,15 +3,14 @@
 namespace App\Services\Menu;
 
 use App\DTO\AddonDTO;
-use App\DTO\ChoiceGroupDTO;
 use App\DTO\ChoiceItems;
-use App\DTO\ChoiceItemsDTO;
+use App\DTO\Menu\ChoiceGroupDTO;
+use App\DTO\Menu\ChoiceItemsDTO;
 use App\Interfaces\MenuServiceV2Interface;
 use App\Models\Menu\Addon;
 use App\Models\Menu\AssignedChoiceGroup;
 use App\Models\Menu\Choice;
 use App\Models\Menu\ChoiceGroup;
-use App\Models\Menu\Menu;
 use App\Models\Menu\MenuItem;
 use Illuminate\Support\Facades\DB;
 

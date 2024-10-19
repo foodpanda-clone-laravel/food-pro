@@ -2,7 +2,7 @@
 
 namespace App\Services\Cart;
 
-use App\DTO\CartItemDTO;
+use App\DTO\Cart\CartItemDTO;
 use App\Interfaces\Cart\CartServiceInterface;
 use App\Models\Cart\CartItem;
 use App\Models\Menu\MenuItem;

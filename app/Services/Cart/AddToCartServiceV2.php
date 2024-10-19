@@ -2,14 +2,9 @@
 
 namespace App\Services\Cart;
 
-use App\DTO\CartItemDTO;
+use App\DTO\Cart\CartItemDTO;
 use App\Interfaces\AddToCartServiceV2Interface;
 use App\Models\Cart\CartItem;
-use App\Models\Menu\AssignedChoiceGroup;
-use App\Models\Menu\Choice;
-use App\Models\Menu\Menu;
-use App\Models\Menu\Variation;
-use App\Services\Menu\MenuBaseService;
 use Illuminate\Support\Facades\DB;
 
 class AddToCartServiceV2 implements AddToCartServiceV2Interface

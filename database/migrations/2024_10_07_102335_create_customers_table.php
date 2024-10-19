@@ -16,16 +16,15 @@ return new class extends Migration
         Schema::create('customers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('address')->nullable()->default(null);
-            $table->string('delivery_address')->nullable()->default(null);
-            $table->string('favorites'); // is there a way to store favorites restaurant ids in one column
+            $table->string('address')->nullable();
+            $table->string('delivery_address')->nullable();
+            $table->string('favorites');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->enum('payment_method',['COD'])->default('COD'); // not updatable
             $table->softDeletes();
             $table->timestamps();
         });
-        Schema::table('customers', function (Blueprint $table) {
-            $table->enum('payment_method',['Cash On Delivery'])->default('Cash On Delivery'); // not updatable
-        });
+
     }
 
     /**

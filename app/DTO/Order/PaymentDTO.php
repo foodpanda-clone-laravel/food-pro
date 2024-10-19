@@ -1,6 +1,8 @@
 <?php
 
-namespace App\DTO;
+namespace App\DTO\Order;
+
+use App\DTO\BaseDTO;
 
 class PaymentDTO extends BaseDTO
 {

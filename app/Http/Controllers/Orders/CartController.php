@@ -17,7 +17,7 @@ class CartController extends Controller
         $this->cartService= $cartService;
     }
     public function addToCart(AddToCartRequestV2 $request){
-        $result = $this->cartService->addToCart($request->getValidatedData());
+        $result = $this->cartService->addToCart();
         if(!$result){
             return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'internal server error', $result);
         }
@@ -34,7 +34,7 @@ class CartController extends Controller
     }
 
     public function calculateItemsTotal(AddToCartRequestV2 $request){
-        $data = $request->getValidatedData();
+
         $cart = $this->addToCart();
 
         $total = $this->cartService->calculateItemsTotal();

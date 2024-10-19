@@ -13,42 +13,26 @@ return new class extends Migration
      */
     public function up()
     {
-//        Schema::create('cart_items', function (Blueprint $table) {
-//            $table->id();
-//            $table->unsignedBigInteger('session_id');
-//            $table->unsignedBigInteger('menu_item_id');
-//            $table->integer('quantity');
-//            $table->json('selected_variations')->nullable()->default(null);
-//            $table->json('selected_addons')->nullable()->default(null);
-//            $table->timestamps();
-//        });
-//        Schema::table('cart_items', function (Blueprint $table) {
-//            $table->float('price');
-//        });
-//        Schema::table('cart_items', function (Blueprint $table) {
-//            $table->foreignId('choice_id')->nullable()->default(null)->references('id')->on('choices');
-//            // if the user wants to edit the variation he weill get the choice group from this column
-//            $table->foreignId('choice_group_id')->nullable()->default(null)->references('id')->on('choice_groups');
-//            $table->foreignId('addon_id')->nullable()->default(null)->references('id')->on('addons');
-//            $table->foreignId('size_variation_id')->nullable()->default(null)->references('id')->on('variations_v2');
-//
-//        });
-//        Schema::table('cart_items', function (Blueprint $table) {
-//           $table->unsignedBigInteger('restaurant_id');
-//           $table->foreign('restaurant_id')->references('id')->on('restaurants');
-//        });
-        Schema::table('cart_items', function (Blueprint $table) {
-           $table->foreignId('choice_group_id')->onDelete('cascade');
+        Schema::create('cart_items', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('session_id')->references('id')->on('sessions')->onDelete('cascade');
+            $table->foreignId('menu_item_id')->references('id')->on('menu_items')->onDelete('cascade');
+            $table->integer('quantity');
+            $table->float('price');
+            $table->foreignId('choice_id')->nullable()->references('id')->on('choices');
+            $table->foreignId('choice_group_id')->nullable()->references('id')->on('choice_groups');
+            $table->unsignedBigInteger('restaurant_id');
+            $table->foreign('restaurant_id')->references('id')->on('restaurants');
+            $table->timestamps();
         });
     }
-
     /**
      * Reverse the migrations.
      *
      * @return void
      */
-//    public function down()
-//    {
-//        Schema::dropIfExists('cart_items');
-//    }
+    public function down()
+    {
+        Schema::dropIfExists('cart_items');
+    }
 };

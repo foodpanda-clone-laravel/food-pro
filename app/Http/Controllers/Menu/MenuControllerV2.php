@@ -34,7 +34,7 @@ class MenuControllerV2 extends Controller
 
     public function createMenu(CreateMenuRequest $request,$branch_id)
     {
-        $result = $this->menuService->createMenu($request->getValidatedData(), $branch_id);
+        $result = $this->menuService->createMenu(, $branch_id);
 
         // Handle success or failure
         if ($result['success']) {
@@ -58,7 +58,7 @@ class MenuControllerV2 extends Controller
          */
 
 
-        $result = $this->menuService->addMenuItem($request->getValidatedData(), $menu_id);
+        $result = $this->menuService->addMenuItem(, $menu_id);
 
         return ($result);
 
@@ -166,7 +166,7 @@ class MenuControllerV2 extends Controller
 
 
     public function updateChoiceGroup(UpdateChoiceGroupRequest $request){
-        $data = $request->getValidatedData();
+
         $result = $this->menuService->updateChoiceGroup($data);
         if(!$result){
 

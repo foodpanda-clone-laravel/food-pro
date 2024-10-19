@@ -1,6 +1,8 @@
 <?php
 
-namespace App\DTO;
+namespace App\DTO\Deal;
+
+use App\DTO\BaseDTO;
 
 class DealItemDTO extends BaseDTO
 {

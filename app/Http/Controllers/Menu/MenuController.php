@@ -27,7 +27,7 @@ class MenuController extends Controller
 
     public function createMenu(CreateMenuRequest $request,$branch_id)
     {
-        $result=$this->menuService->createMenu($request->getValidatedData(),$branch_id);
+        $result=$this->menuService->createMenu(,$branch_id);
         if($result['success']){
             return Helpers::sendSuccessResponse(Response::HTTP_OK,'Menu created successfully',$result['menu']);
         }else{
@@ -37,7 +37,7 @@ class MenuController extends Controller
 
 
     public function addMenuItem(AddMenuItemRequest $request,$menu_id){
-        $result=$this->menuService->addMenuItem($request->getValidatedData(),$menu_id);
+        $result=$this->menuService->addMenuItem(,$menu_id);
         return Helpers::sendSuccessResponse(Response::HTTP_OK,'Food item created successfully',$result);
     }
 

@@ -3,14 +3,13 @@
 
 namespace App\Services;
 
-use App\DTO\BranchDTO;
-use App\DTO\RestaurantDTO;
-use App\DTO\RestaurantOwnerDTO;
-use App\DTO\UserDTO;
+use App\DTO\Restaurant\BranchDTO;
+use App\DTO\Restaurant\RestaurantDTO;
+use App\DTO\User\RestaurantOwnerDTO;
+use App\DTO\User\UserDTO;
 use App\Interfaces\AdminServiceInterface;
 use App\Jobs\SendAcceptedRequestMailJob;
 use App\Jobs\SendRejectedMailJob;
-use App\Mail\AcceptedRequestMail;
 use App\Mail\RejectRequestMail;
 use App\Models\Orders\Order;
 use App\Models\Restaurant\Branch;
@@ -20,7 +19,6 @@ use App\Models\User\RestaurantOwner;
 use App\Models\User\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 use Nette\Utils\Random;
 use Spatie\Permission\Models\Role;
 
@@ -62,7 +60,7 @@ class AdminService implements AdminServiceInterface
     }
     public function updateRestaurantApplication(array $data,$request_id){
 
-        $request = RestaurantRequest::findorfail($request_id);  
+        $request = RestaurantRequest::findorfail($request_id);
 
         $request->update($data);
 
@@ -71,26 +69,26 @@ class AdminService implements AdminServiceInterface
 
     }
 
-    public function approveRequest($request_id){ 
+    public function approveRequest($request_id){
 
     // Find the student by ID
         $request = RestaurantRequest::findorfail($request_id);
-      
+
 
         $data=$request->toArray();
         $data['password']=Random::generate(8);
         $temporarayPassword= $data['password'];
-        
+
 
         DB::beginTransaction();
-        
+
 
         try {
 
             if($request->status == 'approved'){
                 throw new Exception('The restaurant is already approved.');
-                
-                
+
+
             }
 
 
@@ -174,8 +172,8 @@ public function viewAllOrders(){
             'u.id as user_id'
         )
         ->get();
-    
-    
+
+
 
 
         return $query;
@@ -196,7 +194,7 @@ public function viewOrderDetails($order_id){
     }catch (Exception $e){
         dd($e);
     }
-    
+
 
 }
 

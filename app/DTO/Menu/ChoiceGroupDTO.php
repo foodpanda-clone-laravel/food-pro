@@ -1,6 +1,8 @@
 <?php
 
-namespace App\DTO;
+namespace App\DTO\Menu;
+
+use App\DTO\BaseDTO;
 
 class ChoiceGroupDTO extends BaseDTO
 {

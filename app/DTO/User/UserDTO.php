@@ -1,7 +1,8 @@
 <?php
 
-namespace App\DTO;
+namespace App\DTO\User;
 
+use App\DTO\BaseDTO;
 use Illuminate\Support\Facades\Hash;
 
 class UserDTO extends BaseDTO
