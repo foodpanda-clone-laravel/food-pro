@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer;
 
 use App\Helpers\Helpers;
 use App\Http\Requests\CartRequests\CheckoutRequest;
+use App\Http\Resources\CartResources\CartSummaryResource;
 use App\Http\Resources\Order\OrderResource;
 use App\Services\Customer\CustomerOrderService;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +33,8 @@ class OrderController extends CustomerController
     public function checkout(CustomerOrderService $customerOrderService)
     {
         $data = $customerOrderService->checkout();
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order summary', $data);
+        $result=  new CartSummaryResource((object)$data);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order summary', $result);
     }
     public function createOrder(CheckoutRequest $request, CustomerOrderService $customerOrderService)
     {
@@ -45,9 +47,6 @@ class OrderController extends CustomerController
         }
 
     }
-    public function cancelOrder()
-    {
 
-    }
 
 }

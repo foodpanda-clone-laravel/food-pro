@@ -186,7 +186,6 @@ class CustomerService implements CustomerServiceInterface
   {
     $query = Restaurant::query()
       ->with(['branches:restaurant_id,delivery_fee,delivery_time', 'ratings', 'deals']);
-
     $filteredRestaurants = FilterPipeline::apply($query, request()->all())->get();
 
     return RestaurantResource::collection($filteredRestaurants);

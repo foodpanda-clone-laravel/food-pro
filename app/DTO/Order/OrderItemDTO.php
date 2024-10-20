@@ -14,7 +14,7 @@ class OrderItemDTO extends BaseDTO
         $this->item_price = $data['price'];
         $this->addon_price =  $data['total_price']- $data['price'];
         $this->total_price = $data['total_price'];
-        $this->addon_name = $data['choice_names'];
+        $this->addon_name = $data['choice_names']??null;
 //        $this->discount = $data['discount']??null;
         //// if discount then  $this->total_price =($data['total_price']) -$data['total_price']*$this->discount -
     }

@@ -16,7 +16,6 @@ class RestaurantService
     public function getRestaurantOwner()
     {
         $user = Auth::user();
-
         // Find the restaurant owner
         $owner = RestaurantOwner::where('user_id', $user->id)->firstOrFail();
 

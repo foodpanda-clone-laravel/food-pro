@@ -2,6 +2,7 @@
 
 namespace App\Models\Restaurant;
 
+use App\Models\Cart\CartItem;
 use App\Models\Menu\ChoiceGroup;
 use App\Models\Menu\Menu;
 use App\Models\Menu\Deal\Deal;
@@ -13,7 +14,8 @@ use Illuminate\Support\Facades\Storage;
 
 class Restaurant extends Model
 {
-    use HasFactory, SoftDeletes;
+    use SoftDeletes;
+    use HasFactory;
 
     protected $guarded = [];
     public function __construct(){
@@ -54,5 +56,8 @@ class Restaurant extends Model
     {
 
         return $this->hasMany(RevenueReport::class);
+    }
+    public function cartItems(){
+        return $this->hasMany(CartItem::class);
     }
 }

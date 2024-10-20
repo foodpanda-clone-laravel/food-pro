@@ -4,20 +4,19 @@ namespace App\Http\Controllers\Orders;
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CartRequests\AddToCartRequest;
-use App\Http\Requests\CartRequests\AddToCartRequestV2;
-use App\Services\Cart\AddToCartServiceV2;
 
+use App\Services\Cart\CartService;
 use Symfony\Component\HttpFoundation\Response;
 
 
 class CartController extends Controller
 {
     protected $cartService;
-    public function __construct(AddToCartServiceV2 $cartService){
+    public function __construct(CartService $cartService){
         $this->cartService= $cartService;
     }
-    public function addToCart(AddToCartRequestV2 $request){
-        $result = $this->cartService->addToCart();
+    public function addToCart(AddToCartRequest $request){
+        $result = $this->cartService->addToCart($request->all());
         if(!$result){
             return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'internal server error', $result);
         }
@@ -26,17 +25,11 @@ class CartController extends Controller
 
         }
     }
-    public function updateCartItem(){
 
-    }
-    public function viewCart(){
 
-    }
+    public function calculateItemsTotal(AddToCartRequest $request){
 
-    public function calculateItemsTotal(AddToCartRequestV2 $request){
-
-        $cart = $this->addToCart();
-
+        $cart = $this->addToCart($request);
         $total = $this->cartService->calculateItemsTotal();
         return response($total, Response::HTTP_OK);
     }

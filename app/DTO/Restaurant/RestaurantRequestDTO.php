@@ -6,24 +6,6 @@ use App\DTO\BaseDTO;
 
 class RestaurantRequestDTO extends BaseDTO
 {
-    public int $id;
-    public string $first_name;
-    public string $last_name;
-    public string $email;
-    public string $address;
-    public string $postal_code;
-    public string $city;
-    public string $opening_time;
-    public string $closing_time;
-    public string $business_type;
-    public string $cnic;
-    public string $bank_name;
-    public string $iban;
-    public string $account_owner_title;
-    public string $cuisine;
-    public string $restaurant_name;
-    public ?string $logo_path;
-    public ?string $status = 'pending';
 
     public function __construct(array $data)
     {

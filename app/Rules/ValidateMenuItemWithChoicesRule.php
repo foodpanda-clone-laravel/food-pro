@@ -5,7 +5,7 @@ namespace App\Rules;
 use App\Models\Menu\AssignedChoiceGroup;
 use Illuminate\Contracts\Validation\Rule;
 
-class ValidateChoiceGroupsRule implements Rule
+class ValidateMenuItemWithChoicesRule implements Rule
 {
 
     protected $menuItemId;

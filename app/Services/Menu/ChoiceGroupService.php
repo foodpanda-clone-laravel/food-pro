@@ -93,35 +93,29 @@ class ChoiceGroupService implements ChoiceGroupServiceInterface
             DB::beginTransaction();
             $restaurant = MenuBaseService::getRestaurant();
             $data['restaurant_id']=$restaurant->id;
-            // if $data['is_required']=0 which means choice group is not compulsory then they are added as addons
-            $choiceGroup = ChoiceGroup::where('id', $data['id']);
-            $storedChoices = $choiceGroup->choices;
-            $userChoices = json_decode($data['choices'], true);
-            $keyedUserChoices = array_column($userChoices, null, 'id');
-            // if choice not present in db then insert it
-            // if choice present in db but not in choices array delete it
-            $storedChoicesIds = array_column($storedChoices->toArray(), 'id');
-            $choicesToUpdateIds = array_column($userChoices, 'id');
-            // use update or create
+            // find the choice group to update
+            $choiceGroup = ChoiceGroup::find($data['id']);
+            $storedChoices = $choiceGroup->choices->keyBy('id');
+            $userChoices = collect(json_decode($data['choices'], true))->keyBy('id');
             $choiceGroupDTO = new ChoiceGroupDTO($data);
             $choiceGroup->update($choiceGroupDTO->toArray());
-            foreach($storedChoicesIds as $id){
-                $choice = Choice::where('id', $id)->first();
-                if(in_array($id, $choicesToUpdateIds)){
-                    // if choice is present in user input and database then  update it
-                    $keyedUserChoices[$id]['choice_group_id']=$data['id'];
-                    $updateChoiceDTO = new ChoiceItemsDTO($keyedUserChoices[$id]);
-                    $choice->update($updateChoiceDTO->toArray());
-                }
-                else{
-                    // if choice is not present in user input then delete from database
+// Update or delete existing choices
+            $storedChoices->each(function ($choice) use ($userChoices, $data) {
+                if ($userChoices->has($choice->id)) {
+                    // Update existing choice
+                    $userChoiceData = $userChoices[$choice->id];
+                    $userChoiceData['choice_group_id'] = $data['id'];
+                    $choice->update((new ChoiceItemsDTO($userChoiceData))->toArray());
+                } else {
+                    // Delete choice not in the user's input
                     $choice->delete();
                 }
-            }
-            // if user has entered new choices in input insert them in database
-            if(isset($data['new_choices'])){
-                $newChoices = json_decode($data['new_choices'],true);
-                $newChoices = $this->addChoiceItems($data, $newChoices);
+            });
+
+// Insert new choices if present
+            if (!empty($data['new_choices'])) {
+                $newChoices = json_decode($data['new_choices'], true);
+                $this->addChoiceItems($data, $newChoices);
             }
 
             DB::commit();

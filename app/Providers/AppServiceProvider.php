@@ -70,6 +70,11 @@ class AppServiceProvider extends ServiceProvider
 			\App\Interfaces\ChoiceGroupServiceInterface::class,
 			\App\Services\Menu\ChoiceGroupService::class
 		);
+
+		$this->app->bind(
+			\App\Interfaces\CartServiceInterface::class,
+			\App\Services\Cart\CartService::class
+		);
     }
 
     /**
