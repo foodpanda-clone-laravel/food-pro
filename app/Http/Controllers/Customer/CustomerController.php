@@ -5,17 +5,18 @@ namespace App\Http\Controllers\Customer;
 use App\DTO\User\CustomerDTO;
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\User\User;
+
+use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
+use App\Http\Requests\CustomerRequests\UpdateCustomerAddressRequest;
 use App\Http\Requests\CustomerRequests\AddFavoriteRestaurantRequest;
 use App\Http\Requests\CustomerRequests\SubmitFeedbackRequest;
-use App\Http\Requests\CustomerRequests\UpdateCustomerAddressRequest;
 use App\Http\Requests\CustomerRequests\UpdateProfileRequest;
 use App\Http\Requests\CustomerRequests\UsePointsRequest;
 use App\Http\Resources\Customer\ProfileResource;
-use App\Models\User\User;
 use App\Services\Customer\CustomerService;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Response;
 
 class CustomerController extends Controller
 {
@@ -45,7 +46,7 @@ class CustomerController extends Controller
     public function viewMenus($restaurantId)
     {
         $menus = $this->customerService->getMenusByRestaurant($restaurantId);
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Menus retrieved successfully', $menus->toJson());
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Menus retrieved successfully', $menus);
     }
 
     public function searchRestaurant(Request $request)
@@ -54,10 +55,9 @@ class CustomerController extends Controller
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurants retrieved successfully', $restaurants);
     }
 
-    public function favoriteItems(Request $request)
+    public function favoriteItems()
     {
-        $customerId = $request->get('customer_id');
-        $favoriteRestaurants = $this->customerService->getFavoriteItems($customerId);
+        $favoriteRestaurants = $this->customerService->getFavoriteItems();
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Favorite restaurants retrieved successfully', $favoriteRestaurants);
     }
@@ -116,30 +116,27 @@ class CustomerController extends Controller
 
     public function addFavoriteRestaurant(AddFavoriteRestaurantRequest $request)
     {
-        $customerId = $request->get('customer_id');
         $restaurantId = $request->get('restaurant_id');
 
-        $this->customerService->addFavoriteRestaurant($customerId, $restaurantId);
-
-        $favoriteRestaurants = $this->customerService->getFavoriteItems($customerId);
+        // Use the logged-in customer's information
+        $favoriteRestaurants = $this->customerService->addFavoriteRestaurant($restaurantId);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant added to favorites successfully', $favoriteRestaurants);
     }
 
     public function removeFavoriteRestaurant(Request $request)
     {
-        $customerId = $request->get('customer_id');
         $restaurantId = $request->get('restaurant_id');
 
-        $favoriteRestaurants = $this->customerService->removeFavoriteRestaurant($customerId, $restaurantId);
+        // Use the logged-in customer's information
+        $favoriteRestaurants = $this->customerService->removeFavoriteRestaurant($restaurantId);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant removed from favorites successfully', $favoriteRestaurants);
     }
     public function submitFeedback(SubmitFeedbackRequest $request)
     {
-        $customerId = $request->get('customer_id');
 
-        $feedback = $this->customerService->submitFeedback($customerId, $request);
+        $feedback = $this->customerService->submitFeedback($request);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Feedback submitted successfully', $feedback);
     }

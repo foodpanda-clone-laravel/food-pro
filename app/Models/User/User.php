@@ -11,7 +11,6 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use App\Jobs\QueuedPasswordResetJob;
 
 
 // Import SoftDeletes
@@ -61,13 +60,5 @@ class User extends Authenticatable implements JWTSubject
            'role' => $this->role,
         ];
     }
-    public function sendPasswordResetNotification($token)
 
-    {
-        $this->reset_password_token = $token;
-        $this->token_expired_at = now()->addHours(24);
-        $this->save();
-
-        QueuedPasswordResetJob::dispatch($this,$token);
-    }
 }

@@ -9,6 +9,7 @@ use App\DTO\User\CustomerDTO;
 use App\DTO\User\RestaurantOwnerDTO;
 use App\DTO\User\UserDTO;
 use App\Interfaces\Auth\RegisterServiceInterface;
+use App\Jobs\SendRequestReceivedMailJob;
 use App\Mail\RequestRecievedMail;
 use App\Models\Restaurant\Branch;
 use App\Models\Restaurant\Restaurant;
@@ -120,7 +121,7 @@ public function submitRestaurantRequest(array $data){
 
 
 
-        Mail::to($data['email'])->send(new RequestRecievedMail($data['first_name']));
+        SendRequestReceivedMailJob::dispatch($data['email'], $data['first_name']);
 
 
         return $form;

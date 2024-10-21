@@ -50,6 +50,14 @@ class RegisterRestaurantService
         }
     }
     // get the restaurant id from order details
-
+    public function viewMyRestaurantRating(){
+        $user = Auth::user();
+        $restaurant = $user->restaurantOwner->restaurant;
+    // get all the orders from the restaurant inner join on ratings table
+        $ratings = Rating::where('restaurant_id', $restaurant->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return $ratings;
+    }
 
 }

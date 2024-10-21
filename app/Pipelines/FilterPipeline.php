@@ -16,8 +16,19 @@ class FilterPipeline
 
   protected static function getFilters($filters)
   {
-    return array_map(function ($filter) {
-      return 'App\\Pipelines\\Filters\\' . ucfirst($filter);
-    }, array_keys($filters));
+    // Define available filter classes here
+    $availableFilters = [
+      'deal' => 'App\\Pipelines\\Filters\\Deal',
+      'App\\Pipelines\\Filters\\ClosingTime',
+      'App\\Pipelines\\Filters\\OpeningTime',
+      'App\\Pipelines\\Filters\\Cuisine',
+      'App\\Pipelines\\Filters\\Rating',
+      'price_min' => 'App\\Pipelines\\Filters\\PriceRange',
+      'price_max' => 'App\\Pipelines\\Filters\\PriceRange',
+    ];
+
+    return array_filter(array_map(function ($filter) use ($availableFilters) {
+      return $availableFilters[$filter] ?? null;
+    }, array_keys($filters)));
   }
 }

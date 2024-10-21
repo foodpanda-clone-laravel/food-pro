@@ -64,14 +64,30 @@ class CustomerService implements CustomerServiceInterface
     return Restaurant::where('name', 'like', "%{$searchTerm}%")->get();
   }
 
-  public function getFavoriteItems($customerId)
+  public function getFavoriteItems()
   {
-    $favoriteRestaurantIds = Favourite::where('customer_id', $customerId)
+    $user = auth()->user();
+    $customer = $user->customer;
+
+    $favoriteRestaurantIds = Favourite::where('customer_id', $customer->id)
       ->pluck('restaurant_id');
 
     $restaurants = Restaurant::whereIn('id', $favoriteRestaurantIds)
-      ->select('id', 'name', 'logo_path', 'cuisine', 'opening_time', 'closing_time')
-      ->get();
+      ->with('ratings')
+      ->get()
+      ->map(function ($restaurant) {
+        $averageRating = $restaurant->ratings->avg('stars') ?? 0;
+
+        return [
+          'id' => $restaurant->id,
+          'name' => $restaurant->name,
+          'logo_path' => $restaurant->logo_path,
+          'cuisine' => $restaurant->cuisine,
+          'opening_time' => $restaurant->opening_time,
+          'closing_time' => $restaurant->closing_time,
+          'average_rating' => round($averageRating, 2),
+        ];
+      });
 
     return $restaurants;
   }
@@ -125,28 +141,35 @@ class CustomerService implements CustomerServiceInterface
       ->firstOrFail();
   }
 
-  public function addFavoriteRestaurant($customerId, $restaurantId)
+  public function addFavoriteRestaurant($restaurantId)
   {
-    $exists = Favourite::where('customer_id', $customerId)
+    $user = auth()->user();
+    $customer = $user->customer;
+
+    $exists = Favourite::where('customer_id', $customer->id)
       ->where('restaurant_id', $restaurantId)
       ->exists();
 
     if (!$exists) {
       Favourite::create([
-        'customer_id' => $customerId,
+        'customer_id' => $customer->id,
         'restaurant_id' => $restaurantId
       ]);
     }
-    return $this->getFavoriteItems($customerId);
+
+    return $this->getFavoriteItems();
   }
 
-  public function removeFavoriteRestaurant($customerId, $restaurantId)
+  public function removeFavoriteRestaurant($restaurantId)
   {
-    Favourite::where('customer_id', $customerId)
+    $user = auth()->user();
+    $customer = $user->customer;
+
+    Favourite::where('customer_id', $customer->id)
       ->where('restaurant_id', $restaurantId)
       ->delete();
 
-    return $this->getFavoriteItems($customerId);
+    return $this->getFavoriteItems();
   }
 
   public function getActiveOrder()
@@ -162,9 +185,47 @@ class CustomerService implements CustomerServiceInterface
     return $activeOrder;
   }
 
+  public function getOrderDetails($orderId)
+
+  {
+    $user = auth()->user();
+    $customer = $user->customer;
+
+    $order = Order::where('id', $orderId)
+      ->where('user_id', $customer->user_id)
+      ->with([
+        'orderItems.menuItem',
+        'restaurant',
+        'branch',
+      ])->firstOrFail();
+
+    return new OrderDetailsResource($order);
+  }
+
   public function submitFeedback($customerId, $data)
   {
-    $customer = Customer::findOrFail($customerId);
+    $user = auth()->user();
+    $customer = $user->customer;
+
+    $order = Order::where('id', $orderId)
+      ->where('user_id', $customer->user_id)
+      ->with([
+        'orderItems.menuItem',
+        'restaurant',
+        'branch',
+      ])->firstOrFail();
+
+    return new OrderDetailsResource($order);
+  }
+
+  public function submitFeedback($data)
+  {
+    $user = auth()->user();
+    $customer = $user->customer;
+
+    if (!$customer) {
+      throw new \Exception("Customer record not found for the logged-in user.");
+    }
 
     $order = Order::findOrFail($data['order_id']);
 
@@ -176,11 +237,10 @@ class CustomerService implements CustomerServiceInterface
       'stars' => $data['rating'],
     ]);
 
-    return [
-      'feedback' => $feedback,
-      'restaurant_id' => $order->restaurant_id
-    ];
+    // Return the feedback response using FeedbackResource
+    return new FeedbackResource($feedback);
   }
+
 
   public function getAllRestaurants()
   {

@@ -111,6 +111,7 @@ class MenuController extends Controller
     public function getChoicesWithMenuItem($menu_item_id)
     {
         $result=$this->menuService->getChoicesWithMenuItem($menu_item_id);
+
         return Helpers::sendSuccessResponse(Response::HTTP_OK,'Menu item retrieved successfully',$result);
 
 

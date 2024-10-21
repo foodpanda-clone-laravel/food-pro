@@ -15,6 +15,8 @@ Route::controller(AdminController::class)->group(function () {
     Route::post('update-application/{request_id}', 'updateRestaurantApplication');
     Route::get('get-all-orders', 'viewAllOrders');
     Route::get('order-details/{order_id}', 'viewOrderDetails');
+
     Route::get('show-deactivated-restaurant', 'viewDeactivatedRestaurants');
+
     
  });  

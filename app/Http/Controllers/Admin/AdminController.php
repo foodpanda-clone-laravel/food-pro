@@ -52,12 +52,9 @@ class AdminController extends Controller
     }
 
     public function updateRestaurantApplication(UpdateApplicationRequest $request,$request_id){
-
-        $result= $this->adminService->updateRestaurantApplication($request,$request_id);
+        $result= $this->adminService->updateRestaurantApplication($request->all(),$request_id);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK,'Your request has been updated', $result);
-
-
 }
     public function viewAllOrders(){
         $result= $this->adminService->viewAllOrders();
