@@ -45,7 +45,7 @@ class CustomerController extends Controller
     public function viewMenus($restaurantId)
     {
         $menus = $this->customerService->getMenusByRestaurant($restaurantId);
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Menus retrieved successfully', $menus);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Menus retrieved successfully', $menus->toJson());
     }
 
     public function searchRestaurant(Request $request)

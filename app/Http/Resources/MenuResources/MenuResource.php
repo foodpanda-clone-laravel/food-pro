@@ -61,7 +61,6 @@ class MenuResource extends JsonResource
                     })->toArray(),
                 ];
             })->toArray(),
-
         ];
     }
 }
