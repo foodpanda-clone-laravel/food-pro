@@ -33,8 +33,8 @@ Route::controller(CartController::class)->group(function () {
     Route::get('/session', 'getShoppingSession');
 });
 
-    //Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
-});
+//Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
+// });
 Route::controller(UserController::class)->group(function () {
     Route::post('/login', 'login');
     Route::post('/logout', 'logout');
@@ -48,5 +48,5 @@ Route::controller(ForgotPasswordController::class)->group(function () {
 
 Route::post('submit-restaurant-request', [RegisterController::class, 'submitRestaurantRequest']);
 
-});
+// });
 

@@ -3,20 +3,20 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Models\Restaurant\Restaurant;
-use App\Http\Resources\ProfileResource;
+
 use App\Services\Customer\CustomerService;
 use App\Helpers\Helpers;
-use App\DTO\CustomerDTO;
+
 use Illuminate\Http\Request;
 use App\Models\User\User;
 
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
-use App\Http\Requests\CustomerRequests\UpdateCustomerAddressRequest;
+
 use App\Http\Requests\CustomerRequests\AddFavoriteRestaurantRequest;
-use App\Http\Requests\CustomerRequests\UpdateProfileRequest;
 use App\Http\Requests\CustomerRequests\UsePointsRequest;
 use App\Http\Requests\CustomerRequests\SubmitFeedbackRequest;
+use App\Http\Resources\FeedbackResource;
 use App\Http\Controllers\Controller;
 
 class CustomerController extends Controller
@@ -31,19 +31,6 @@ class CustomerController extends Controller
             $user = Auth::user();
             $this->customer = $user->customer;
         }
-    }
-
-    public function editProfile(UpdateProfileRequest $request)
-    {
-        $userId = auth()->user()->id;
-        $validatedData = $request->getValidatedData();
-
-
-        $this->customerService->updateProfile($userId, $validatedData);
-
-        $updatedUser = User::with('customer')->find($userId);
-
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Profile updated successfully', $updatedUser);
     }
 
     public function viewMenus($restaurantId)
@@ -74,50 +61,11 @@ class CustomerController extends Controller
 
     public function usePointsAtCheckout(UsePointsRequest $request)
     {
-        $validatedData = $request->getValidatedData();
-
-        $monetaryValue = $this->customerService->usePoints($validatedData['points']);
+        $monetaryValue = $this->customerService->usePoints($request->points);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Points redeemed successfully', ['monetary_value' => $monetaryValue]);
     }
 
-
-    public function updateCustomerAddress(UpdateCustomerAddressRequest $request)
-    {
-        $customerId = $request->get('customer_id');
-        $validatedData = $request->getValidatedData();
-        $isDefaultAddress = $request->routeIs('updateCustomerDefaultAddress');
-
-        $data = [
-            'user_id' => $customerId,
-            'address' => $validatedData['address'] ?? null,
-            'delivery_address' => $isDefaultAddress ? null : ($validatedData['delivery_address'] ?? null),
-            'favorites' => $validatedData['favorites'] ?? null
-        ];
-
-        // Ensure either address or delivery_address is present
-        if (is_null($data['address']) && is_null($data['delivery_address'])) {
-            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Either address or delivery address must be provided.');
-        }
-
-        $customerDTO = new CustomerDTO($data);
-
-        $this->customerService->updateCustomerInfo($customerId, $customerDTO);
-
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Customer address updated successfully');
-    }
-
-    public function viewProfile()
-    {
-        $userId = auth()->user()->id;
-        $customer = $this->customerService->getProfile($userId);
-
-        return Helpers::sendSuccessResponse(
-            Response::HTTP_OK,
-            'Customer profile retrieved successfully',
-            new ProfileResource($customer)
-        );
-    }
 
     public function addFavoriteRestaurant(AddFavoriteRestaurantRequest $request)
     {
@@ -140,23 +88,17 @@ class CustomerController extends Controller
     }
     public function submitFeedback(SubmitFeedbackRequest $request)
     {
-        $validatedData = $request->getValidatedData();
+        $feedback = $this->customerService->submitFeedback($request);
 
-        $feedback = $this->customerService->submitFeedback($validatedData);
-
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Feedback submitted successfully', $feedback);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Feedback submitted successfully', new FeedbackResource($feedback));
     }
+
     public function viewAllRestaurants()
     {
         $restaurants = $this->customerService->getAllRestaurants();
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'All restaurants retrieved successfully', $restaurants);
     }
-    // public function viewRestaurantById(Request $request)
-    // {
-    //     $restaurant = $this->customerService->viewRestaurantById($request->all());
-    //     return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant retrieved successfully', $restaurant);
-    // }
 
     public function viewDeals()
     {
