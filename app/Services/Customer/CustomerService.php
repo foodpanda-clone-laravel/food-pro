@@ -10,23 +10,17 @@ use App\Models\User\User;
 use Illuminate\Support\Facades\DB;
 use App\Http\Resources\MenuResource;
 use App\Http\Resources\OrderResource;
-
-use App\Http\Resources\FeedbackResource;
-
+use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\OrderDetailsResource;
 use App\Http\Resources\RestaurantResource;
 use Illuminate\Support\Facades\Storage;
-use Exception;
-use Illuminate\Support\Str;
 use App\Interfaces\Customer\CustomerServiceInterface;
 use App\Models\Customer\Favourite;
 use App\Models\Customer\Reward;
-use App\Models\Menu\Menu;
 use App\Models\Orders\Order;
 use App\Models\Restaurant\Rating;
 use App\Models\Restaurant\Restaurant;
 use App\Models\User\Customer;
-use Illuminate\Http\Response;
 
 class CustomerService implements CustomerServiceInterface
 {
@@ -36,7 +30,6 @@ class CustomerService implements CustomerServiceInterface
     $user = User::findOrFail($userId);
     $user->update($validatedData);
 
-    // If there are any customer-specific fields (like address)
     $customerFields = array_intersect_key($validatedData, array_flip(['address', 'delivery_address', 'payment_method']));
 
     if (!empty($customerFields)) {
@@ -119,6 +112,7 @@ class CustomerService implements CustomerServiceInterface
     return $this->convertPointsToMoney($pointsToUse);
   }
 
+
   private function convertPointsToMoney($points)
   {
     return $points * 0.01;
@@ -193,7 +187,6 @@ class CustomerService implements CustomerServiceInterface
   }
 
   public function getOrderDetails($orderId)
-
   {
     $user = auth()->user();
     $customer = $user->customer;
@@ -209,43 +202,23 @@ class CustomerService implements CustomerServiceInterface
     return new OrderDetailsResource($order);
   }
 
-  public function submitFeedback($customerId, $data)
+  public function submitFeedback($request)
   {
-    $user = auth()->user();
-    $customer = $user->customer;
+    $userId = auth()->id();
 
-    $order = Order::where('id', $orderId)
-      ->where('user_id', $customer->user_id)
-      ->with([
-        'orderItems.menuItem',
-        'restaurant',
-        'branch',
-      ])->firstOrFail();
-
-    return new OrderDetailsResource($order);
-  }
-
-  public function submitFeedback($data)
-  {
-    $user = auth()->user();
-    $customer = $user->customer;
-
-    if (!$customer) {
-      throw new \Exception("Customer record not found for the logged-in user.");
-    }
-
-    $order = Order::findOrFail($data['order_id']);
+    $order = Order::where('id', $request->order_id)
+      ->where('user_id', $userId)
+      ->firstOrFail();
 
     $feedback = Rating::create([
-      'order_id' => $data['order_id'],
+      'order_id' => $request->order_id,
       'restaurant_id' => $order->restaurant_id,
-      'user_id' => $customer->user_id,
-      'feedback' => $data['review'],
-      'stars' => $data['rating'],
+      'user_id' => $userId,
+      'feedback' => $request->review,
+      'stars' => $request->rating,
     ]);
 
-    // Return the feedback response using FeedbackResource
-    return new FeedbackResource($feedback);
+    return $feedback;
   }
 
 
