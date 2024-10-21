@@ -16,7 +16,9 @@ Route::controller(AdminController::class)->group(function () {
     Route::get('get-all-orders', 'viewAllOrders');
     Route::get('order-details/{order_id}', 'viewOrderDetails');
 
-    Route::get('show-deactivated-restaurant', 'viewDeactivatedRestaurants');
+    Route::get('show-deactivated-restaurants', 'viewDeactivatedRestaurants');
+    Route::post('deactive-restaurant/{restaurant_id}', 'deactivateRestaurant');
+    Route::post('activate-restaurant/{restaurant_id}', 'activateRestaurant');
 
     
  });  

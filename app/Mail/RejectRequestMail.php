@@ -15,15 +15,14 @@ class RejectRequestMail extends Mailable
 
     public $name;
 
-     */
+    
     public function __construct($first_name)
     {
         $this->name = $first_name;
     }
 
-     *
-     * @return $this
-     */
+    
+    
     public function build()
     {
         return $this->subject($this->name . ' - Request Received')

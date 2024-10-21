@@ -1,6 +1,4 @@
-
 <?php
-
 namespace App\Services;
 
 use App\DTO\BranchDTO;
@@ -62,11 +60,16 @@ class AdminService implements AdminServiceInterface
     }
     public function updateRestaurantApplication(array $data,$request_id){
 
-        $request = RestaurantRequest::findorfail($request_id);  
+        try{
+            $request = RestaurantRequest::findorfail($request_id);
+            $request->update($data);
+            return $request;
+        }
+        
+        catch (Exception $e){
 
-        $request->update($data);
-
-        return $request;
+            dd($e);
+         }
 
 
     }
@@ -74,18 +77,20 @@ class AdminService implements AdminServiceInterface
     public function approveRequest($request_id){ 
 
     // Find the student by ID
-        $request = RestaurantRequest::findorfail($request_id);
-      
-
-        $data=$request->toArray();
-        $data['password']=Random::generate(8);
-        $temporarayPassword= $data['password'];
-        
-
-        DB::beginTransaction();
+       
         
 
         try {
+
+            $request = RestaurantRequest::findorfail($request_id);
+      
+
+            $data=$request->toArray();
+            $data['password']=Random::generate(8);
+            $temporarayPassword= $data['password'];
+            
+    
+            DB::beginTransaction();
 
             if($request->status == 'approved'){
                 throw new Exception('The restaurant is already approved.');
@@ -206,9 +211,32 @@ public function viewDeactivatedRestaurants()
         // Retrieve only soft-deleted restaurants
         $restaurants = Restaurant::onlyTrashed()->get();
 
-        return response()->json($restaurants, 200);
+        return $restaurants;
     } catch (\Exception $e) {
-        return response()->json(['error' => 'Failed to fetch deactivated restaurants.'], 500);
+        dd($e);
+        }
+}
+
+public function deactivateRestaurant($restaurant_id){
+
+    try{
+        $restaurant = Restaurant::findorfail($restaurant_id);
+        $restaurant->delete();
+        return $restaurant;
+    }catch (Exception $e){
+        dd($e);
     }
+
+}
+public function activateRestaurant($restaurant_id){
+
+    try{
+        $restaurant = Restaurant::onlyTrashed()->findorfail($restaurant_id);
+        $restaurant->restore();
+        return $restaurant;
+    }catch (Exception $e){
+        dd($e);
+    }
+
 }
 }
