@@ -78,4 +78,17 @@ class AdminController extends Controller
 
     }
 
+    public function deactivateRestaurant($restaurant_id){
+        $result= $this->adminService->deactivateRestaurant($restaurant_id);
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Restaurant deactivated', $result);
+
+    }
+    public function activateRestaurant($restaurant_id){
+        $result= $this->adminService->activateRestaurant($restaurant_id);
+
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Restaurant activated', $result);
+
+    }
+
 }
