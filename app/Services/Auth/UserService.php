@@ -54,6 +54,7 @@ class UserService extends ShoppingSessionService
 
     }
         catch (\Exception $e){
+            dd($e);
 //dd($e->getMessage());
             return false;
         }

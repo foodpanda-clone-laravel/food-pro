@@ -3,11 +3,14 @@
 namespace App\Services\Menu;
 
 use App\DTO\AddonDTO;
+use App\DTO\ChoiceGroup\AssignedChoiceGroupDTO;
 use App\DTO\Menu\MenuDTO;
 use App\DTO\Menu\MenuItemDTO;
 use App\DTO\VariationDTO;
+use App\Http\Resources\MenuResources\MenuWithMenuItemResource;
 use App\Interfaces\menu\MenuServiceInterface;
 use App\Models\Menu\Addon;
+use App\Models\Menu\AssignedChoiceGroup;
 use App\Models\Menu\Menu;
 use App\Models\Menu\MenuItem;
 use App\Models\Menu\Variation;
@@ -17,6 +20,7 @@ use App\Models\User\RestaurantOwner;
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class MenuService implements MenuServiceInterface
 {
@@ -48,21 +52,38 @@ class MenuService implements MenuServiceInterface
         }
     }
 
-    public function addMenuItem(array $data, int $menu_id)
+    public function addMenuItem($data, int $menu_id)
     {
         try {
+            DB::beginTransaction();
             $menu = Menu::findOrFail($menu_id);
-            $imagePath = $data['image_file']->store('menuitems', 'public'); // Save file to 'storage/app/public/logos'
+            $imagePath = $data['image_file']->store('menuitems', 'public'); // Save file to 'storage/app/public/menuitems'
             $data['image_file'] = $imagePath;
-            $data['menu_id'] = $menu->id;
-            $imagePath = $data['image_file']->store('menuitems', 'public'); // Save file to 'storage/app/public/logos'
 
-            $data['image_file'] = $imagePath;
-            $menuItem = MenuItem::create((new MenuItemDTO($data))->toArray());
+            $menuItem = MenuItem::create((new MenuItemDTO($data, $menu_id))->toArray());
+            $assignedChoiceGroups = [];
+            $assignedChoices = json_decode($data['assigned_choices'], true);
+            foreach ($assignedChoices as  $choice) {
+                // Create a new DTO for each item
+                $dto = new AssignedChoiceGroupDTO($menuItem, $choice);
+                // Add to the bulk insert array
+                $assignedChoiceGroups[] = [
+                    'choice_group_id' => $dto->choice_group_id,
+                    'menu_item_id' => $dto->menu_item_id,
+                ];
+            }
+
+            // Bulk insert
+            AssignedChoiceGroup::insert($assignedChoiceGroups);
+            DB::commit();
             return ['success' => true, 'menuItem' => $menuItem];
         } catch (ModelNotFoundException $e) {
+            dd($e);
+            DB::rollBack();
             return ['success' => false, 'error' => 'Menu not found'];
         } catch (Exception $e) {
+            DB::rollBack();
+
             dd($e);
         }
     }
@@ -160,18 +181,11 @@ class MenuService implements MenuServiceInterface
     public function getChoicesWithMenuItem($menu_item_id)
     {
         try {
-            $menu_item = MenuItem::findOrFail($menu_item_id);
-            $decodedChoices = json_decode($menu_item->variation_id, true);
-            $addonIds = $decodedChoices['addons'] ?? [];
-            $variationIds = $decodedChoices['choices'] ?? [];
-            $addons = Addon::whereIn('id', $addonIds)->get();
-            $variations = Variation::whereIn('id', $variationIds)->get();
-            return [
-                'success' => true,
-                'menu_item' => $menu_item,
-                'addons' => $addons,
-                'variations' => $variations,
-            ];
+
+            $menu_item=MenuItem::where('id',$menu_item_id)
+                ->with(['AssignedChoiceGroups.choiceGroup.choices'])->get(); // Assuming 'choiceGroups' and 'choiceItems' relationships exist
+            $data = MenuWithMenuItemResource::collection($menu_item);
+            return $data;
         } catch (ModelNotFoundException $e) {
             dd($e);
         } catch (Exception $e) {

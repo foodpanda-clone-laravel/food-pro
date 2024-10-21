@@ -75,6 +75,11 @@ class AppServiceProvider extends ServiceProvider
 			\App\Interfaces\CartServiceInterface::class,
 			\App\Services\Cart\CartService::class
 		);
+
+		$this->app->bind(
+			\App\Interfaces\RevnueServiceInterface::class,
+			\App\Services\Revenue\RevnueService::class
+		);
     }
 
     /**

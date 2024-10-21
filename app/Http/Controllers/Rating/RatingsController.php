@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Rating;
 
+use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RestaurantRequests\ViewRatingsRequest;
 use App\Models\Restaurant\Rating;
+use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Auth;
 
 class RatingsController extends Controller
@@ -26,16 +28,17 @@ class RatingsController extends Controller
         return $ratings;
     }
     public function viewRestaurantReviews(ViewRatingsRequest $request){
+// make a pipeline
+        $query = Rating::with(['user:id,first_name,last_name', 'restaurant:id,name'])
+            ->orderBy('created_at', 'desc');
+        $result =  app(Pipeline::class)
+            ->send($query)
+            ->through([
+                \App\Pipelines\RestaurantReviewsFilter\FilterReviewsByRestaurantName::class,
+            ])
+            ->thenReturn()
+            ->get(); // Fetch all orders as a collection
+        return Helpers::sendSuccessResponse(200, 'reviews', $result);
 
-        $ratings = Rating::select(
-            'ratings.*', // Select all columns from ratings table
-            'users.first_name',
-            'users.last_name'
-        )
-            ->join('users', 'ratings.user_id', '=', 'users.id')
-            ->where('restaurant_id', $request['id'])
-            ->orderBy('ratings.created_at', 'desc')
-            ->get();
-        return $ratings;
     }
 }

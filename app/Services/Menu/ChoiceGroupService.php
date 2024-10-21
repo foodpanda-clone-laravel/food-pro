@@ -2,14 +2,12 @@
 
 namespace App\Services\Menu;
 
-use App\DTO\Menu\ChoiceGroupDTO;
-use App\DTO\Menu\ChoiceItemsDTO;
+use App\DTO\ChoiceGroup\ChoiceGroupDTO;
+use App\DTO\ChoiceGroup\ChoiceItemsDTO;
 use App\Interfaces\ChoiceGroupServiceInterface;
-use App\Models\Menu\Addon;
 use App\Models\Menu\AssignedChoiceGroup;
 use App\Models\Menu\Choice;
 use App\Models\Menu\ChoiceGroup;
-use App\Models\Menu\MenuItem;
 use Illuminate\Support\Facades\DB;
 
 class ChoiceGroupService implements ChoiceGroupServiceInterface

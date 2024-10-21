@@ -22,6 +22,6 @@ class MenuItem extends Model
         return $this->hasMany(ChoiceGroup::class);
     }
     public function AssignedChoiceGroups(){
-        return $this->hasMany(AssignedChoiceGroup::class, 'menu_item_id', 'id');
+        return $this->hasMany(AssignedChoiceGroup::class);
     }
 }

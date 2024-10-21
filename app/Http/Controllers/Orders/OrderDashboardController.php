@@ -21,7 +21,7 @@ class OrderDashboardController extends Controller
     public function index()
     {
         $orders = $this->orderService->getUserOrders();
-        
+
         $formattedOrders = $orders->map(function ($order) {
             $orderItems = $order->orderItems->map(function ($item) {
                 return [
@@ -30,7 +30,7 @@ class OrderDashboardController extends Controller
                     'image_file' => $item->menuItem->image_file ?? null, // Accessing image_file from menu_item
                 ];
             });
-        
+
             return [
                 'id' => $order->id,
                 'user_id' => $order->user_id,
@@ -49,15 +49,15 @@ class OrderDashboardController extends Controller
                 'order_items' => $orderItems, // Include order items in the response
             ];
         });
-    
+
         return Helpers::sendSuccessResponse(200, 'Orders Fetched Successfully', [
             'data' => $formattedOrders,
         ]);
     }
-}        
 
 
-    
+
+
 
     public function updateOrderStatus(UpdateOrderStatusRequest $request)
     {

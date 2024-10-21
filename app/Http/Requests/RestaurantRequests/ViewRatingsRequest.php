@@ -15,7 +15,7 @@ class ViewRatingsRequest extends BaseRequest
     public function rules()
     {
         return [
-            'id'=>'required|exists:restaurants,id'
+//            'id'=>'required|exists:restaurants,id'
         ];
     }
 }

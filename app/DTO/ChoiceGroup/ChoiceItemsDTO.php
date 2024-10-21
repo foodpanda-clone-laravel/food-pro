@@ -1,6 +1,6 @@
 <?php
 
-namespace App\DTO\Menu;
+namespace App\DTO\ChoiceGroup;
 
 use App\DTO\BaseDTO;
 

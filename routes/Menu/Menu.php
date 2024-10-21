@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Route;
 
     Route::prefix('menu')->controller(MenuController::class)->group(function () {
         Route::post('create/{branch_id}', 'createMenu');
-        Route::post('add-item/{menu_id}', 'addMenuItem');
         Route::post('add-addon/{menu_item_id}', 'addOns');
         Route::post('update/{menu_item}', 'updateMenu');
         Route::post('update-item/{menu_item_id}', 'updateMenuItem');

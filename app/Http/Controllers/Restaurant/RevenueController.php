@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Restaurant;
 
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\RevenueResource;
 use App\Models\Orders\Order;
 use App\Models\Restaurant\RevenueReport;
 use Carbon\Carbon;
@@ -17,53 +18,44 @@ class RevenueController extends Controller
     // admin dashboard
     public function viewRestaurantRevenues(){
         try{
-            // get current months order and revenue
-            $currentMonth = \Carbon\Carbon::now()->monthName;
-            $orders = Order::query()
-                ->join('restaurants', 'orders.restaurant_id', '=', 'restaurants.id')
-                ->select('orders.*', 'restaurants.name as restaurant_name')
-                ->get()
-                ->toArray();
-            $amount= array_column($orders, 'total_amount');
-            $created_at = array_column($orders, 'created_at');
-            $restaurantNames = array_column($orders, 'restaurant_name');
-            // order received in a day or week or month
-            $revenue = [
-                'revenue'=>$amount,
-                'created_at'=>$created_at,
-                'restaurant_name'=>$restaurantNames,
-            ];
-            $orderVolumes = DB::table('orders')
-                ->select(DB::raw('DATE(created_at) as order_date'), DB::raw('COUNT(*) as order_count'))
+// revenue colum of orders
+            $ordersRevenue = Order::with('restaurant')
+                ->whereMonth('created_at', Carbon::now()->month)
                 ->whereYear('created_at', Carbon::now()->year)
-                ->groupBy(DB::raw('DATE(created_at)'))
-                ->orderBy('order_date')
-                ->get()->toArray();
-            $orderVolumes = DB::table('orders')
-                ->join('restaurants', 'orders.restaurant_id', '=', 'restaurants.id')
-                ->select(
-                    'restaurants.name as restaurant_name',
-                    DB::raw('DATE(orders.created_at) as order_date'),
-                    DB::raw('COUNT(orders.id) as order_volume')
-                )
-                ->whereYear('orders.created_at', Carbon::now()->year)
-                ->groupBy('restaurants.name', DB::raw('DATE(orders.created_at)'))
-                ->orderBy('order_date')
-                ->get()->toJson();
-            $orderVolumes = json_decode($orderVolumes);
-            $orderVolume = array_column($orderVolumes, 'order_volume');
-            $orderDate = array_column($orderVolumes, 'order_date');
-            $orderVolumeRestaurantNames = array_column($orderVolumes, 'restaurant_name');
+                ->get()
+            ->map(function ($order){
+                return [
+                    'total_amount'=>$order->total_amount,
+                    'created_at'=>$order->created_at,
+                    'restaurant_name'=>($order->restaurant->name)];
+            });
+// calculate order volumes
+            $orderVolumes = Order::with('restaurant') // Eager load the restaurant relationship
+            ->whereYear('created_at', now()->year)
+                ->get()
+                ->groupBy(function ($order) {
+                    return $order->created_at->toDateString(); // Group by order date
+                })
+                ->flatMap(function ($orders) {
+                    return $orders->groupBy('restaurant_id')->map(function ($restaurantOrders) {
+                        return [
+                            'restaurant_name' => $restaurantOrders->first()->restaurant->name,
+                            'order_volume' => $restaurantOrders->count(),
+                            'order_date' => $restaurantOrders->first()->created_at->toDateString(),
+                        ];
+                    });
+                });
+
             $orderChartDetails = [
-                'order_date'=>$orderDate,
-                'order_volume'=>$orderVolume,
-                'restaurant_name'=>$orderVolumeRestaurantNames,
+                'order_date' => $orderVolumes->pluck('order_date'), // Get order dates
+                'order_volume' => $orderVolumes->pluck('order_volume'), // Get order volumes
+                'restaurant_name' => $orderVolumes->pluck('restaurant_name'), // Get restaurant names
             ];
             $data=[
-                'revenue_details'=>$revenue,
-                'order_volume'=>$orderChartDetails
+                'revenue_details'=>$ordersRevenue,
+                'order_volume_details'=>$orderChartDetails
             ];
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Revenue Reports', $data);
+            return new RevenueResource((object)$data);
         }
         catch(\Exception $e){
             dd($e);
@@ -78,25 +70,18 @@ class RevenueController extends Controller
         //         *
         //         * topRestaurants: [15000, 14000, 13500, 12000]
         //         */
-        // in revenue array send all orders revenue total amount
-        // in revenue order volume send all orders received by a restaurant id
-        // group them based on timestamp
-        //
+
+
         try{
-            // get current months order and revenue
-            $currentMonth = \Carbon\Carbon::now()->monthName;
             $user = Auth::user();
             $restaurant = $user->restaurantOwner->restaurant;
-            // write base query
-            // then group by daily weekly, monthly or weekly using pipes
-            // default is monthly
+
             $orders = Order::where('restaurant_id', $restaurant->id)
                 ->whereMonth('created_at', now()->month)
                 ->whereYear('created_at', now()->year)
                 ->get()->toArray();
             $amount= array_column($orders, 'total_amount');
             $created_at = array_column($orders, 'created_at');
-            // order received in a day or week or month
             $data = [
                 'total_revenue'=>[
                     'revenue'=>$amount,

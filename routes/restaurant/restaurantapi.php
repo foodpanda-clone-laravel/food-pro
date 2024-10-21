@@ -16,26 +16,27 @@ Route::group(['middleware' => 'request.logs',], function () {
         Route::post('/update-choice-group', 'updateChoiceGroup');
 
     });
-});
 
     Route::controller(RatingsController::class)->group(function(){
-    // restaurant owner can only view their reviews
-       Route::get('/my-reviews', 'viewMyRestaurantRating');
-       Route::get('/restaurant-reviews', 'viewRestaurantReviews');
+        // restaurant owner can only view their reviews
+        Route::get('/my-reviews', 'viewMyRestaurantRating');
+        Route::get('/restaurant-reviews', 'viewRestaurantReviews');
     });
     Route::controller(RevenueController::class)->group(function(){
         Route::get('/my-revenue', 'viewMyRevenue');
         Route::get('/restaurant-revenues', 'viewRestaurantRevenues');
     });
+    Route::group(['middleware' => 'api',], function () {
+        Route::get('/restaurant', [RestaurantController::class, 'viewRestaurantById']);
+        Route::delete('/deactivate-restaurant', [RestaurantController::class, 'deleteRestaurant']);
+        Route::post('/update-restaurant', [RestaurantController::class, 'updateRestaurant']);
+        Route::post('/restore-restaurant', [RestaurantController::class, 'restoreRestaurant']);
 
-
-Route::group(['middleware' => 'api',], function () {
-    Route::get('/restaurant', [RestaurantController::class, 'viewRestaurantById']);
-    Route::delete('/deactivate-restaurant', [RestaurantController::class, 'deleteRestaurant']);
-    Route::post('/update-restaurant', [RestaurantController::class, 'updateRestaurant']);
-    Route::post('/restore-restaurant', [RestaurantController::class, 'restoreRestaurant']);
+    });
 
 });
+
+
 
 
 

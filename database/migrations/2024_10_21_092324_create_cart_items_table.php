@@ -15,17 +15,17 @@ return new class extends Migration
     {
         Schema::create('cart_items', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('session_id')->references('id')->on('sessions')->onDelete('cascade');
+            $table->foreignId('session_id')->references('id')->on('shopping_sessions')->onDelete('cascade');
             $table->foreignId('menu_item_id')->references('id')->on('menu_items')->onDelete('cascade');
             $table->integer('quantity');
             $table->float('price');
-            $table->foreignId('choice_id')->nullable()->references('id')->on('choices');
-            $table->foreignId('choice_group_id')->nullable()->references('id')->on('choice_groups');
-            $table->unsignedBigInteger('restaurant_id');
-            $table->foreign('restaurant_id')->references('id')->on('restaurants');
+            $table->foreignId('choice_id')->nullable()->references('id')->on('choices')->onDelete('cascade');
+            $table->foreignId('choice_group_id')->nullable()->references('id')->on('choice_groups')->onDelete('cascade');
+            $table->foreignId('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
             $table->timestamps();
         });
     }
+
     /**
      * Reverse the migrations.
      *

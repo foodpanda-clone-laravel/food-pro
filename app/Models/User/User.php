@@ -48,7 +48,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(RestaurantOwner::class);
     }
     public function shoppingSession(){
-        return $this->hasOne(ShoppingSession::class);
+        return $this->hasMany(ShoppingSession::class);
     }
     public function getJWTIdentifier()
     {
