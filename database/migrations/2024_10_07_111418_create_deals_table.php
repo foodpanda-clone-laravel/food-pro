@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->unsignedBigInteger('restaurant_id');
-            $table->unsignedBigInteger('branch_id')->nullable()->default(null);
-            
+            $table->unsignedBigInteger('branch_id')->nullable();
+
             $table->float('discount')->nullable();
             $table->foreign('branch_id')->references('id')->on('branches')->onDelete('cascade');
             $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');

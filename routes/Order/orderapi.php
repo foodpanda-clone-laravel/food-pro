@@ -6,17 +6,19 @@ use App\Http\Controllers\Orders\OrderDashboardController;
 use App\Http\Middleware\APIRequestLogsMiddleware;
 
 use Illuminate\Support\Facades\Route;
+Route::middleware('request.logs')->group(function () {
+    Route::controller(CartController::class)->group(function () {
+        Route::post('add-to-cart', 'addToCart');
+        Route::get('cart', 'viewCart');
+        Route::get('update-cart', 'updateCart');
+        Route::get('cart-items-total','calculateItemsTotal');
+        Route::get('total', 'calculateCartTotal');
+    });
+    Route::middleware('auth:api')->group(function () {
+        Route::get('/restaurant/orders', [OrderDashboardController::class, 'index']);
+        Route::post('orders/update-status', [OrderDashboardController::class, 'updateOrderStatus']);
+    });
 
-Route::controller(CartController::class)->group(function () {
-    Route::post('add-to-cart', 'addToCart');
-    Route::get('cart', 'viewCart');
-    Route::get('update-cart', 'updateCart');
-    Route::get('cart-items-total','calculateItemsTotal');
-    Route::get('total', 'calculateCartTotal');
+
+
 });
-Route::middleware('auth:api')->group(function () {
-    Route::get('/restaurant/orders', [OrderDashboardController::class, 'index']);
-    Route::post('orders/update-status', [OrderDashboardController::class, 'updateOrderStatus']);
-});
-
-

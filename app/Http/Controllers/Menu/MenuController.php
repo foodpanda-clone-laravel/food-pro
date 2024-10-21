@@ -9,6 +9,7 @@ use App\Http\Requests\MenuRequest\UpdateChoiceRequest;
 use App\Http\Requests\MenuRequest\UpdateChoicesRequest;
 use App\Http\Requests\MenuRequest\UpdateMenuItemRequest;
 use App\Http\Requests\MenuRequest\UpdateMenuRequest;
+use App\Http\Resources\MenuResources\MenuWithMenuItemResource;
 use App\Models\Menu\Menu;
 use App\Models\Menu\MenuItem;
 use App\Services\Menu\MenuService;
@@ -27,7 +28,7 @@ class MenuController extends Controller
 
     public function createMenu(CreateMenuRequest $request,$branch_id)
     {
-        $result=$this->menuService->createMenu($request->getValidatedData(),$branch_id);
+        $result=$this->menuService->createMenu($request->all(),$branch_id);
         if($result['success']){
             return Helpers::sendSuccessResponse(Response::HTTP_OK,'Menu created successfully',$result['menu']);
         }else{
@@ -37,7 +38,7 @@ class MenuController extends Controller
 
 
     public function addMenuItem(AddMenuItemRequest $request,$menu_id){
-        $result=$this->menuService->addMenuItem($request->getValidatedData(),$menu_id);
+        $result=$this->menuService->addMenuItem($request->all(),$menu_id);
         return Helpers::sendSuccessResponse(Response::HTTP_OK,'Food item created successfully',$result);
     }
 
@@ -50,8 +51,11 @@ class MenuController extends Controller
     }
 
     public function getMenuwithMenuItem($menu_id){
-        $menu_item=MenuItem::where('menu_id',$menu_id)->get();
-        return $menu_item;
+        $menu_item=MenuItem::where('menu_id',$menu_id)
+            ->with(['AssignedChoiceGroups.choiceGroup.choices']) // Assuming 'choiceGroups' and 'choiceItems' relationships exist
+            ->get();
+        $data = MenuWithMenuItemResource::collection($menu_item);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Menu with menu items with choices',$data);
     }
 
     public function updateMenu(UpdateMenuRequest $request,$menu_id)
@@ -97,12 +101,6 @@ class MenuController extends Controller
 
 
 
-    public function storeChoices(StoreChoicesRequest $request)
-    {
-        $result=$this->menuService->storeChoices($request->validationData());
-        $data=$result->getData(true);
-        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Choices saved successfully',$data['data']);
-    }
 
     public function getChoices()
     {
@@ -113,32 +111,13 @@ class MenuController extends Controller
     public function getChoicesWithMenuItem($menu_item_id)
     {
         $result=$this->menuService->getChoicesWithMenuItem($menu_item_id);
-        
+
         return Helpers::sendSuccessResponse(Response::HTTP_OK,'Menu item retrieved successfully',$result);
-    
+
 
     }
 
-    public function updateChoices(UpdateChoiceRequest $request,$variation_id)
-    {
-        $result=$this->menuService->updateChoices($request->validationData(),$variation_id);
-        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Choices updated successfully',$result);
-    }
 
 
 
 }
-// public function addOns(AddOnRequest $request, $menu_item_id)
-// {
-//     // Call the service to create the addon
-//     $result = $this->menuService->createAddon($request->validationData(), $menu_item_id);
-
-//     // Handle success or failure
-//     if ($result['success']) {
-//         // Access the 'addon' key instead of 'menuItem'
-//         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Addon created successfully', $result['addon']);
-//     } else {
-//         // Return an error response
-//         return Helpers::sendFailureResponse(400, $result['error']);
-//     }
-// }

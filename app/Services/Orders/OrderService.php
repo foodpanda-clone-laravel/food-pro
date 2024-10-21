@@ -59,24 +59,8 @@ class OrderService
         return $order;
     }
 
-    
 
 
-    public function confirmOrder($orderId)
-    {
-        $order = Order::findOrFail($orderId);
-        $order->status = 'delivered';
-        $order->save();
 
-        return $order;
-    }
 
-    public function cancelOrder($orderId)
-    {
-        $order = Order::findOrFail($orderId);
-        $order->status = 'canceled';
-        $order->save();
-
-        return $order;
-    }
 }

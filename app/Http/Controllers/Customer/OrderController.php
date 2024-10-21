@@ -2,21 +2,12 @@
 
 namespace App\Http\Controllers\Customer;
 
-use App\DTO\OrderDTO;
-use App\Models\Cart\CartItem;
-use App\Models\Orders\Order;
-use App\Models\Restaurant\Branch;
-use App\Models\Restaurant\Restaurant;
-use App\Http\Resources\OrderResource;
-use App\Services\Customer\CustomerOrderService;
-use App\Services\Customer\CustomerService;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Helpers\Helpers;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use App\Http\Requests\CartRequests\CheckoutRequest;
+use App\Http\Resources\CartResources\CartSummaryResource;
+use App\Http\Resources\Order\OrderResource;
+use App\Services\Customer\CustomerOrderService;
 use Symfony\Component\HttpFoundation\Response;
-use App\Services\Cart\AddToCartServiceV2;
 
 class OrderController extends CustomerController
 {
@@ -49,21 +40,20 @@ class OrderController extends CustomerController
     public function checkout(CustomerOrderService $customerOrderService)
     {
         $data = $customerOrderService->checkout();
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order summary', $data);
+        $result=  new CartSummaryResource((object)$data);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order summary', $result);
     }
-    public function createOrder(CustomerOrderService $customerOrderService)
+    public function createOrder(CheckoutRequest $request, CustomerOrderService $customerOrderService)
     {
-        $data = $customerOrderService->createOrder();
-        if ($data) {
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order created successfully', $data);
+
+        $result = $customerOrderService->createOrder($request);
+        if ($result) {
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order created successfully', $result);
         } else {
             return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not process your order');
         }
 
     }
-    public function cancelOrder()
-    {
 
-    }
 
 }

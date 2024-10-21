@@ -12,21 +12,17 @@ return new class extends Migration {
      */
     public function up()
     {
-        // Schema::create('ratings', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->unsignedBigInteger('order_id');
-        //     $table->unsignedBigInteger('user_id');
-        //     $table->string('feedback');
-        //     $table->integer('stars');
-        //     $table->foreign('user_id')->references('id')->on('users');
-        //     $table->foreign('order_id')->references('id')->on('orders');
-        //     $table->timestamps();
-        // });
+         Schema::create('ratings', function (Blueprint $table) {
+             $table->id();
+             $table->string('feedback');
+             $table->integer('stars');
+             $table->foreignId('user_id')->nullable()->references('id')->on('users')->onDelete('cascade');
+             $table->foreignId('order_id')->nullable()->references('id')->on('orders')->onDelete('cascade');
+             $table->foreignId('restaurant_id')->nullable()->references('id')->on('restaurants')->onDelete('cascade');
+             $table->timestamps();
 
-        Schema::table('ratings', function (Blueprint $table) {
-            $table->unsignedBigInteger('restaurant_id')->nullable()->after('id');
-            $table->foreign('restaurant_id')->references('id')->on('restaurants');
-        });
+         });
+
     }
 
     /**
@@ -34,13 +30,8 @@ return new class extends Migration {
      *
      * @return void
      */
-    // public function down()
-    // {
-    //     Schema::table('ratings', function (Blueprint $table) {
-    //         $table->dropForeign(['restaurant_id']);
-    //         $table->dropColumn('restaurant_id');
-    //     });
-
-    //     Schema::dropIfExists('ratings');
-    // }
+     public function down()
+     {
+         Schema::dropIfExists('ratings');
+     }
 };

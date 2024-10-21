@@ -13,20 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-//        Schema::create('branches', function (Blueprint $table) {
-//            $table->id();
-//            $table->string('address');
-//            $table->string('postal_code');
-//            $table->string('city');
-//            $table->unsignedBigInteger('restaurant_id');
-//            $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
-//
-//            $table->softDeletes();
-//            $table->timestamps();
-//        });
-        Schema::table('branches', function (Blueprint $table) {
+        Schema::create('branches', function (Blueprint $table) {
+            $table->id();
+            $table->string('address');
+            $table->string('postal_code');
+            $table->string('city');
             $table->float('delivery_fee');
             $table->string('delivery_time')->default('Standard 15 to 30 minutes');
+            $table->foreignId('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
+            $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -35,8 +31,8 @@ return new class extends Migration
      *w
      * @return void
      */
-//    public function down()
-//    {
-//        Schema::dropIfExists('branches');
-//    }
+    public function down()
+    {
+        Schema::dropIfExists('branches');
+    }
 };

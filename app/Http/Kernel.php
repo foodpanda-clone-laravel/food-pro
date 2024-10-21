@@ -3,7 +3,6 @@
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use PragmaRX\Google2FALaravel\Google2FA;
 
 class Kernel extends HttpKernel
 {
@@ -50,7 +49,7 @@ class Kernel extends HttpKernel
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
 
-            //         \App\Http\Middleware\APIRequestLogsMiddleware::class
+         \App\Http\Middleware\APIRequestLogsMiddleware::class
         ],
     ];
 
@@ -78,8 +77,6 @@ class Kernel extends HttpKernel
         'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
-        '2fa' => Google2FA::class,
-        '2faCheck' => \App\Http\Middleware\TwoFaMiddleware::class,
 
 
     ];

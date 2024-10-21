@@ -18,9 +18,9 @@ class ForgotPasswordController extends Controller
         $this->passwordService = $service;
     }
     public function submitForgotPasswordForm(ForgotPasswordRequest $request){
-        $data = $request->getValidatedData();
+
         $status = Password::sendResetLink(
-           $data
+           $request
         );
         return $status === Password::RESET_LINK_SENT
         ? Helpers::sendSuccessResponse(200, 'Success')
@@ -28,9 +28,9 @@ class ForgotPasswordController extends Controller
 
     }
     public function submitResetPasswordForm(ResetPasswordRequest $request){
-        $data = $request->getValidatedData();
+
         $status = Password::reset(
-            $data,
+            $request,
             function ($user, $password) {
                 $user->forceFill([
                     'password' => bcrypt($password)

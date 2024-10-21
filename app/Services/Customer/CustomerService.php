@@ -2,25 +2,24 @@
 
 namespace App\Services\Customer;
 
-use App\Models\Menu\Deal\Deal;
-use App\DTO\CustomerDTO;
+use App\DTO\User\CustomerDTO;
 use App\Helpers\Helpers;
-use App\Pipelines\FilterPipeline;
-use App\Models\User\User;
-use Illuminate\Support\Facades\DB;
-use App\Http\Resources\MenuResource;
-use App\Http\Resources\OrderResource;
-use Symfony\Component\HttpFoundation\Response;
-use App\Http\Resources\OrderDetailsResource;
-use App\Http\Resources\RestaurantResource;
-use Illuminate\Support\Facades\Storage;
+use App\Http\Resources\MenuResources\MenuResource;
+use App\Http\Resources\Order\OrderResource;
+use App\Http\Resources\Restaurant\RestaurantResource;
 use App\Interfaces\Customer\CustomerServiceInterface;
 use App\Models\Customer\Favourite;
 use App\Models\Customer\Reward;
+use App\Models\Menu\Deal\Deal;
 use App\Models\Orders\Order;
 use App\Models\Restaurant\Rating;
 use App\Models\Restaurant\Restaurant;
 use App\Models\User\Customer;
+use App\Models\User\User;
+use App\Pipelines\FilterPipeline;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class CustomerService implements CustomerServiceInterface
 {
@@ -30,6 +29,7 @@ class CustomerService implements CustomerServiceInterface
     $user = User::findOrFail($userId);
     $user->update($validatedData);
 
+    // If there are any customer-specific fields (like address)
     $customerFields = array_intersect_key($validatedData, array_flip(['address', 'delivery_address', 'payment_method']));
 
     if (!empty($customerFields)) {
@@ -112,7 +112,6 @@ class CustomerService implements CustomerServiceInterface
     return $this->convertPointsToMoney($pointsToUse);
   }
 
-
   private function convertPointsToMoney($points)
   {
     return $points * 0.01;
@@ -187,6 +186,7 @@ class CustomerService implements CustomerServiceInterface
   }
 
   public function getOrderDetails($orderId)
+
   {
     $user = auth()->user();
     $customer = $user->customer;
@@ -202,23 +202,43 @@ class CustomerService implements CustomerServiceInterface
     return new OrderDetailsResource($order);
   }
 
-  public function submitFeedback($request)
+  public function submitFeedback($customerId, $data)
   {
-    $userId = auth()->id();
+    $user = auth()->user();
+    $customer = $user->customer;
 
-    $order = Order::where('id', $request->order_id)
-      ->where('user_id', $userId)
-      ->firstOrFail();
+    $order = Order::where('id', $orderId)
+      ->where('user_id', $customer->user_id)
+      ->with([
+        'orderItems.menuItem',
+        'restaurant',
+        'branch',
+      ])->firstOrFail();
+
+    return new OrderDetailsResource($order);
+  }
+
+  public function submitFeedback($data)
+  {
+    $user = auth()->user();
+    $customer = $user->customer;
+
+    if (!$customer) {
+      throw new \Exception("Customer record not found for the logged-in user.");
+    }
+
+    $order = Order::findOrFail($data['order_id']);
 
     $feedback = Rating::create([
-      'order_id' => $request->order_id,
+      'order_id' => $data['order_id'],
       'restaurant_id' => $order->restaurant_id,
-      'user_id' => $userId,
-      'feedback' => $request->review,
-      'stars' => $request->rating,
+      'user_id' => $customer->user_id,
+      'feedback' => $data['review'],
+      'stars' => $data['rating'],
     ]);
 
-    return $feedback;
+    // Return the feedback response using FeedbackResource
+    return new FeedbackResource($feedback);
   }
 
 
@@ -226,7 +246,6 @@ class CustomerService implements CustomerServiceInterface
   {
     $query = Restaurant::query()
       ->with(['branches:restaurant_id,delivery_fee,delivery_time', 'ratings', 'deals']);
-
     $filteredRestaurants = FilterPipeline::apply($query, request()->all())->get();
 
     return RestaurantResource::collection($filteredRestaurants);

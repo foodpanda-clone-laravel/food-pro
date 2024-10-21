@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\MenuRequest;
 
-use Illuminate\Foundation\Http\FormRequest;
+
 use App\Http\Requests\BaseRequest;
+use App\Rules\ValidateChoiceGroupsRule;
+
 class UpdateChoiceGroupRequest extends BaseRequest
 {
 
@@ -19,7 +21,7 @@ class UpdateChoiceGroupRequest extends BaseRequest
             'name'=>'sometimes|string',
             'choice_type'=>'sometimes|string',
             'is_required'=>'sometimes|boolean',
-            'choices'=>'required|json',
+            'choices'=>['required','json', new ValidateChoiceGroupsRule($this->input('id'))],
             'new_choices'=>'sometimes|json'
         ];
     }
