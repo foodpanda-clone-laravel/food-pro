@@ -6,8 +6,10 @@ use App\DTO\User\CustomerDTO;
 use App\Helpers\Helpers;
 use App\Http\Resources\Customer\FeedbackResource;
 use App\Http\Resources\Customer\OrderDetailsResource;
+use App\Http\Resources\Customer\DealResource;
 use App\Http\Resources\MenuResources\MenuResource;
 use App\Http\Resources\Order\OrderResource;
+use App\Http\Resources\Customer\FavoriteRestaurantsResource;
 use App\Http\Resources\Restaurant\RestaurantResource;
 use App\Interfaces\Customer\CustomerServiceInterface;
 use App\Models\Customer\Favourite;
@@ -62,22 +64,9 @@ class CustomerService implements CustomerServiceInterface
 
     $restaurants = Restaurant::whereIn('id', $favoriteRestaurantIds)
       ->with('ratings')
-      ->get()
-      ->map(function ($restaurant) {
-        $averageRating = round($restaurant->ratings->avg('stars'), 2) ?? 0;
+      ->get();
 
-        return [
-          'id' => $restaurant->id,
-          'name' => $restaurant->name,
-          'logo_path' => $restaurant->logo_path,
-          'cuisine' => $restaurant->cuisine,
-          'opening_time' => $restaurant->opening_time,
-          'closing_time' => $restaurant->closing_time,
-          'average_rating' => round($averageRating, 2),
-        ];
-      });
-
-    return $restaurants;
+    return FavoriteRestaurantsResource::collection($restaurants);
   }
 
   public function getRewards()
@@ -217,36 +206,14 @@ class CustomerService implements CustomerServiceInterface
   {
     $deals = Deal::with([
       'restaurant:id,name,logo_path,cuisine',
+      'restaurant.ratings' // Load ratings through the restaurant
     ])
       ->select('id', 'name', 'restaurant_id', 'branch_id', 'discount')
-      ->get()
-      ->map(function ($deal) {
+      ->get();
 
-        $averageRating = Rating::where('restaurant_id', $deal->restaurant_id)
-          ->select(DB::raw('AVG(stars) as average_rating'))
-          ->groupBy('restaurant_id')
-          ->pluck('average_rating')
-          ->first() ?? 0;
-
-        $restaurantLogoUrl = $deal->restaurant && $deal->restaurant->logo_path
-          ? Storage::url($deal->restaurant->logo_path)
-          : null;
-
-        return [
-          'id' => $deal->id,
-          'name' => $deal->name,
-          'restaurant_id' => $deal->restaurant_id,
-          'branch_id' => $deal->branch_id,
-          'discount' => $deal->discount,
-          'average_rating' => round($averageRating, 2),
-          'restaurant_name' => optional($deal->restaurant)->name ?? 'Unknown',
-          'restaurant_logo' => $restaurantLogoUrl ?? 'N/A',
-          'restaurant_cuisine' => optional($deal->restaurant)->cuisine ?? 'N/A',
-        ];
-      });
-
-    return $deals;
+    return DealResource::collection($deals);
   }
+
 
 
 }
