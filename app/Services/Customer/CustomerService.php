@@ -5,7 +5,9 @@ namespace App\Services\Customer;
 use App\DTO\User\CustomerDTO;
 use App\Helpers\Helpers;
 use App\Http\Resources\MenuResources\MenuResource;
+use App\Http\Resources\Customer\OrderDetailsResource;
 use App\Http\Resources\Order\OrderResource;
+use App\Http\Resources\Customer\FeedbackResource;
 use App\Http\Resources\Restaurant\RestaurantResource;
 use App\Interfaces\Customer\CustomerServiceInterface;
 use App\Models\Customer\Favourite;
@@ -17,9 +19,9 @@ use App\Models\Restaurant\Restaurant;
 use App\Models\User\Customer;
 use App\Models\User\User;
 use App\Pipelines\FilterPipeline;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 
 class CustomerService implements CustomerServiceInterface
 {
@@ -76,7 +78,7 @@ class CustomerService implements CustomerServiceInterface
       ->with('ratings')
       ->get()
       ->map(function ($restaurant) {
-        $averageRating = $restaurant->ratings->avg('stars') ?? 0;
+        $averageRating = round($restaurant->ratings->avg('stars'), 2) ?? 0;
 
         return [
           'id' => $restaurant->id,
@@ -186,7 +188,6 @@ class CustomerService implements CustomerServiceInterface
   }
 
   public function getOrderDetails($orderId)
-
   {
     $user = auth()->user();
     $customer = $user->customer;
@@ -202,21 +203,21 @@ class CustomerService implements CustomerServiceInterface
     return new OrderDetailsResource($order);
   }
 
-  public function submitFeedback($customerId, $data)
-  {
-    $user = auth()->user();
-    $customer = $user->customer;
+  // public function submitFeedback($customerId, $data)
+  // {
+  //   $user = auth()->user();
+  //   $customer = $user->customer;
 
-    $order = Order::where('id', $orderId)
-      ->where('user_id', $customer->user_id)
-      ->with([
-        'orderItems.menuItem',
-        'restaurant',
-        'branch',
-      ])->firstOrFail();
+  //   $order = Order::where('id', $orderId)
+  //     ->where('user_id', $customer->user_id)
+  //     ->with([
+  //       'orderItems.menuItem',
+  //       'restaurant',
+  //       'branch',
+  //     ])->firstOrFail();
 
-    return new OrderDetailsResource($order);
-  }
+  //   return new OrderDetailsResource($order);
+  // }
 
   public function submitFeedback($data)
   {
