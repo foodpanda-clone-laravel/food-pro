@@ -83,7 +83,7 @@ class AppServiceProvider extends ServiceProvider
 
 		$this->app->bind(
 			\App\Interfaces\CustomerProfileServiceInterface::class,
-			\App\Services\CustomerProfileService::class
+			\App\Services\Customer\CustomerProfileService::class
 		);
     }
 

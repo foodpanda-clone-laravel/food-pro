@@ -11,7 +11,7 @@ class CustomerDTO extends BaseDTO
     public ?string $delivery_address;
     public $favorites; // This can be array or string
 
-    public function __construct(array $data = [])
+    public function __construct( $data)
     {
         $this->user_id = $data['user_id'] ?? null;
         $this->address = $data['address'] ?? null;

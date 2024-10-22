@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Models\Restaurant;
+namespace App\Models\Rating;
 
 use App\Models\Orders\Order;
+use App\Models\Restaurant\Restaurant;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,7 +24,7 @@ class Rating extends Model
     {
         return $this->belongsTo(Order::class);
     }
-    
+
     public function restaurant()
     {
         return $this->belongsTo(Restaurant::class, 'restaurant_id');

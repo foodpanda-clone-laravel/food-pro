@@ -2,24 +2,39 @@
 
 namespace App\Http\Controllers\Customer;
 
-use App\Http\Controllers\Controller;
-use App\Services\Customer\CustomerProfileService;
 use App\Helpers\Helpers;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\AuthRequests\ChangePasswordRequest;
+use App\Services\Customer\CustomerProfileService;
+use Symfony\Component\HttpFoundation\Response;
 use App\Http\Resources\Customer\ProfileResource;
 use App\Http\Requests\CustomerRequests\UpdateProfileRequest;
 use App\Http\Requests\CustomerRequests\UpdateCustomerAddressRequest;
 use App\Models\User\User;
 use App\DTO\User\CustomerDTO;
-use Symfony\Component\HttpFoundation\Response;
 
 
 class ProfileController extends Controller
 {
+
     protected $customerProfileService;
     public function __construct(CustomerProfileService $customerProfileService)
     {
         $this->customerProfileService = $customerProfileService;
     }
+
+    public function changePassword(ChangePasswordRequest $request){
+        $result = $this->customerProfileService->changePassword($request);
+        if(!$result){
+            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'invalid old password');
+
+        }
+        else{
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'changed password successfully');
+        }
+        }
+
+
 
     public function editProfile(UpdateProfileRequest $request)
     {

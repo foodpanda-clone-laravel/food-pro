@@ -14,7 +14,7 @@ Route::controller(CustomerController::class)->group(function () {
 
 
 // Protected routes
-Route::middleware(['request.logs', 'jwt'])->group(function () {
+Route::middleware('jwt')->group(function () {
 
   // Customer-related routes
   Route::prefix('customers')->group(function () {
@@ -32,11 +32,12 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
   });
 
   // Order-related routes
-  Route::prefix('orders')->group(function () {
-    Route::controller(OrderController::class)->group(function () {
-      Route::get('history', 'orderHistory');
-      Route::get('active-order', 'activeOrder');
-      Route::get('{order_id}/details', 'viewOrderDetails');
+        Route::prefix('orders')->group(function () {
+            Route::controller(OrderController::class)->group(function () {
+                Route::get('history', 'orderHistory');
+                Route::get('active-order', 'activeOrder');
+                Route::get('{order_id}/details', 'viewOrderDetails');
+            });
     });
-  });
+
 });

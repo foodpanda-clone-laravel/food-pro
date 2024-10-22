@@ -64,7 +64,7 @@ class MenuController extends Controller
         if($result['success']){
             return Helpers::sendSuccessResponse(Response::HTTP_OK,'Menu updated successfully',$result['menu']);
         }
-        else{ return Helpers::sendFailureResponse(400,$result['error']);}
+        else{ return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST,$result['error']);}
     }
 
 
@@ -77,7 +77,7 @@ class MenuController extends Controller
         if($result['success']){
             return Helpers::sendSuccessResponse(Response::HTTP_OK,'Menu item updated successfully',$result['menu_item']);
         }else{
-            return Helpers::sendFailureResponse(400,$result['error']);
+            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST,$result['error']);
         }
     }
 

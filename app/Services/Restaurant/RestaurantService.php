@@ -45,7 +45,7 @@ class RestaurantService
             return $restaurant; // Return the restored restaurant details if needed
         } catch (\Exception $e) {
               dd($e);
-            return Helpers::sendFailureResponse(400, 'Could not restore restaurant');
+            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Could not restore restaurant');
         }
     }
 
@@ -78,9 +78,9 @@ class RestaurantService
 
             }
 
-            return Helpers::sendSuccessResponse(200, 'Restaurant successfully updated');
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant successfully updated');
         } catch (\Exception $e) {
-            return Helpers::sendFailureResponse(400, 'Could not update restaurant');
+            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Could not update restaurant');
         }
     }
 }

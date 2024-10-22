@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Menu;
+namespace App\Models\ChoiceGroup;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
