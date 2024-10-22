@@ -3,7 +3,7 @@
 namespace App\Models\Restaurant;
 
 use App\Models\Cart\CartItem;
-use App\Models\Menu\ChoiceGroup;
+use App\Models\ChoiceGroup\ChoiceGroup;
 use App\Models\Menu\Deal\Deal;
 use App\Models\Menu\Menu;
 use App\Models\Orders\Order;
@@ -12,6 +12,8 @@ use App\Models\User\RestaurantOwner;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Restaurant extends Model
 {
@@ -61,5 +63,11 @@ class Restaurant extends Model
     }
     public function orders(){
         return $this->hasMany(Order::class);
+    }
+    protected function logoPath(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($this->attributes['logo_path']), '/')
+        );
     }
 }

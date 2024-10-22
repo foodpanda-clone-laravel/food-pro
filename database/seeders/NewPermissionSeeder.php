@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 
@@ -27,15 +26,15 @@ class NewPermissionSeeder extends Seeder
             'user can update choice',
             'user can view menu with menu count',
             'user can view menu item'
-            
-            
+
+
             ];
 
         foreach ($restaurantOwnerPermissions as $permission) {
 
             $permission = Permission::firstOrCreate(['name' => $permission]);
             $role->givePermissionTo($permission);
-            
+
             }
 
 
@@ -45,16 +44,16 @@ class NewPermissionSeeder extends Seeder
                 'user can view restaurants',
                 'user can restore restaurant'
 
-                
+
                 ];
-    
+
             foreach ($adminPermissions as $permission) {
-    
+
                 $permission = Permission::firstOrCreate(['name' => $permission]);
                 $role->givePermissionTo($permission);
-                
+
                 }
-    
+
 
 
     }

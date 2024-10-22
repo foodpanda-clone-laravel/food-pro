@@ -23,9 +23,9 @@ class RestaurantOwnerSeeder extends Seeder
             DB::beginTransaction();
             // Create a user first
             $user = User::create([
-                'email' => 'hiba@example.com',
-                'first_name' => 'hiba',
-                'last_name' => 'hasib',
+                'email' => 'spice_bazaar@example.com',
+                'first_name' => 'arham',
+                'last_name' => 'imdad',
                 'phone_number' => '1234567890',
                 'password' => bcrypt('password'),
             ]);
@@ -33,25 +33,25 @@ class RestaurantOwnerSeeder extends Seeder
 
 
             $owner = RestaurantOwner::create([
-                'cnic' => '12345-6789012-8',
+                'cnic' => '1234567890199',
                 'user_id' => $user->id,
                 'bank_name' => 'Meezan Bank',
-                'iban' => 'PK36SCBL0000001123456902',
-                'account_owner_title' => 'Hadiya Asif',
+                'iban' => 'PK36SCBL0000001123456919',
+                'account_owner_title' => 'Irtaza Ahmad',
             ]);
 
 
             $restaurant = Restaurant::create([
-                'name' => 'hiba restaurant',
+                'name' => 'Spice Bazar',
                 'owner_id' => $owner->id,
                 'opening_time' => '09:00',
                 'closing_time' => '22:00',
                 'cuisine' => 'Italian',
-                'logo_path' => 'zlpN3XC9lTYZ08LVJQo6zq8Pg9PAajGU7MieVhAE.png', // Assuming no logo yet
-                'business_type' => 'Kitchen',
+                'logo_path' => 'spice_bazaar_logo.png', // Assuming no logo yet
+                'business_type' => 'restaurant',
             ]);
             Branch::create([
-                'address' => 'allama iqbal town',
+                'address' => 'Johar Town',
                 'city' => 'lahore',
                 'postal_code' => '54000',
                 'restaurant_id' => $restaurant->id,

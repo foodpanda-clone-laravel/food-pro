@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer;
 
 use App\Helpers\Helpers;
 use App\Http\Requests\CartRequests\CheckoutRequest;
+use App\Http\Requests\OrderRequests\ViewOrderDetailsRequest;
 use App\Http\Resources\CartResources\CartSummaryResource;
 use App\Http\Resources\Order\OrderResource;
 use App\Services\Customer\CustomerOrderService;
@@ -30,9 +31,9 @@ class OrderController extends CustomerController
         return Helpers::sendFailureResponse(Response::HTTP_NOT_FOUND, 'No active order found');
     }
 
-    public function viewOrderDetails($orderId)
+    public function viewOrderDetails(ViewOrderDetailsRequest $request)
     {
-        $orderDetails = $this->customerService->getOrderDetails($orderId);
+        $orderDetails = $this->customerService->getOrderDetails($request);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order details retrieved successfully', $orderDetails);
     }

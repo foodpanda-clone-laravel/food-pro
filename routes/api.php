@@ -38,9 +38,9 @@ Route::controller(CartController::class)->group(function () {
 
 
 Route::controller(UserController::class)->group(function () {
-    Route::post(PermissionVariables::$login['path'], 'login');
-    Route::post(PermissionVariables::$logout['path'], 'logout');
-  
+    Route::post('login', 'login');
+    Route::post('logout', 'logout');
+
     Route::post('loginV2', 'loginV2');
     Route::post('twofa', 'verify2FACode');
 });

@@ -48,7 +48,7 @@ class RegisterController extends Controller
 
 
     public function submitRestaurantRequest(RestaurantSubmissionRequest $request){
-        $result = $this->registerService->submitRestaurantRequest($request);
+        $result = $this->registerService->submitRestaurantRequest($request->all());
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Request submitted successfully', $result);
 

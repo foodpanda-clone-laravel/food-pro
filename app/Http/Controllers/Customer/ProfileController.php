@@ -38,11 +38,9 @@ class ProfileController extends Controller
 
     public function editProfile(UpdateProfileRequest $request)
     {
-        $userId = auth()->user()->id;
 
-        $this->customerProfileService->updateProfile($userId, $request);
+        $updatedUser = $this->customerProfileService->updateProfile($request->all());
 
-        $updatedUser = User::with('customer')->find($userId);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Profile updated successfully', $updatedUser);
     }

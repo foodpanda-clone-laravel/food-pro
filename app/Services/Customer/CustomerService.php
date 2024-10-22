@@ -2,10 +2,13 @@
 
 namespace App\Services\Customer;
 
+use App\DTO\Customer\FavoritesDTO;
+use App\DTO\Rating\RatingDTO;
 use App\DTO\User\CustomerDTO;
 use App\Helpers\Helpers;
 use App\Http\Resources\Customer\FeedbackResource;
 use App\Http\Resources\Customer\OrderDetailsResource;
+use App\Http\Resources\DealResource;
 use App\Http\Resources\MenuResources\MenuResource;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\Restaurant\RestaurantResource;
@@ -18,7 +21,7 @@ use App\Models\Rating\Rating;
 use App\Models\Restaurant\Restaurant;
 use App\Models\User\Customer;
 use App\Models\User\User;
-use App\Pipelines\FilterPipeline;
+use App\Pipelines\ResaurantsFilterPipeline;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
@@ -105,31 +108,28 @@ class CustomerService implements CustomerServiceInterface
     return $points * 0.01;
   }
 
-  public function addFavoriteRestaurant($restaurantId)
+  public function addFavoriteRestaurant($data)
   {
     $user = auth()->user();
     $customer = $user->customer;
 
     $exists = Favourite::where('customer_id', $customer->id)
-      ->where('restaurant_id', $restaurantId)
+      ->where('restaurant_id', $data->restaurant_id)
       ->exists();
 
     if (!$exists) {
-      Favourite::create([
-        'customer_id' => $customer->id,
-        'restaurant_id' => $restaurantId
-      ]);
+      Favourite::create((new FavoritesDTO($data))->toArray());
     }
 
     return $this->getFavoriteItems();
   }
-  public function removeFavoriteRestaurant($restaurantId)
+  public function removeFavoriteRestaurant($data)
   {
     $user = auth()->user();
     $customer = $user->customer;
 
     Favourite::where('customer_id', $customer->id)
-      ->where('restaurant_id', $restaurantId)
+      ->where('restaurant_id', $data->restaurant_id)
       ->delete();
 
     return $this->getFavoriteItems();
@@ -148,12 +148,12 @@ class CustomerService implements CustomerServiceInterface
     return $activeOrder;
   }
 
-  public function getOrderDetails($orderId)
+  public function getOrderDetails($data)
   {
     $user = auth()->user();
     $customer = $user->customer;
 
-    $order = Order::where('id', $orderId)
+    $order = Order::where('id', $data->order_id)
       ->where('user_id', $customer->user_id)
       ->with([
         'orderItems.menuItem',
@@ -182,71 +182,48 @@ class CustomerService implements CustomerServiceInterface
 
   public function submitFeedback($data)
   {
-    $user = auth()->user();
-    $customer = $user->customer;
+      try{
+          $user = auth()->user();
+          $customer = $user->customer;
 
-    if (!$customer) {
-      throw new \Exception("Customer record not found for the logged-in user.");
+          if (!$customer) {
+              throw new \Exception("Customer record not found for the logged-in user.");
+          }
+
+          $order = Order::findOrFail($data->order_id);
+
+          $feedback = Rating::create((new RatingDTO($data))->toArray());
+
+          // Return the feedback response using FeedbackResource
+          return new FeedbackResource($feedback);
+
+      }
+      catch(\Exception $e){
+          return false;
+      }
     }
-
-    $order = Order::findOrFail($data['order_id']);
-
-    $feedback = Rating::create([
-      'order_id' => $data['order_id'],
-      'restaurant_id' => $order->restaurant_id,
-      'user_id' => $customer->user_id,
-      'feedback' => $data['review'],
-      'stars' => $data['rating'],
-    ]);
-
-    // Return the feedback response using FeedbackResource
-    return new FeedbackResource($feedback);
-  }
 
 
   public function getAllRestaurants()
   {
     $query = Restaurant::query()
       ->with(['branches:restaurant_id,delivery_fee,delivery_time', 'ratings', 'deals']);
-    $filteredRestaurants = FilterPipeline::apply($query, request()->all())->get();
+    $filteredRestaurants = ResaurantsFilterPipeline::apply($query, request()->all())->get();
 
     return RestaurantResource::collection($filteredRestaurants);
   }
 
-  public function getDeals()
-  {
-    $deals = Deal::with([
-      'restaurant:id,name,logo_path,cuisine',
-    ])
-      ->select('id', 'name', 'restaurant_id', 'branch_id', 'discount')
-      ->get()
-      ->map(function ($deal) {
+    public function getDeals()
+    {
+        $deals = Deal::with([
+            'restaurant:id,name,logo_path,cuisine',
+            'restaurant.ratings' // Load ratings through the restaurant
+        ])
+            ->select('id', 'name', 'restaurant_id', 'branch_id', 'discount')
+            ->get();
 
-        $averageRating = Rating::where('restaurant_id', $deal->restaurant_id)
-          ->select(DB::raw('AVG(stars) as average_rating'))
-          ->groupBy('restaurant_id')
-          ->pluck('average_rating')
-          ->first() ?? 0;
-
-        $restaurantLogoUrl = $deal->restaurant && $deal->restaurant->logo_path
-          ? Storage::url($deal->restaurant->logo_path)
-          : null;
-
-        return [
-          'id' => $deal->id,
-          'name' => $deal->name,
-          'restaurant_id' => $deal->restaurant_id,
-          'branch_id' => $deal->branch_id,
-          'discount' => $deal->discount,
-          'average_rating' => round($averageRating, 2),
-          'restaurant_name' => optional($deal->restaurant)->name ?? 'Unknown',
-          'restaurant_logo' => $restaurantLogoUrl ?? 'N/A',
-          'restaurant_cuisine' => optional($deal->restaurant)->cuisine ?? 'N/A',
-        ];
-      });
-
-    return $deals;
-  }
+        return DealResource::collection($deals);
+    }
 
 
 }

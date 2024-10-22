@@ -24,7 +24,7 @@ class ChoiceGroupController extends Controller
     }
 
     public function createChoiceGroup(AddChoiceGroupRequest $request){
-        $result  = $this->choiceGroupService->createChoiceGroupWithChoices($request->all());
+        $result  = $this->choiceGroupService->createChoiceGroupWithChoices($request);
         if(!$result){
             return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'internal server error');
         }

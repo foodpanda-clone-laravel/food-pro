@@ -22,7 +22,8 @@ class MenuItemDTO extends BaseDTO
         $this->name = $data["name"];
         $this->price = $data["price"];
         $this->description = $data["description"] ?? null;
-        $this->image_file = $data["image_file"] ?? null;
+        $this->image_path = $data["image_path"] ?? null;
+        $this->serving_size = $data['serving_size'];
 
     }
 }

@@ -147,8 +147,6 @@ class UserService extends ShoppingSessionService
                 : null;
         }
     }
-    public function setPasswordAtFirstLogin($data){
 
-    }
 
 }

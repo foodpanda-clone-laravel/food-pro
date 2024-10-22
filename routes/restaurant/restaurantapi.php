@@ -5,8 +5,7 @@ use App\Http\Controllers\Menu\ChoiceGroupController;
 use App\Http\Controllers\Rating\RatingsController;
 use App\Http\Controllers\Restaurant\RestaurantController;
 use Illuminate\Support\Facades\Route;
-use \App\Http\Controllers\Menu\MenuControllerV2;
-use \App\Http\Controllers\Restaurant\RevenueController;
+use App\Http\Controllers\Restaurant\RevenueController;
 Route::group(['middleware' => 'request.logs',], function () {
     Route::controller(ChoiceGroupController::class)->group(function () {
         Route::get(PermissionVariables::$menuChoiceGroup['path'], 'getChoiceGroupById');
