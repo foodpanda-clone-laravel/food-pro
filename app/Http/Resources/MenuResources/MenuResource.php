@@ -2,7 +2,7 @@
 
 namespace App\Http\Resources\MenuResources;
 
-use App\Models\Menu\AssignedChoiceGroup;
+use App\Models\ChoiceGroup\AssignedChoiceGroup;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
 

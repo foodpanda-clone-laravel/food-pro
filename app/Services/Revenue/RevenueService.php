@@ -15,7 +15,44 @@ class RevenueService implements RevenueServiceInterface
 {
     public function viewRestaurantsRevenue(){
         try{
+// revenue colum of orders
+            $ordersRevenue = Order::with('restaurant')
+                ->whereMonth('created_at', Carbon::now()->month)
+                ->whereYear('created_at', Carbon::now()->year)
+                ->get()
+            ->map(function ($order){
+                return [
+                    'total_amount'=>$order->total_amount,
+                    'created_at'=>$order->created_at,
+                    'restaurant_name'=>($order->restaurant->name)];
+            });
+// calculate order volumes
+            $orderVolumes = Order::with('restaurant') // Eager load the restaurant relationship
+            ->whereYear('created_at', now()->year)
+                ->get()
+                ->groupBy(function ($order) {
+                    return $order->created_at->toDateString(); // Group by order date
+                })
+                ->flatMap(function ($orders) {
+                    return $orders->groupBy('restaurant_id')->map(function ($restaurantOrders) {
+                        return [
+                            'restaurant_name' => $restaurantOrders->first()->restaurant->name,
+                            'order_volume' => $restaurantOrders->count(),
+                            'order_date' => $restaurantOrders->first()->created_at->toDateString(),
+                        ];
+                    });
+                });
 
+            $orderChartDetails = [
+                'order_date' => $orderVolumes->pluck('order_date'), // Get order dates
+                'order_volume' => $orderVolumes->pluck('order_volume'), // Get order volumes
+                'restaurant_name' => $orderVolumes->pluck('restaurant_name'), // Get restaurant names
+            ];
+            $data=[
+                'revenue_details'=>$ordersRevenue,
+                'order_volume_details'=>$orderChartDetails
+            ];
+            return new RevenueResource((object)$data);
         }
         catch(\Exception $e){
             dd($e);

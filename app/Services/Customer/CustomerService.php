@@ -4,6 +4,8 @@ namespace App\Services\Customer;
 
 use App\DTO\User\CustomerDTO;
 use App\Helpers\Helpers;
+use App\Http\Resources\Customer\FeedbackResource;
+use App\Http\Resources\Customer\OrderDetailsResource;
 use App\Http\Resources\MenuResources\MenuResource;
 use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\Restaurant\RestaurantResource;
