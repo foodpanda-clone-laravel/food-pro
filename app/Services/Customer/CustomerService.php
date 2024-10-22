@@ -2,7 +2,6 @@
 
 namespace App\Services\Customer;
 
-use App\DTO\User\CustomerDTO;
 use App\Helpers\Helpers;
 use App\Http\Resources\MenuResources\MenuResource;
 use App\Http\Resources\Customer\OrderDetailsResource;
@@ -16,8 +15,6 @@ use App\Models\Menu\Deal\Deal;
 use App\Models\Orders\Order;
 use App\Models\Restaurant\Rating;
 use App\Models\Restaurant\Restaurant;
-use App\Models\User\Customer;
-use App\Models\User\User;
 use App\Pipelines\FilterPipeline;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -26,19 +23,6 @@ use Symfony\Component\HttpFoundation\Response;
 class CustomerService implements CustomerServiceInterface
 {
 
-  public function updateProfile($userId, $validatedData)
-  {
-    $user = User::findOrFail($userId);
-    $user->update($validatedData);
-
-    // If there are any customer-specific fields (like address)
-    $customerFields = array_intersect_key($validatedData, array_flip(['address', 'delivery_address', 'payment_method']));
-
-    if (!empty($customerFields)) {
-      $customer = Customer::where('user_id', $userId)->firstOrFail();
-      $customer->update($customerFields);
-    }
-  }
   public function getOrderHistory()
   {
     $user = auth()->user();
@@ -119,30 +103,6 @@ class CustomerService implements CustomerServiceInterface
     return $points * 0.01;
   }
 
-  public function updateCustomerInfo($customerId, CustomerDTO $customerDTO)
-  {
-    $customer = Customer::findOrFail($customerId);
-
-    if ($customerDTO->address) {
-      $customer->address = $customerDTO->address;
-    }
-    if ($customerDTO->delivery_address) {
-      $customer->delivery_address = $customerDTO->delivery_address;
-    }
-    if ($customerDTO->favorites !== null) {
-      $customer->favorites = is_array($customerDTO->favorites) ? implode(',', $customerDTO->favorites) : $customerDTO->favorites;
-    }
-
-    $customer->save();
-  }
-
-  public function getProfile($userId)
-  {
-    return Customer::with('user:id,first_name,last_name,phone_number,email,email_verified_at,created_at,updated_at')
-      ->where('user_id', $userId)
-      ->firstOrFail();
-  }
-
   public function addFavoriteRestaurant($restaurantId)
   {
     $user = auth()->user();
@@ -161,7 +121,6 @@ class CustomerService implements CustomerServiceInterface
 
     return $this->getFavoriteItems();
   }
-
   public function removeFavoriteRestaurant($restaurantId)
   {
     $user = auth()->user();

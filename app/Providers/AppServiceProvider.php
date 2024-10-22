@@ -80,6 +80,11 @@ class AppServiceProvider extends ServiceProvider
 			\App\Interfaces\RevnueServiceInterface::class,
 			\App\Services\Revenue\RevnueService::class
 		);
+
+		$this->app->bind(
+			\App\Interfaces\CustomerProfileServiceInterface::class,
+			\App\Services\CustomerProfileService::class
+		);
     }
 
     /**
