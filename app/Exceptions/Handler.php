@@ -40,18 +40,18 @@ class Handler extends ExceptionHandler
     {
         $this->renderable(function (Exception $exception, $request) {
 
-            Helpers::createErrorLogs($exception, $request->request_id);
+            // Helpers::createErrorLogs($exception, $request->request_id);
             dd($exception);
 
         });
         $this->renderable(function (QueryException $exception, $request) {
-           Helpers::createErrorLogs($exception, $request->request_id);
+            //    Helpers::createErrorLogs($exception, $request->request_id);
             dd($exception);
 
         });
         $this->renderable(function (Error $error, $request) {
 
-            Helpers::createErrorLogs($error, $request->request_id);
+            // Helpers::createErrorLogs($error, $request->request_id);
             dd($error);
 
         });
