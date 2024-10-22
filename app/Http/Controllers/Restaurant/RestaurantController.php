@@ -20,7 +20,7 @@ class RestaurantController extends Controller
     // {
     //     try {
     //         $restaurantDetails = $this->restaurantService->getRestaurantWithDetails();
-    //         return Helpers::sendSuccessResponse(200, 'Restaurant details retrieved successfully', $restaurantDetails);
+    //         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant details retrieved successfully', $restaurantDetails);
     //     } catch (\Exception $e) {
     //         Helpers::createErrorLogs($e, request()->id);
     //         return Helpers::sendFailureResponse(500, 'Failed to retrieve restaurant details');
@@ -31,9 +31,9 @@ class RestaurantController extends Controller
     try {
         $this->restaurantService->softDeleteRestaurant();
 
-        return Helpers::sendSuccessResponse(200, 'Restaurant deleted successfully');
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant deleted successfully');
     } catch (\Exception $e) {
-        return Helpers::sendFailureResponse(400, 'Could not delete restaurant');
+        return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Could not delete restaurant');
     }
 }
 
@@ -41,9 +41,9 @@ class RestaurantController extends Controller
     {
         try {
             $result = $this->restaurantService->restoreRestaurant();
-            return Helpers::sendSuccessResponse(200, 'Restaurant restored successfully', $result);
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant restored successfully', $result);
         } catch (\Exception $e) {
-            return Helpers::sendFailureResponse(400, 'Could not restore restaurant');
+            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Could not restore restaurant');
         }
     }
 
@@ -65,7 +65,7 @@ class RestaurantController extends Controller
 
             // Call the service to update the restaurant details
             $this->restaurantService->updateRestaurant($request);
-            return Helpers::sendSuccessResponse(200, 'Restaurant updated successfully');
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant updated successfully');
 
     }
 

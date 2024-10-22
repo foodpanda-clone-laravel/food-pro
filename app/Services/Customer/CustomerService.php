@@ -12,7 +12,7 @@ use App\Models\Customer\Favourite;
 use App\Models\Customer\Reward;
 use App\Models\Menu\Deal\Deal;
 use App\Models\Orders\Order;
-use App\Models\Restaurant\Rating;
+use App\Models\Rating\Rating;
 use App\Models\Restaurant\Restaurant;
 use App\Models\User\Customer;
 use App\Models\User\User;
@@ -55,7 +55,6 @@ class CustomerService implements CustomerServiceInterface
     $restaurant = Restaurant::with([
       'menus.menuItems'
     ])->findOrFail($restaurantId);
-
     return new MenuResource($restaurant);
   }
 
@@ -202,21 +201,21 @@ class CustomerService implements CustomerServiceInterface
     return new OrderDetailsResource($order);
   }
 
-  public function submitFeedback($customerId, $data)
-  {
-    $user = auth()->user();
-    $customer = $user->customer;
-
-    $order = Order::where('id', $orderId)
-      ->where('user_id', $customer->user_id)
-      ->with([
-        'orderItems.menuItem',
-        'restaurant',
-        'branch',
-      ])->firstOrFail();
-
-    return new OrderDetailsResource($order);
-  }
+//  public function submitFeedback($customerId, $data)
+//  {
+//    $user = auth()->user();
+//    $customer = $user->customer;
+//
+//    $order = Order::where('id', $orderId)
+//      ->where('user_id', $customer->user_id)
+//      ->with([
+//        'orderItems.menuItem',
+//        'restaurant',
+//        'branch',
+//      ])->firstOrFail();
+//
+//    return new OrderDetailsResource($order);
+//  }
 
   public function submitFeedback($data)
   {

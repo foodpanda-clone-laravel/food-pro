@@ -52,7 +52,6 @@ class UserService extends ShoppingSessionService
 
         catch (\Exception $e){
             dd($e);
-//dd($e->getMessage());
             return false;
         }
     }
@@ -65,4 +64,8 @@ class UserService extends ShoppingSessionService
             return false;
         }
     }
+    public function setPasswordAtFirstLogin($data){
+
+    }
+
 }

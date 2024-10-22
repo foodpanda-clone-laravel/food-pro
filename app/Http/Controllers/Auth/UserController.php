@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthRequests\LoginRequest;
+use App\Http\Requests\SetPasswordRequest;
 use App\Services\Auth\UserService;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\JsonResponse;use Symfony\Component\HttpFoundation\Response;
+
 
 class UserController extends Controller
 {
@@ -21,11 +23,11 @@ class UserController extends Controller
         $result = $this->userService->loginUser($request);
         if (!$result) {
 
-            return Helpers::sendFailureResponse(401, 'Invalid Credentials');
+            return Helpers::sendFailureResponse(Response::HTTP_UNAUTHORIZED, 'Invalid Credentials');
         }
         else{
             return Helpers::sendSuccessResponse(
-                200,
+                Response::HTTP_OK,
                 'Logged in successfully',
                 $result,
                 ['Authorization' => 'Bearer ' . $result['access_token']]
@@ -37,6 +39,12 @@ class UserController extends Controller
     {
         $result = $this->userService->logoutUser();
 
-        return Helpers::sendSuccessResponse(200,'logged out successfully');
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,'logged out successfully');
+    }
+    public function setPasswordAtFirstLogin(SetPasswordRequest $request){
+        $result = $this->userService->setPasswordAtFirstLogin($request);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,'set password successfully');
+
+
     }
 }

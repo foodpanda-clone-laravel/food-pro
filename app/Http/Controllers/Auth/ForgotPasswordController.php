@@ -9,6 +9,7 @@ use App\Http\Requests\AuthRequests\ResetPasswordRequest;
 use App\Services\Auth\ResetPasswordService;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
 
 
 class ForgotPasswordController extends Controller
@@ -23,8 +24,8 @@ class ForgotPasswordController extends Controller
            $request
         );
         return $status === Password::RESET_LINK_SENT
-        ? Helpers::sendSuccessResponse(200, 'Success')
-        :Helpers::sendFailureResponse(401, 'Invalid email');
+        ? Helpers::sendSuccessResponse(Response::HTTP_OK, 'Success')
+        :Helpers::sendFailureResponse(Response::HTTP_UNAUTHORIZED, 'Invalid email');
 
     }
     public function submitResetPasswordForm(ResetPasswordRequest $request){
@@ -40,8 +41,8 @@ class ForgotPasswordController extends Controller
             }
         );
         return $status === Password::PASSWORD_RESET
-                    ? Helpers::sendSuccessResponse(200, 'password reset successfully')
-                    : Helpers::sendFailureResponse(401, 'Could not reset password');
+                    ? Helpers::sendSuccessResponse(Response::HTTP_OK, 'password reset successfully')
+                    : Helpers::sendFailureResponse(Response::HTTP_UNAUTHORIZED, 'Could not reset password');
 
     }
 }
