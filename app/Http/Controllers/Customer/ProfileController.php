@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
-use App\Services\Customer\CustomerService;
+use App\Services\Customer\CustomerProfileService;
 use App\Helpers\Helpers;
 use App\Http\Resources\Customer\ProfileResource;
 use App\Http\Requests\CustomerRequests\UpdateProfileRequest;
@@ -15,17 +15,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProfileController extends Controller
 {
-    protected $customerService;
-    public function __construct(CustomerService $customerService)
+    protected $customerProfileService;
+    public function __construct(CustomerProfileService $customerProfileService)
     {
-        $this->customerService = $customerService;
+        $this->customerProfileService = $customerProfileService;
     }
 
     public function editProfile(UpdateProfileRequest $request)
     {
         $userId = auth()->user()->id;
 
-        $this->customerService->updateProfile($userId, $request);
+        $this->customerProfileService->updateProfile($userId, $request);
 
         $updatedUser = User::with('customer')->find($userId);
 
@@ -51,7 +51,7 @@ class ProfileController extends Controller
 
         $customerDTO = new CustomerDTO($data);
 
-        $this->customerService->updateCustomerInfo($customerId, $customerDTO);
+        $this->customerProfileService->updateCustomerInfo($customerId, $customerDTO);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Customer address updated successfully');
     }
@@ -60,7 +60,7 @@ class ProfileController extends Controller
     public function viewProfile()
     {
         $userId = auth()->user()->id;
-        $customer = $this->customerService->getProfile($userId);
+        $customer = $this->customerProfileService->getProfile($userId);
 
         return Helpers::sendSuccessResponse(
             Response::HTTP_OK,

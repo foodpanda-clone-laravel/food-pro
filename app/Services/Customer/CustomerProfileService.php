@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Customer;
 
 use App\Interfaces\CustomerProfileServiceInterface;
 use App\DTO\User\CustomerDTO;
