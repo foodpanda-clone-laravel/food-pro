@@ -50,7 +50,7 @@ class Kernel extends HttpKernel
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
 
-         \App\Http\Middleware\APIRequestLogsMiddleware::class
+            \App\Http\Middleware\APIRequestLogsMiddleware::class
         ],
     ];
 
@@ -79,6 +79,7 @@ class Kernel extends HttpKernel
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         '2fa' => Google2FA::class,
+        'routes.permissions' => \App\Http\Middleware\PermissionsMiddleware::class,
 
 
     ];
@@ -89,6 +90,8 @@ class Kernel extends HttpKernel
         // Adjust priority here if needed
         \App\Http\Middleware\APIRequestLogsMiddleware::class,
         \App\Http\Middleware\JwtMiddleware::class,
+        \App\Http\Middleware\PermissionsMiddleware::class,
+
 
     ];
 

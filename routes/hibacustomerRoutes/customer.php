@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Customer\ProfileController;
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Customer\OrderController;
 
@@ -14,20 +15,22 @@ Route::controller(CustomerController::class)->group(function () {
 
 
 // Protected routes
-Route::middleware(['request.logs', 'jwt'])->group(function () {
+Route::middleware(['request.logs', 'jwt', 'routes.permissions'])->group(function () {
 
   // Customer-related routes
   Route::prefix('customers')->group(function () {
     Route::controller(CustomerController::class)->group(function () {
-      Route::patch('edit-profile', 'editProfile');
       Route::get('favorites', 'favoriteItems');
       Route::get('rewards', 'viewRewards');
       Route::post('use-points', 'usePointsAtCheckout');
-      Route::patch('update-address', 'updateCustomerAddress')->name('updateCustomerAddress');
-      Route::get('profile', 'viewProfile');
       Route::post('add-favorite-restaurant', 'addFavoriteRestaurant');
       Route::delete('del-favorite-restaurant', 'removeFavoriteRestaurant');
       Route::post('feedback', 'submitFeedback');
+    });
+    Route::controller(ProfileController::class)->group(function () {
+      Route::patch('edit-profile', 'editProfile');
+      Route::patch('update-address', 'updateCustomerAddress')->name('updateCustomerAddress');
+      Route::get('profile', 'viewProfile');
     });
   });
 
