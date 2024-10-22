@@ -6,6 +6,7 @@ use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RestaurantRequests\UpdateRestaurantRequest;
 use App\Services\Restaurant\RestaurantService;
+use Symfony\Component\HttpFoundation\Response;
 
 class RestaurantController extends Controller
 {
@@ -39,12 +40,10 @@ class RestaurantController extends Controller
 
     public function restoreRestaurant()
     {
-        try {
             $result = $this->restaurantService->restoreRestaurant();
+
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant restored successfully', $result);
-        } catch (\Exception $e) {
-            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Could not restore restaurant');
-        }
+
     }
 
 

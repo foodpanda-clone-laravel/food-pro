@@ -89,7 +89,7 @@ $adminRole->givePermissionTo($permission);
 // Restaurant Owner Permissions
 
 $restaurantOwnerPermissions = [
-
+'user can register their account',
 
 'user can update restaurant',
 
