@@ -1,12 +1,10 @@
 <?php
 namespace App\routes\Admin;
 
+use App\GlobalVariables\PermissionVariables;
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Support\Facades\Route;
-
-
-
-
+use Spatie\Permission\Contracts\Permission;
 
 Route::controller(AdminController::class)->group(function () {
     Route::get('get-applications', 'viewRestaurantApplications');
@@ -15,6 +13,8 @@ Route::controller(AdminController::class)->group(function () {
     Route::post('update-application/{request_id}', 'updateRestaurantApplication');
     Route::get('get-all-orders', 'viewAllOrders');
     Route::get('order-details/{order_id}', 'viewOrderDetails');
+
+    Route::get(PermissionVariables::$viewDeactivatedRestaurants['path'], 'viewDeactivatedRestaurants');
 
     Route::get('show-deactivated-restaurants', 'viewDeactivatedRestaurants');
     Route::post('deactive-restaurant/{restaurant_id}', 'deactivateRestaurant');

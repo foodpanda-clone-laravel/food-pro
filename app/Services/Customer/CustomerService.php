@@ -2,19 +2,22 @@
 
 namespace App\Services\Customer;
 
+use App\DTO\User\CustomerDTO;
 use App\Helpers\Helpers;
-use App\Http\Resources\MenuResources\MenuResource;
-use App\Http\Resources\Customer\OrderDetailsResource;
-use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\Customer\FeedbackResource;
+use App\Http\Resources\Customer\OrderDetailsResource;
+use App\Http\Resources\MenuResources\MenuResource;
+use App\Http\Resources\Order\OrderResource;
 use App\Http\Resources\Restaurant\RestaurantResource;
 use App\Interfaces\Customer\CustomerServiceInterface;
 use App\Models\Customer\Favourite;
 use App\Models\Customer\Reward;
 use App\Models\Menu\Deal\Deal;
 use App\Models\Orders\Order;
-use App\Models\Restaurant\Rating;
+use App\Models\Rating\Rating;
 use App\Models\Restaurant\Restaurant;
+use App\Models\User\Customer;
+use App\Models\User\User;
 use App\Pipelines\FilterPipeline;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -41,7 +44,6 @@ class CustomerService implements CustomerServiceInterface
     $restaurant = Restaurant::with([
       'menus.menuItems'
     ])->findOrFail($restaurantId);
-
     return new MenuResource($restaurant);
   }
 

@@ -5,14 +5,14 @@ use App\Models\Logs\ErrorLog;
 
 class Helpers{
 
-    public static function sendSuccessResponse(int $status, string $message, $data=[], $headers=null, $cookies=null)
+    public static function sendSuccessResponse(int $status, string $message, $data=[], $headers=null)
     {
         if($headers){
             return response()->json([
                 'status'=>$status,
                 'message'=>$message,
                 'data'=>$data
-            ], $status)->withHeaders($headers)->cookie('example', 'sdkfjls');
+            ], $status)->withHeaders($headers);
         }
         return response()->json([
             'status'=>$status,

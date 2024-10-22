@@ -42,4 +42,5 @@ Route::middleware(['request.logs', 'jwt', 'routes.permissions'])->group(function
       Route::get('{order_id}/details', 'viewOrderDetails');
     });
   });
+
 });

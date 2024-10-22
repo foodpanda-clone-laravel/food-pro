@@ -2,6 +2,8 @@
 
 namespace App\Models\Menu;
 
+use App\Models\ChoiceGroup\AssignedChoiceGroup;
+use App\Models\ChoiceGroup\ChoiceGroup;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
