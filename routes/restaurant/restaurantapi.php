@@ -36,7 +36,7 @@ Route::group(['middleware' => 'api',], function () {
     Route::post(PermissionVariables::$restoreRestaurant['path'], [RestaurantController::class, 'restoreRestaurant']);
 
 });
-
+});
 
 
 /***
