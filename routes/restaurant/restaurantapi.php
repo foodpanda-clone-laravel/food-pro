@@ -1,17 +1,18 @@
 <?php
 
+use App\GlobalVariables\PermissionVariables;
 use App\Http\Controllers\Restaurant\RestaurantController;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\Menu\MenuControllerV2;
 use \App\Http\Controllers\Restaurant\RevenueController;
 Route::group(['middleware' => 'request.logs',], function () {
     Route::controller(MenuControllerV2::class)->group(function () {
-        Route::get('menu/choice-group', 'getChoiceGroupById');
-        Route::post('menu/assign-choice-group', 'assignChoiceGroup');
-        Route::get('choice-groups', 'getAllChoiceGroups');
+        Route::get(PermissionVariables::$menuChoiceGroup['path'], 'getChoiceGroupById');
+        Route::post(PermissionVariables::$menuAssignChoiceGroup['path'], 'assignChoiceGroup');
+        Route::get(PermissionVariables::$viewChoiceGroup['path'], 'getAllChoiceGroups');
         Route::post('/create-choice-group', 'createChoiceGroup');
-        Route::delete('delete-choice-group', 'deleteChoiceGroup');
-        Route::post('/update-choice-group', 'updateChoiceGroup');
+        Route::delete(PermissionVariables::$deleteChoiceGroup['path'], 'deleteChoiceGroup');
+        Route::post(PermissionVariables::$updateChoiceGroup['path'], 'updateChoiceGroup');
 
     });
 
@@ -19,19 +20,19 @@ Route::group(['middleware' => 'request.logs',], function () {
 
     Route::controller(RestaurantController::class)->group(function(){
     // restaurant owner can only view their reviews
-       Route::get('/my-reviews', 'viewMyRatings');
+       Route::get(PermissionVariables::$reviews['path'], action: 'viewMyRatings');
     });
     Route::controller(RevenueController::class)->group(function(){
-        Route::get('/my-revenue', 'viewMyRevenue');
-        Route::get('/restaurant-revenues', 'viewRestaurantRevenues');
+        Route::get(PermissionVariables::$revenue['path'], 'viewMyRevenue');
+        Route::get(PermissionVariables::$restaurantRevenue['path'], 'viewRestaurantRevenues');
     });
 
 
 Route::group(['middleware' => 'api',], function () {
-    Route::get('/restaurant', [RestaurantController::class, 'viewRestaurantById']);
-    Route::delete('/deactivate-restaurant', [RestaurantController::class, 'deleteRestaurant']);
-    Route::post('/update-restaurant', [RestaurantController::class, 'updateRestaurant']);
-    Route::post('/restore-restaurant', [RestaurantController::class, 'restoreRestaurant']);
+    Route::get(PermissionVariables::$viewRestaurant['path'], [RestaurantController::class, 'viewRestaurantById']);
+    Route::delete(PermissionVariables::$deactivateRestaurant['path'], [RestaurantController::class, 'deleteRestaurant']);
+    Route::post(PermissionVariables::$updateRestaurant['path'], [RestaurantController::class, 'updateRestaurant']);
+    Route::post(PermissionVariables::$restoreRestaurant['path'], [RestaurantController::class, 'restoreRestaurant']);
 
 });
 

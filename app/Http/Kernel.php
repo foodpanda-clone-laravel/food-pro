@@ -48,6 +48,7 @@ class Kernel extends HttpKernel
 
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \App\Http\Middleware\PermissionsMiddleware::class,
 
             //         \App\Http\Middleware\APIRequestLogsMiddleware::class
         ],
