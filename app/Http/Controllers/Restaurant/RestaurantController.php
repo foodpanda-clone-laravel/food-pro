@@ -28,23 +28,17 @@ class RestaurantController extends Controller
     // }
     public function deleteRestaurant()
 {
-    try {
         $this->restaurantService->softDeleteRestaurant();
 
         return Helpers::sendSuccessResponse(200, 'Restaurant deleted successfully');
-    } catch (\Exception $e) {
-        return Helpers::sendFailureResponse(400, 'Could not delete restaurant');
-    }
+  
 }
 
     public function restoreRestaurant()
     {
-        try {
             $result = $this->restaurantService->restoreRestaurant();
             return Helpers::sendSuccessResponse(200, 'Restaurant restored successfully', $result);
-        } catch (\Exception $e) {
-            return Helpers::sendFailureResponse(400, 'Could not restore restaurant');
-        }
+        
     }
 
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\GlobalVariables\PermissionVariables;
 use App\Http\Controllers\Orders\CartController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -26,28 +27,31 @@ require __DIR__ . '/hibacustomerRoutes/customer.php';
 require __DIR__ . '/Admin/admin.php';
 require __DIR__ . '/Menu/Menu.php';
 
-Route::post('/register', [RegisterController::class, 'signup']);
-Route::post('/register-business', [RegisterController::class, 'registerRestaurantWithOwner']);
+Route::post(PermissionVariables::$register['path'],[RegisterController::class, 'signup']);
+Route::post(PermissionVariables::$registerBusiness['path'], [RegisterController::class, 'registerRestaurantWithOwner']);
 
 Route::controller(CartController::class)->group(function () {
-    Route::get('/session', 'getShoppingSession');
+    Route::get(PermissionVariables::$session['path'], 'getShoppingSession');
 });
 
     //Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
 
+
 Route::controller(UserController::class)->group(function () {
-    Route::post('/login', 'login');
-    Route::post('/logout', 'logout');
+    Route::post(PermissionVariables::$login['path'], 'login');
+    Route::post(PermissionVariables::$logout['path'], 'logout');
+  
     Route::post('loginV2', 'loginV2');
     Route::post('twofa', 'verify2FACode');
 });
 
 
 Route::controller(ForgotPasswordController::class)->group(function () {
-    Route::post('/forgot-password', 'submitForgotPasswordForm')->name('password.email');
-    Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
+    Route::post(PermissionVariables::$forgotPassword['path'], 'submitForgotPasswordForm')->name('password.email');
+    Route::post(PermissionVariables::$resetPassword['path'], 'submitResetPasswordForm')->name('password.update');
 });
 
-Route::post('submit-restaurant-request', [RegisterController::class, 'submitRestaurantRequest']);
+Route::post(PermissionVariables::$submitRestaurantRequest['path'], [RegisterController::class, 'submitRestaurantRequest']);
+
 
 
