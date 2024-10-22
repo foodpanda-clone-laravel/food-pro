@@ -4,9 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\AdminRequests\RegisterUserRequest;
 use App\Http\Requests\AuthRequests\LoginRequest;
-use App\Services\UserService;
+use App\Services\Auth\UserService;
 use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
@@ -19,8 +18,7 @@ class UserController extends Controller
 
     public function login(LoginRequest $request)
     {
-        $credentials = $request->getValidatedData();
-        $result = $this->userService->loginUser($credentials);
+        $result = $this->userService->loginUser($request);
         if (!$result) {
 
             return Helpers::sendFailureResponse(401, 'Invalid Credentials');
@@ -40,5 +38,27 @@ class UserController extends Controller
         $result = $this->userService->logoutUser();
 
         return Helpers::sendSuccessResponse(200,'logged out successfully');
+    }
+
+    public function loginV2(Request $request)
+    {
+        $code = $request->input('code'); 
+        $credentials = $request->only('email', 'password');
+        // Optional 2FA code
+        $result = $this->userService->loginWith2FA($credentials, $code);
+        if (isset($result['error'])) {
+            return Helpers::sendFailureResponse(
+                $result['error'] === 'Invalid credentials' ? 401 : 400,
+                $result['error']
+            );
+        }
+        if (isset($result['firstLogin']) && $result['firstLogin']) {
+            return Helpers::sendSuccessResponse(
+                Response::HTTP_OK,
+                '2FA enabled. Save your key or scan the QR code.',
+                $result
+            );
+        }
+        return Helpers::sendSuccessResponse(200, 'Login successful', $result);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use PragmaRX\Google2FAQRCode\Google2FA;
 
 class Kernel extends HttpKernel
 {
@@ -50,7 +51,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\PermissionsMiddleware::class,
 
-            //         \App\Http\Middleware\APIRequestLogsMiddleware::class
+         \App\Http\Middleware\APIRequestLogsMiddleware::class
         ],
     ];
 
@@ -78,6 +79,7 @@ class Kernel extends HttpKernel
         'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
         'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
         'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+        '2fa' => Google2FA::class,
 
 
     ];

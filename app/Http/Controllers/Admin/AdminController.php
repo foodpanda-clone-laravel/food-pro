@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateApplicationRequest;
-use App\Services\AdminService;
-use Illuminate\Http\Request;
+use App\Services\Admin\AdminService;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -53,8 +52,7 @@ class AdminController extends Controller
     }
 
     public function updateRestaurantApplication(UpdateApplicationRequest $request,$request_id){
-        $data=$request->getValidatedData();
-        $result= $this->adminService->updateRestaurantApplication($data,$request_id);
+        $result= $this->adminService->updateRestaurantApplication($request->all(),$request_id);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK,'Your request has been updated', $result);
 }
@@ -63,7 +61,7 @@ class AdminController extends Controller
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK,'All orders', $result);
 
-    
+
 }
     public function viewOrderDetails($order_id){
         $result= $this->adminService->viewOrderDetails($order_id);
@@ -76,6 +74,15 @@ class AdminController extends Controller
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK,'Deactivated restaurants', $result);
 
+    }
+
+    public function deactivateRestaurant($restaurant_id){
+        $result= $this->adminService->deactivateRestaurant($restaurant_id);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Restaurant deactivated', $result);
+    }
+    public function activateRestaurant($restaurant_id){
+        $result= $this->adminService->activateRestaurant($restaurant_id);
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Restaurant activated', $result);
     }
 
 }

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('badge_id');
             $table->datetime('expired_at');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('badge_id')->references('id')->on('badges')->onDelete('cascade');
             $table->timestamps();
         });

@@ -16,9 +16,7 @@ class ResetPasswordService implements ResetPasswordServiceInterface
         $status=  Password::sendResetLink(
                 ['email'=>$email]
             );
-        return $status === Password::RESET_LINK_SENT
-                    ? back()->with(['status' => __($status)])
-                    : back()->withErrors(['email' => __($status)]);
+        return $status === Password::RESET_LINK_SENT;
     }
     public function resetPassword($data){
         $status = Password::reset(

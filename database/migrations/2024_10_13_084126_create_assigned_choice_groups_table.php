@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('assigned_choice_groups', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('menu_item_id')->nullable()->default(null)->constrained()->onDelete('cascade'); // Foreign key to menu_items
-            $table->foreignId('choice_group_id')->nullable()->default(null)->constrained()->onDelete('cascade'); // Foreign key to menu_items
+            $table->foreignId('menu_item_id')->nullable()->constrained()->onDelete('cascade'); // Foreign key to menu_items
+            $table->foreignId('choice_group_id')->nullable()->constrained()->onDelete('cascade'); // Foreign key to menu_items
             $table->timestamps();
         });
     }

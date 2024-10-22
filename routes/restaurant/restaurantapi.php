@@ -1,12 +1,14 @@
 <?php
 
 use App\GlobalVariables\PermissionVariables;
+use App\Http\Controllers\Menu\ChoiceGroupController;
+use App\Http\Controllers\Rating\RatingsController;
 use App\Http\Controllers\Restaurant\RestaurantController;
 use Illuminate\Support\Facades\Route;
 use \App\Http\Controllers\Menu\MenuControllerV2;
 use \App\Http\Controllers\Restaurant\RevenueController;
 Route::group(['middleware' => 'request.logs',], function () {
-    Route::controller(MenuControllerV2::class)->group(function () {
+    Route::controller(ChoiceGroupController::class)->group(function () {
         Route::get(PermissionVariables::$menuChoiceGroup['path'], 'getChoiceGroupById');
         Route::post(PermissionVariables::$menuAssignChoiceGroup['path'], 'assignChoiceGroup');
         Route::get(PermissionVariables::$viewChoiceGroup['path'], 'getAllChoiceGroups');
@@ -16,11 +18,10 @@ Route::group(['middleware' => 'request.logs',], function () {
 
     });
 
-});
-
-    Route::controller(RestaurantController::class)->group(function(){
-    // restaurant owner can only view their reviews
-       Route::get(PermissionVariables::$reviews['path'], action: 'viewMyRatings');
+    Route::controller(RatingsController::class)->group(function(){
+        // restaurant owner can only view their reviews
+        Route::get(PermissionVariables::$reviews['path'], action: 'viewMyRestaurantRating');
+        Route::get('/restaurant-reviews', 'viewRestaurantReviews');
     });
     Route::controller(RevenueController::class)->group(function(){
         Route::get(PermissionVariables::$revenue['path'], 'viewMyRevenue');

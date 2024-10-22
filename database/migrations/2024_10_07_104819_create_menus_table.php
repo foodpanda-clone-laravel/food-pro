@@ -15,17 +15,14 @@ return new class extends Migration
     {
         Schema::create('menus', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('restaurant_id');
-            $table->unsignedBigInteger('branch_id')->nullable()->default(null);
-
             $table->string('name');
-            // how will the restaurant owner fetch all the menus
-            // menus will have categories like meals
-            $table->string('description')->nullable()->default(null);
+            $table->integer('is_deal')->default(0);
+            $table->string('description')->nullable();
+            $table->foreignId('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
+            $table->foreignId('branch_id')->references('id')->on('branches')->onDelete('cascade');
+            $table->float('discount')->default(0);
             $table->softDeletes();
             $table->timestamps();
-            $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
-            $table->foreign('branch_id')->references('id')->on('branches');
         });
     }
 

@@ -18,10 +18,9 @@ return new class extends Migration
             $table->unsignedBigInteger('menu_id');
             $table->string('name');
             $table->float('price'); // base price
-            $table->string('category');
+            $table->string('description');
             $table->string('serving_size');
             $table->string('image_path');
-            $table->float('discount')->nullable();
             $table->foreign('menu_id')->references('id')->on('menus')->onDelete('cascade');
             $table->softDeletes();
             $table->timestamps();
