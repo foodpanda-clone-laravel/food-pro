@@ -25,8 +25,8 @@ Route::middleware(['request.logs', 'jwt'])->group(function () {
       Route::post('use-points', 'usePointsAtCheckout');
       Route::patch('update-address', 'updateCustomerAddress')->name('updateCustomerAddress');
       Route::get('profile', 'viewProfile');
-      Route::post('favorite-restaurants', 'addFavoriteRestaurant');
-      Route::delete('favorite-restaurants', 'removeFavoriteRestaurant');
+      Route::post('add-favorite-restaurant', 'addFavoriteRestaurant');
+      Route::delete('del-favorite-restaurant', 'removeFavoriteRestaurant');
       Route::post('feedback', 'submitFeedback');
     });
   });
