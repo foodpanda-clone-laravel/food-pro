@@ -207,4 +207,23 @@ public function viewDeactivatedRestaurants()
         return response()->json(['error' => 'Failed to fetch deactivated restaurants.'], 500);
     }
 }
+public function activateRestaurant($restaurant_id){
+    try{
+        $restaurant = Restaurant::onlyTrashed()->findorfail($restaurant_id);
+        $restaurant->restore();
+        return $restaurant;
+    }catch (Exception $e){
+        dd($e);
+    }
+}
+
+public function deactivateRestaurant($restaurant_id){
+    try{
+        $restaurant = Restaurant::findorfail($restaurant_id);
+        $restaurant->delete();
+        return $restaurant;
+    }catch (Exception $e){
+        dd($e);
+    }
+}
 }
