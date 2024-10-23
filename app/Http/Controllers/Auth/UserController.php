@@ -21,7 +21,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-use Symfony\Component\HttpFoundation\Response;
 
 
 
@@ -48,13 +47,9 @@ class UserController extends Controller
         $result = $this->userService->loginUser($request);
 
         if (!$result) {
-
-
-
             return Helpers::sendFailureResponse(401, 'Invalid Credentials');
 
         }
-
         else{
 
             return Helpers::sendSuccessResponse(

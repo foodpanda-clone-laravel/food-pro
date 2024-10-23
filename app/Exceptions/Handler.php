@@ -38,8 +38,9 @@ class Handler extends ExceptionHandler
      */
     public function render($request , Throwable $exception)
     {
+        Helpers::createErrorLogs($exception, __FUNCTION__);
         return response()->json(
-            Helpers::sendFailureResponse(500, __FUNCTION__,$exception)
+            Helpers::sendFailureResponse(500, __FUNCTION__,$exception, $request->request_id)
         );
 
 
