@@ -249,6 +249,86 @@ class PermissionVariables
         'path' => 'show-deactivated-restaurant',
         'permission' => 'user can view deactivated restaurant',
 
-
     ];
+
+    //Customer Routes
+
+    //public
+    public static array $searchRestaurant = [
+        'path' => 'search-restaurant',
+    ];
+
+    public static array $viewAllRestaurants = [
+        'path' => 'restaurants',
+    ];
+
+    public static array $viewMenus = [
+        'path' => 'restaurants/{restaurantId}/menus',
+    ];
+
+    public static array $viewDeals = [
+        'path' => 'deals',
+    ];
+
+    //private
+    public static array $favoriteItems = [
+        'path' => '/customers/favorites',
+        'permission' => 'user can view favorites',
+    ];
+
+    public static array $viewRewards = [
+        'path' => '/customers/rewards',
+        'permission' => 'user can view rewards and badges',
+    ];
+
+    public static array $usePointsAtCheckout = [
+        'path' => '/customers/use-points',
+        'permission' => 'user can convert points to money',
+    ];
+
+    public static array $addFavoriteRestaurant = [
+        'path' => '/customers/add-favorite-restaurant',
+        'permission' => 'user can add to favorites',
+    ];
+
+    public static array $removeFavoriteRestaurant = [
+        'path' => '/customers/del-favorite-restaurant',
+        'permission' => 'user can remove favorites',
+    ];
+
+    public static array $submitFeedback = [
+        'path' => '/customers/feedback',
+        'permission' => 'user can rate orders',
+    ];
+
+    public static array $editProfile = [
+        'path' => '/customers/edit-profile',
+        'permission' => 'user can edit profile',
+    ];
+
+    public static array $updateCustomerAddress = [
+        'path' => '/customers/update-address',
+        'permission' => 'user can update address',
+    ];
+
+    public static array $viewProfile = [
+        'path' => '/customers/profile',
+        'permission' => 'user can view profile',
+    ];
+
+    public static array $orderHistory = [
+        'path' => '/orders/history',
+        'permission' => 'user can view order history',
+    ];
+
+    public static array $activeOrder = [
+        'path' => '/orders/active-order',
+        'permission' => 'user can view order',
+    ];
+
+    public static array $viewCustomerOrderDetails = [
+        'path' => '{order_id}/details',
+        'permission' => 'user can view order details',
+    ];
+
 }
