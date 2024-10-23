@@ -39,9 +39,17 @@ class RestaurantController extends Controller
 
     public function updateRestaurant(UpdateRestaurantRequest $request)
     {
-             $this->restaurantService->updateRestaurant($request);
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant updated successfully');
+        $data = $request->validated();
+
+             $result=$this->restaurantService->updateRestaurant($data);
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant updated successfully',$result);
 
     }
+    public function showRestaurantDeatils(){
 
+        $result = $this->restaurantService->showRestaurantDeatils();
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Details of owner', $result);
     }
+}
+
+    

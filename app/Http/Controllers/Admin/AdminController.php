@@ -59,7 +59,7 @@ class AdminController extends Controller
     public function viewAllOrders(){
         $result= $this->adminService->viewAllOrders();
 
-        return Helpers::sendSuccessResponse(Response::HTTP_OK,'All orders', $result);
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
 
 
 }
@@ -83,6 +83,10 @@ class AdminController extends Controller
     public function activateRestaurant($restaurant_id){
         $result= $this->adminService->activateRestaurant($restaurant_id);
         return Helpers::sendSuccessResponse(Response::HTTP_OK,'Restaurant activated', $result);
+    }
+    public function showRestaurants(){
+        $result= $this->adminService->showRestaurants();
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,' Restaurants', $result);
     }
 
 }

@@ -13,10 +13,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthRequests\LoginRequest;
 
 use App\Services\Auth\UserService;
+use Illuminate\Auth\Events\Login;
 
-use GuzzleHttp\Psr7\Request;
+
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 use Symfony\Component\HttpFoundation\Response;
 
@@ -84,9 +87,7 @@ class UserController extends Controller
 
     }
 
-
-
-    public function loginV2(Request $request)
+    public function loginV2(LoginRequest $request)
 
     {
 

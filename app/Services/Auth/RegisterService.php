@@ -71,7 +71,7 @@ class RegisterService implements RegisterServiceInterface
     }
 }
 
-public function submitRestaurantRequest( $data){
+public function submitRestaurantRequest($data){
 
     try {
         DB::beginTransaction();

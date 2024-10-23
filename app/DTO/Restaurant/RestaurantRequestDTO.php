@@ -7,7 +7,7 @@ use App\DTO\BaseDTO;
 class RestaurantRequestDTO extends BaseDTO
 {
 
-    public function __construct(array $data)
+    public function __construct( $data)
     {
         $this->id = $data['id'] ?? 0;  // Set a default of 0 if no ID is passed
         $this->first_name = $data['first_name'];

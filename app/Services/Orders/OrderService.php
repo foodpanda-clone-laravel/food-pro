@@ -41,7 +41,7 @@ class OrderService
         $order->status = 'delivered';
         $order->save();
 
-        Log::info('Order confirmed', ['order_id' => $orderId]);
+      //  Log::info('Order confirmed', ['order_id' => $orderId]);
 
         return $order;
     }

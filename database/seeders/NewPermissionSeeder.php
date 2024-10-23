@@ -35,24 +35,24 @@ class NewPermissionSeeder extends Seeder
             $permission = Permission::firstOrCreate(['name' => $permission]);
             $role->givePermissionTo($permission);
 
-            }
+        }
 
 
-            $role = Role::findByName('Admin');
-            $adminPermissions = [
-                'user can view menu',
-                'user can view restaurants',
-                'user can restore restaurant'
+        $role = Role::findByName('Admin');
+        $adminPermissions = [
+            'user can view menu',
+            'user can view restaurants',
+            'user can restore restaurant'
 
 
-                ];
+        ];
 
-            foreach ($adminPermissions as $permission) {
+        foreach ($adminPermissions as $permission) {
 
-                $permission = Permission::firstOrCreate(['name' => $permission]);
-                $role->givePermissionTo($permission);
+            $permission = Permission::firstOrCreate(['name' => $permission]);
+            $role->givePermissionTo($permission);
 
-                }
+        }
 
 
 

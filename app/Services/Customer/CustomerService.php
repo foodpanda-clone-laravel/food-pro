@@ -11,6 +11,7 @@ use App\Http\Resources\Customer\OrderDetailsResource;
 use App\Http\Resources\DealResource;
 use App\Http\Resources\MenuResources\MenuResource;
 use App\Http\Resources\Order\OrderResource;
+use App\Http\Resources\Customer\FavoriteRestaurantsResource;
 use App\Http\Resources\Restaurant\RestaurantResource;
 use App\Interfaces\Customer\CustomerServiceInterface;
 use App\Models\Customer\Favourite;
@@ -65,22 +66,9 @@ class CustomerService implements CustomerServiceInterface
 
     $restaurants = Restaurant::whereIn('id', $favoriteRestaurantIds)
       ->with('ratings')
-      ->get()
-      ->map(function ($restaurant) {
-        $averageRating = round($restaurant->ratings->avg('stars'), 2) ?? 0;
+      ->get();
 
-        return [
-          'id' => $restaurant->id,
-          'name' => $restaurant->name,
-          'logo_path' => $restaurant->logo_path,
-          'cuisine' => $restaurant->cuisine,
-          'opening_time' => $restaurant->opening_time,
-          'closing_time' => $restaurant->closing_time,
-          'average_rating' => round($averageRating, 2),
-        ];
-      });
-
-    return $restaurants;
+    return FavoriteRestaurantsResource::collection($restaurants);
   }
 
   public function getRewards()
@@ -170,21 +158,6 @@ class CustomerService implements CustomerServiceInterface
         }
   }
 
-  // public function submitFeedback($customerId, $data)
-  // {
-  //   $user = auth()->user();
-  //   $customer = $user->customer;
-
-  //   $order = Order::where('id', $orderId)
-  //     ->where('user_id', $customer->user_id)
-  //     ->with([
-  //       'orderItems.menuItem',
-  //       'restaurant',
-  //       'branch',
-  //     ])->firstOrFail();
-
-  //   return new OrderDetailsResource($order);
-  // }
 
   public function submitFeedback($data)
   {
@@ -217,17 +190,18 @@ class CustomerService implements CustomerServiceInterface
     return RestaurantResource::collection($filteredRestaurants);
   }
 
-    public function getDeals()
-    {
-        $deals = Deal::with([
-            'restaurant:id,name,logo_path,cuisine',
-            'restaurant.ratings' // Load ratings through the restaurant
-        ])
-            ->select('id', 'name', 'restaurant_id', 'branch_id', 'discount')
-            ->get();
+  public function getDeals()
+  {
+    $deals = Deal::with([
+      'restaurant:id,name,logo_path,cuisine',
+      'restaurant.ratings' // Load ratings through the restaurant
+    ])
+      ->select('id', 'name', 'restaurant_id', 'branch_id', 'discount')
+      ->get();
 
-        return DealResource::collection($deals);
-    }
+    return DealResource::collection($deals);
+  }
+
 
 
 }

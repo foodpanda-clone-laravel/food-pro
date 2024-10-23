@@ -23,17 +23,16 @@ class ProfileController extends Controller
         $this->customerProfileService = $customerProfileService;
     }
 
-    public function changePassword(ChangePasswordRequest $request){
+    public function changePassword(ChangePasswordRequest $request)
+    {
         $result = $this->customerProfileService->changePassword($request);
-        if(!$result){
+        if (!$result) {
             return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'invalid old password');
 
-        }
-        else{
+        } else {
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'changed password successfully');
         }
-        }
-
+    }
 
 
     public function editProfile(UpdateProfileRequest $request)
