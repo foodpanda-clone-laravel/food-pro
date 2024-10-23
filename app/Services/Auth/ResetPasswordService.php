@@ -20,7 +20,7 @@ class ResetPasswordService implements ResetPasswordServiceInterface
         );
         return $status === Password::RESET_LINK_SENT
             ? Helpers::sendSuccessResponse(Response::HTTP_OK, 'Success')
-            :Helpers::sendFailureResponse(Response::HTTP_UNAUTHORIZED, 'Invalid email');
+            :Helpers::sendFailureResponse(Response::HTTP_UNAUTHORIZED);
 
     }
     public function submitResetPasswordForm($data){
@@ -37,7 +37,7 @@ class ResetPasswordService implements ResetPasswordServiceInterface
         );
         return $status === Password::PASSWORD_RESET
             ? Helpers::sendSuccessResponse(Response::HTTP_OK, 'password reset successfully')
-            : Helpers::sendFailureResponse(Response::HTTP_UNAUTHORIZED, 'Could not reset password');
+            : Helpers::sendFailureResponse(Response::HTTP_UNAUTHORIZED);
 
     }
 }

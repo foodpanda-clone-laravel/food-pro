@@ -43,7 +43,7 @@ class Helpers{
           'body' => $e->getMessage(),
         ];
     }
-    public function createErrorLogs($exception, $functionName)
+    public static function createErrorLogs($exception, $functionName)
     {
         $errorLog = new ErrorLogDTO($exception, $functionName);
         ErrorLogDTO::create($errorLog->toArray());

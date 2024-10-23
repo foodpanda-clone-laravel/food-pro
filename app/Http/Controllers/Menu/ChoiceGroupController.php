@@ -26,7 +26,7 @@ class ChoiceGroupController extends Controller
     public function createChoiceGroup(AddChoiceGroupRequest $request){
         $result  = $this->choiceGroupService->createChoiceGroupWithChoices($request);
         if(!$result){
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'internal server error');
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         else{
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'created choice group successfully');
@@ -39,7 +39,7 @@ class ChoiceGroupController extends Controller
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Updated choice group successfully', $result);
         }
         else{
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'internal server error');
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
     public function deleteChoiceGroup(RequireChoiceGroupIdRequest $request){

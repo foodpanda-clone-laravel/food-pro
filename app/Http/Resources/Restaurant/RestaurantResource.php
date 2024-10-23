@@ -14,7 +14,6 @@ class RestaurantResource extends JsonResource
         $deal = $this->deals->first();
         $discount = $deal ? $deal->discount : 0;
         $averageRating = round($this->ratings->avg('stars'), 2) ?? 0;
-        dd($this->logo_path);
         return [
             'id' => $this->id,
             'image' => $this->logo_path,

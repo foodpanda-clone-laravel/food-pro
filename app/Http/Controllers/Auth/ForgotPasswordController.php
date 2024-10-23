@@ -27,7 +27,7 @@ class ForgotPasswordController extends Controller
                 Helpers::sendSuccessResponse(Response::HTTP_OK, 'password reset successfully');
             }
             else{
-                Helpers::sendFailureResponse(Response::HTTP_UNAUTHORIZED, 'Could not reset password');
+                Helpers::sendFailureResponse(Response::HTTP_UNAUTHORIZED);
             }
     }
 }
