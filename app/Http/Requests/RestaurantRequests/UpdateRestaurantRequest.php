@@ -21,11 +21,21 @@ class UpdateRestaurantRequest extends BaseRequest
     public function rules()
     {
         return [
-            'restaurant_name' => 'nullable|string|min:5',
-            'opening_time' => 'nullable|',
-            'closing_time' => 'nullable|',
-            'logo_path' => 'nullable|image|mimes:jpeg,png,jpg,svg|max:2048',
-            'address' => 'nullable|string|max:255'
+            'first_name' => 'nullable|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'address' => 'nullable|string|max:255',
+            'postal_code' => 'nullable|string|max:10',
+            'city' => 'nullable|string|max:100',
+            'opening_time' => 'nullable|date_format:H:i:s',
+            'closing_time' => 'nullable|date_format:H:i:s|after:opening_time',
+            'business_type' => 'nullable|string|max:50',
+            'cnic' => 'nullable|string|size:13|unique:restaurant_requests,cnic',
+            'bank_name' => 'nullable|string|max:100',
+            'iban' => 'nullable|string|max:34|unique:restaurant_requests,iban',
+            'account_owner_title' => 'nullable|string|max:255',
+            'cuisine' => 'nullable|string|max:100',
+            'phone_number' => 'nullable',
+            'restaurant_name' => 'nullable|string|max:255',
         ];
     }
 }

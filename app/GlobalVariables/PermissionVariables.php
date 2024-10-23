@@ -34,6 +34,10 @@ class PermissionVariables
     ];
 
     //restaurant.api Routes
+    public static array $showRestaurantDetails = [
+        'path' => '/restaurant-details',
+       // 'permission' => 'user can create menu item'
+    ];
     public static array $menuChoiceGroup = [
         'path' => 'menu/choice-group',
         'permission' => 'user can create menu item'
@@ -80,7 +84,7 @@ class PermissionVariables
         'permission' => 'user can delete restaurant'
     ];
 
-    public static array $updateRestaurant = [
+    public static array $updateRestaurantDetails = [
         'path' => '/update-restaurant',
         'permission' => 'user can update restaurant'
     ];

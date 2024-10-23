@@ -10,6 +10,8 @@ use App\Models\Restaurant\Branch;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User\RestaurantOwner;
 use App\Models\Restaurant\Restaurant;
+use App\Models\Restaurant\RestaurantRequest;
+use Exception;
 
 class RestaurantService
 {
@@ -54,33 +56,68 @@ class RestaurantService
      * @param array $data
      * @return mixed
      */
-    public function updateRestaurant(array $data)
+    public function updateRestaurant( $data)
     {
 
 
         try {
+            $user = Auth::user();
+    
+            // Find the restaurant request by user's email
+            $restaurantRequest = RestaurantRequest::where('email', $user->email)->first();
 
-            $restaurant = $this->getRestaurantOwner();
-            $branch= Branch::where('restaurant_id',$restaurant->id)->first();
+        if ($restaurantRequest) {
+            // Extract the validated data from the request object
 
-            $restaurant->update([
-                'name' => $data['restaurant_name'] ?? $restaurant->name,
-                'opening_time' => $data['opening_time'] ?? $restaurant->opening_time,
-                'closing_time' => $data['closing_time'] ?? $restaurant->closing_time,
-                'logo_path' => $data['logo_path'] ?? $restaurant->logo_path,
-            ]);
+            // Check if the request has 'first_name', 'last_name', or 'phone_number' and update the user model
+            $userData = [];
 
-            if (isset($data['address'])) {
-
-                $branch->update([
-                    'address' => $data['address'],
-                ]);
-
+            if (isset($data['first_name'])) {
+                $userData['first_name'] = $data['first_name'];
             }
 
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant successfully updated');
-        } catch (\Exception $e) {
-            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Could not update restaurant');
+            if (isset($data['last_name'])) {
+                $userData['last_name'] = $data['last_name'];
+            }
+
+            if (isset($data['phone_number'])) {
+                $userData['phone_number'] = $data['phone_number'];
+            }
+
+            // Update user table if any of the fields are present
+            if (!empty($userData)) {
+                $user->update($userData);
+            }
+
+            // Remove 'contact' from the data before updating the restaurant request
+            if (isset($data['phone_number'])) {
+                unset($data['phone_number']);
+            }
+
+            // Update the restaurant request with the remaining validated data (excluding 'contact')
+            $restaurantRequest->update($data);
+
+            return $user;
+
+        }} catch (\Exception $e) {
+            // Handle the exception, log it, and return a meaningful response
+            dd($e);
+                        return false;
         }
+    }
+
+    public function showRestaurantDeatils(){
+
+        try{
+        $user=Auth::user();
+        $restaurant_details= RestaurantRequest::where('email',$user->email)->first();
+        return $restaurant_details;
+        }
+        catch(Exception $e){
+
+            dd($e);
+        }
+
+
     }
 }
