@@ -6,7 +6,7 @@ use Illuminate\Http\Response;
 
 class Helpers{
 
-    public static function sendSuccessResponse(int $status, string $message, $data=[], $headers=null, $cookies=null)
+    public static function sendSuccessResponse(int $status, string $message, $data=[], $headers=null)
     {
         $response = [
             'status'=>$status,

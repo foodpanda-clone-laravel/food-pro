@@ -6,6 +6,7 @@ use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RestaurantRequests\UpdateRestaurantRequest;
 use App\Services\Restaurant\RestaurantService;
+use Symfony\Component\HttpFoundation\Response;
 
 class RestaurantController extends Controller
 {
@@ -20,7 +21,7 @@ class RestaurantController extends Controller
     // {
     //     try {
     //         $restaurantDetails = $this->restaurantService->getRestaurantWithDetails();
-    //         return Helpers::sendSuccessResponse(200, 'Restaurant details retrieved successfully', $restaurantDetails);
+    //         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant details retrieved successfully', $restaurantDetails);
     //     } catch (\Exception $e) {
     //         Helpers::createErrorLogs($e, request()->id);
     //         return Helpers::sendFailureResponse(500, 'Failed to retrieve restaurant details');
@@ -31,42 +32,34 @@ class RestaurantController extends Controller
     try {
         $this->restaurantService->softDeleteRestaurant();
 
-        return Helpers::sendSuccessResponse(200, 'Restaurant deleted successfully');
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant deleted successfully');
     } catch (\Exception $e) {
-        return Helpers::sendFailureResponse(400, 'Could not delete restaurant');
+        return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Could not delete restaurant');
     }
 }
 
     public function restoreRestaurant()
     {
-        try {
             $result = $this->restaurantService->restoreRestaurant();
-            return Helpers::sendSuccessResponse(200, 'Restaurant restored successfully', $result);
-        } catch (\Exception $e) {
-            return Helpers::sendFailureResponse(400, 'Could not restore restaurant');
-        }
+
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant restored successfully', $result);
+
     }
 
 
     public function updateRestaurant(UpdateRestaurantRequest $request)
     {
-        // Validate the incoming request
+        $data = $request->validated();
 
-
-
-
-        // Ensure you have validation rules defined
-
-
-
-
-
-
-
-            // Call the service to update the restaurant details
-            $this->restaurantService->updateRestaurant($request);
-            return Helpers::sendSuccessResponse(200, 'Restaurant updated successfully');
+             $result=$this->restaurantService->updateRestaurant($data);
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant updated successfully',$result);
 
     }
+    public function showRestaurantDeatils(){
 
+        $result = $this->restaurantService->showRestaurantDeatils();
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Details of owner', $result);
     }
+}
+
+    

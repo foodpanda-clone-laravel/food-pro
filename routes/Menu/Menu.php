@@ -1,19 +1,23 @@
 <?php
 
+use App\GlobalVariables\PermissionVariables;
 use App\Http\Controllers\Menu\MenuController;
 use Illuminate\Support\Facades\Route;
 
 
     Route::prefix('menu')->controller(MenuController::class)->group(function () {
-        Route::post('create/{branch_id}', 'createMenu');
-        Route::post('add-addon/{menu_item_id}', 'addOns');
-        Route::post('update/{menu_item}', 'updateMenu');
-        Route::post('update-item/{menu_item_id}', 'updateMenuItem');
-        Route::post('add-choice/{menu_id}', 'storeChoices');
-        Route::get('count', 'menuWithItemCount');
-        Route::post('update-choice/{variation_id}', 'updateChoices');
-        Route::get('with-item/{menu_id}', 'getMenuwithMenuItem');
-        Route::get('choices/{menu_item_id}', 'getChoicesWithMenuItem');
+        Route::post(PermissionVariables::$createMenu['path'], 'createMenu');
+        Route::post(PermissionVariables::$addMenuItems['path'], 'addMenuItem');
+        Route::post(PermissionVariables::$addAddOns['path'], 'addOns');
+        Route::post(PermissionVariables::$updateMenu['path'], 'updateMenu');
+        Route::post(PermissionVariables::$updateMenuItem['path'], 'updateMenuItem');
+        Route::post(PermissionVariables::$addChoice['path'], 'storeChoices');
+        Route::get(PermissionVariables::$menuWithItemCount['path'], 'menuWithItemCount');
+        Route::post(PermissionVariables::$updateChoice['path'], 'updateChoices');
+        Route::get(PermissionVariables::$menuWithMenuItem['path'], 'getMenuwithMenuItem');
+        Route::get(PermissionVariables::$getChoicesWithMenuItem['path'], 'getChoicesWithMenuItem');
+        Route::delete(PermissionVariables::$deleteMenuItem['path'], [MenuController::class, 'deleteMenuItem']);
+
     });
 
 

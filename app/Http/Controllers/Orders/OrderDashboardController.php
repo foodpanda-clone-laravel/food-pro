@@ -8,6 +8,7 @@ use App\Http\Requests\OrderRequests\UpdateOrderStatusRequest;
 use App\Services\Orders\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class OrderDashboardController extends Controller
 {
@@ -50,7 +51,7 @@ class OrderDashboardController extends Controller
             ];
         });
 
-        return Helpers::sendSuccessResponse(200, 'Orders Fetched Successfully', [
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Orders Fetched Successfully', [
             'data' => $formattedOrders,
         ]);
     }
@@ -65,13 +66,13 @@ class OrderDashboardController extends Controller
 
         if ($request->status === 'confirm') {
             $order = $this->orderService->confirmOrder($orderId);
-            return Helpers::sendSuccessResponse(200, 'Order confirmed and marked as delivered successfully', $order);
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order confirmed and marked as delivered successfully', $order);
         } elseif ($request->status === 'cancel') {
             $order = $this->orderService->cancelOrder($orderId);
-            return Helpers::sendSuccessResponse(200, 'Order canceled successfully', $order);
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order canceled successfully', $order);
         }
 
-        return Helpers::sendFailureResponse(400, 'Invalid status');
+        return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Invalid status');
     }
 
 }

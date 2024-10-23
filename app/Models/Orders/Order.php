@@ -2,10 +2,10 @@
 
 namespace App\Models\Orders;
 
+use App\Models\Rating\Rating;
 use App\Models\Restaurant\Branch;
-use App\Models\Restaurant\Rating;
-use App\Models\User\Customer;
 use App\Models\Restaurant\Restaurant;
+use App\Models\User\Customer;
 use App\Models\User\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;

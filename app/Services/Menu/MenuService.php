@@ -88,17 +88,7 @@ class MenuService implements MenuServiceInterface
         }
     }
 
-    public function createAddon(array $data, int $menu_item_id)
-    {
-        try {
-            $menu_item = MenuItem::findOrFail($menu_item_id);
-            $data['menu_item_id'] = $menu_item->id;
-            $addOn = Addon::create((new AddonDTO($data))->toArray());
-            return ['success' => true, 'addon' => $addOn];
-        } catch (Exception $e) {
-            return ['success' => false, 'error' => 'Unable to create addon'];
-        }
-    }
+
 
     public function updateMenu(int $menu_id, array $data): array
     {
@@ -122,52 +112,9 @@ class MenuService implements MenuServiceInterface
         }
     }
 
-    public function storeChoices(array $data)
-    {
-        $restaurant = $this->getRestaurant();
-        $data['restaurant_id'] = $restaurant->id;
-        if ($data['isChoice'] == 1) {
-            $variation = Variation::create((new VariationDTO($data))->toArray());
-            return response()->json([
-                'success' => true,
-                'message' => 'Variation saved successfully!',
-                'data' => $variation,
-            ]);
-        } else {
-            $addOn = Addon::create((new AddonDTO($data))->toArray());
-            return response()->json([
-                'success' => true,
-                'message' => 'Addon saved successfully!',
-                'data' => $addOn,
-            ]);
-        }
-    }
 
-    public function getChoices()
-    {
-        $restaurant = $this->getRestaurant();
-        $variations = Variation::where('restaurant_id', $restaurant->id)->get();
-        $addons = Addon::where('restaurant_id', $restaurant->id)->get();
-        return response()->json([
-            'success' => true,
-            'message' => 'Choices retrieved successfully!',
-            'data' => [
-                'variations' => $variations,
-                'addons' => $addons,
-            ],
-        ]);
-    }
 
-    public function updateChoices(array $data, int $variation_id): array
-    {
-        try {
-            $variation = Variation::findOrFail($variation_id);
-            $variation->update($data);
-            return ['success' => true, 'variation' => $variation];
-        } catch (Exception $e) {
-            return ['success' => false, 'error' => 'Unable to update variation: ' . $e->getMessage()];
-        }
-    }
+
 
     public function menuWithItemCount()
     {
