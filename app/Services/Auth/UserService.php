@@ -3,11 +3,9 @@
 namespace App\Services\Auth;
 
 use App\Jobs\SendTwoFactorAuthMail;
-use App\Mail\TwoFactorAuthMail;
 use App\Services\Cart\ShoppingSessionService;
 use Exception;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use PragmaRX\Google2FAQRCode\Google2FA;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
