@@ -20,4 +20,5 @@ Route::controller(AdminController::class)->group(function () {
     Route::post('deactive-restaurant/{restaurant_id}', 'deactivateRestaurant');
     Route::post('activate-restaurant/{restaurant_id}', 'activateRestaurant');
     
+    Route::get('show-restaurants', 'showRestaurants');
  });  

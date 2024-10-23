@@ -6,7 +6,10 @@ use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthRequests\LoginRequest;
 use App\Services\Auth\UserService;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserController extends Controller
 {
@@ -40,7 +43,7 @@ class UserController extends Controller
         return Helpers::sendSuccessResponse(200,'logged out successfully');
     }
 
-    public function loginV2(Request $request)
+    public function loginV2(LoginRequest $request)
     {
         $code = $request->input('code'); 
         $credentials = $request->only('email', 'password');
