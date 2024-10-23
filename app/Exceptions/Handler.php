@@ -41,7 +41,7 @@ class Handler extends ExceptionHandler
         return response()->json(
             Helpers::sendFailureResponse(500, __FUNCTION__,$exception)
         );
-      
+
 
     }
 }

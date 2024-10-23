@@ -2,8 +2,7 @@
 
 namespace App\Rules;
 
-use App\Models\Menu\AssignedChoiceGroup;
-use App\Models\Menu\Choice;
+use App\Models\ChoiceGroup\Choice;
 use Illuminate\Contracts\Validation\Rule;
 
 class UpdateChoicesValidationRule implements Rule
@@ -22,7 +21,7 @@ class UpdateChoicesValidationRule implements Rule
             // check if all the choice ids for a certain choice group exists in that choice group in database
             $validatedChoices = Choice::where('choice_group_id', $this->choiceGroupId)
                 ->whereIn('id', $choiceIds)->pluck('id')->toArray();
-            return count($validatedChoices) === $choiceIds;
+            return $validatedChoices == $choiceIds;
         }
         catch (\Exception $exception){
             return false;

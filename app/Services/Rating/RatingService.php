@@ -52,7 +52,6 @@ class RatingService implements RatingServiceInterface
 
             ->get(); // Fetch all ratings as a collection
 
-
         $restaurants = Restaurant::select('id', 'name')->get();
 
 

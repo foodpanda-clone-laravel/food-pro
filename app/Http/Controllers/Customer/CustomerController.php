@@ -62,20 +62,15 @@ class CustomerController extends Controller
 
     public function addFavoriteRestaurant(AddFavoriteRestaurantRequest $request)
     {
-        $restaurantId = $request->get('restaurant_id');
 
-        // Use the logged-in customer's information
-        $favoriteRestaurants = $this->customerService->addFavoriteRestaurant($restaurantId);
+        $favoriteRestaurants = $this->customerService->addFavoriteRestaurant($request);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant added to favorites successfully', $favoriteRestaurants);
     }
 
-    public function removeFavoriteRestaurant(Request $request)
+    public function removeFavoriteRestaurant(AddFavoriteRestaurantRequest $request)
     {
-        $restaurantId = $request->get('restaurant_id');
-
-        // Use the logged-in customer's information
-        $favoriteRestaurants = $this->customerService->removeFavoriteRestaurant($restaurantId);
+        $favoriteRestaurants = $this->customerService->removeFavoriteRestaurant($request);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant removed from favorites successfully', $favoriteRestaurants);
     }
@@ -83,8 +78,12 @@ class CustomerController extends Controller
     {
 
         $feedback = $this->customerService->submitFeedback($request);
-
-        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Feedback submitted successfully', $feedback);
+        if(!$feedback){
+            return Helpers::sendFailureResponse(Response::HTTP_FORBIDDEN, 'Feedback submitted successfully', $feedback);
+        }
+        else{
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Feedback submitted successfully', $feedback);
+        }
     }
     public function viewAllRestaurants()
     {

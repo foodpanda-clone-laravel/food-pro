@@ -10,12 +10,12 @@ class OrderSeeder extends Seeder
     public function run()
     {
         $faker = Faker::create();
-        $restaurants = [8, 9, 10]; // Restaurant IDs
-        $userIds = [8,9,11,13,14,16,17];
+        $restaurants = [6, 7, 8]; // Restaurant IDs
+        $userIds = [46,47,48,49];
         $deliveryCharges = [0, 50, 100]; // Example delivery charges
 
         // Loop through September and October
-        foreach (['2024-09', '2024-10'] as $month) {
+        foreach (['2024-05', '2024-06'] as $month) {
             $daysInMonth = Carbon::parse($month . '-01')->daysInMonth;
 
             for ($day = 1; $day <= $daysInMonth; $day++) {
@@ -32,6 +32,7 @@ class OrderSeeder extends Seeder
                             'branch_id' => $restaurantId, // Assuming branch IDs range from 1 to 5
                             'total_amount' => $faker->randomFloat(2, 100, 1000), // Random total amount between 100 and 1000
                             'status' => 'delivered',
+                            'delivery_address'=> $faker->address,
                             'order_type' => 'delivery',
                             'delivery_charges' => $faker->randomElement($deliveryCharges),
                             'estimated_delivery_time' => $estimatedDeliveryTime,

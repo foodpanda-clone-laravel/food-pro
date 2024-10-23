@@ -17,8 +17,10 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class User extends Authenticatable implements JWTSubject
 {
     use HasRoles;
-
-    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+    use HasApiTokens;
+    use HasFactory;
+    use Notifiable;
+    use SoftDeletes;
 
     protected $guarded = [];
 
@@ -39,7 +41,7 @@ class User extends Authenticatable implements JWTSubject
     // Relationships
     public function customer()
     {
-        return $this->hasOne(Customer::class, 'user_id');
+        return $this->hasOne(Customer::class);
     }
 
     public function restaurantOwner()
@@ -47,7 +49,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(RestaurantOwner::class);
     }
     public function shoppingSession(){
-        return $this->hasMany(ShoppingSession::class);
+        return $this->hasOne(ShoppingSession::class);
     }
     public function getJWTIdentifier()
     {
