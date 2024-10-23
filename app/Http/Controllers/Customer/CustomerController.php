@@ -79,7 +79,7 @@ class CustomerController extends Controller
 
         $feedback = $this->customerService->submitFeedback($request);
         if(!$feedback){
-            return Helpers::sendFailureResponse(Response::HTTP_FORBIDDEN, 'Feedback submitted successfully', $feedback);
+            return Helpers::sendFailureResponse(Response::HTTP_FORBIDDEN);
         }
         else{
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Feedback submitted successfully', $feedback);

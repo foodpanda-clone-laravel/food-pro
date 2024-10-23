@@ -72,7 +72,7 @@ class OrderDashboardController extends Controller
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order canceled successfully', $order);
         }
 
-        return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Invalid status');
+        return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST);
     }
 
 }

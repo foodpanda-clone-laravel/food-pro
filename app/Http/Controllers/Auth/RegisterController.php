@@ -30,7 +30,7 @@ class RegisterController extends Controller
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'User signed up successfully');
         }
         else{
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'could not signup');
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

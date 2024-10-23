@@ -29,7 +29,7 @@ class OrderController extends CustomerController
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Active order retrieved successfully', new OrderResource($activeOrder));
         }
 
-        return Helpers::sendFailureResponse(Response::HTTP_NOT_FOUND, 'No active order found');
+        return Helpers::sendFailureResponse(Response::HTTP_NOT_FOUND);
     }
 
     public function viewOrderDetails($orderId)
@@ -53,7 +53,7 @@ class OrderController extends CustomerController
         if ($result) {
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order created successfully', $result);
         } else {
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not process your order');
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
     }

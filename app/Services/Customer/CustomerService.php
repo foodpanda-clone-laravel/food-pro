@@ -85,7 +85,7 @@ class CustomerService implements CustomerServiceInterface
     $reward = Reward::where('user_id', $userId)->sum('points');
 
     if ($pointsToUse > $reward) {
-      return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Not enough points');
+      return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST);
     }
 
     return $this->convertPointsToMoney($pointsToUse);

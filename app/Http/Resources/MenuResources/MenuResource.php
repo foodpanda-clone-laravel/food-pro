@@ -11,19 +11,21 @@ class MenuResource extends JsonResource
     public function toArray($request)
     {
         // Generate the logo URL using the Storage::url() function
-        $favorites = $request->user()->customer->favourites->pluck('restaurant_id')->toArray();
-
+        if($request->user()){
+            $favorites = $request->user()->customer->favourites->pluck('restaurant_id')->toArray();
+        }
+        $favorites = null;
         return [
             'restaurant' => [
                 'id' => $this->id,
                 'name' => $this->name,
                 'business_type' => $this->business_type,
-                'is_favorite'=>in_array($this->id, $favorites),
+                'is_favorite'=>$favorites?in_array($this->id, $favorites):false,
+                'image' => $this->logo_path,
 
                 'cuisine' => $this->cuisine,
                 'average_rating' => round($this->ratings->avg('stars'), 1) ?? 0,
                 'feedbacks' => $this->ratings->toArray(),
-                'logo_url' => $this->logo_path,
                 'opening_time' => $this->opening_time,
                 'closing_time' => $this->closing_time,
                 'branch_address' => optional($this->branches->first())->address ?? 'N/A',

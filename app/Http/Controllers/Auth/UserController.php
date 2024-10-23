@@ -47,7 +47,7 @@ class UserController extends Controller
         $result = $this->userService->loginUser($request);
 
         if (!$result) {
-            return Helpers::sendFailureResponse(401, 'Invalid Credentials');
+            return Helpers::sendFailureResponse(401);
 
         }
         else{

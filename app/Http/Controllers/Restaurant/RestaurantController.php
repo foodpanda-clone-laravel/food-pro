@@ -24,7 +24,7 @@ class RestaurantController extends Controller
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant deleted successfully');
     } catch (\Exception $e) {
-        return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Could not delete restaurant');
+        return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST);
     }
 }
 
@@ -52,4 +52,4 @@ class RestaurantController extends Controller
     }
 }
 
-    
+
