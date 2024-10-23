@@ -38,32 +38,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request , Throwable $exception)
     {
-<<<<<<< HEAD
         return response()->json(
             Helpers::sendFailureResponse(500, __FUNCTION__,$exception)
         );
       
-=======
-        $this->renderable(function (Exception $exception, $request) {
-            // dd($exception);
-
-            // Helpers::createErrorLogs($exception, $request->request_id);
-            dd($exception);
-
-        });
-        $this->renderable(function (QueryException $exception, $request) {
-        //    Helpers::createErrorLogs($exception, $request->request_id);
-            dd($exception);
-
-        });
-        $this->renderable(function (Error $error, $request) {
-
-            // Helpers::createErrorLogs($error, $request->request_id);
-            dd($error);
-
-
-        });
->>>>>>> 108180b46a2892bc33a1d70f0ade09fcb8c75632
 
     }
 }
