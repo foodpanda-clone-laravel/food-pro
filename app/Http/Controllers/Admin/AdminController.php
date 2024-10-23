@@ -59,7 +59,7 @@ class AdminController extends Controller
     public function viewAllOrders(){
         $result= $this->adminService->viewAllOrders();
 
-        return Helpers::sendSuccessResponse(Response::HTTP_OK,'All orders', $result);
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
 
 
 }

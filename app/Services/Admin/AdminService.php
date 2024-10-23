@@ -6,6 +6,7 @@ use App\DTO\Restaurant\BranchDTO;
 use App\DTO\Restaurant\RestaurantDTO;
 use App\DTO\User\RestaurantOwnerDTO;
 use App\DTO\User\UserDTO;
+use App\Helpers\Helpers;
 use App\Interfaces\AdminServiceInterface;
 use App\Jobs\SendAcceptedRequestMailJob;
 use App\Jobs\SendRejectedMailJob;
@@ -17,6 +18,7 @@ use App\Models\Restaurant\RestaurantRequest;
 use App\Models\User\RestaurantOwner;
 use App\Models\User\User;
 use Exception;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Nette\Utils\Random;
 use Spatie\Permission\Models\Role;
@@ -164,7 +166,6 @@ class AdminService implements AdminServiceInterface
 
 public function viewAllOrders(){
     try{
-
         $query = DB::table('users as u')
         ->join('orders as o', 'u.id', '=', 'o.user_id')
         ->join('restaurants as r', 'r.id', '=', 'o.restaurant_id')
@@ -182,15 +183,19 @@ public function viewAllOrders(){
         )
         ->get();
 
+        return [
+            'header_code' => Response::HTTP_OK,
+            'message'=> 'All Orders',
+            'body' => $query
+        ];
 
-
-
-        return $query;
     }
 
     catch (Exception $e){
+        return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR , __FUNCTION__,$e);
+        // return $e->getMessage();
 
-        throw new Exception($e->getMessage());
+        // throw new Exception($e->getMessage());
     }
 }
 
