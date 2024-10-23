@@ -29,4 +29,4 @@ class RevenueController extends Controller
         $result = $this->revenueService->viewMyRevenue($request);
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'my revenue', $result);
     }
-}
+   

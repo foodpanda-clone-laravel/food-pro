@@ -8,6 +8,7 @@ use App\Http\Requests\OrderRequests\UpdateOrderStatusRequest;
 use App\Services\Orders\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class OrderDashboardController extends Controller
 {

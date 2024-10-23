@@ -55,7 +55,7 @@ class UserService extends ShoppingSessionService
 
 
         catch (\Exception $e){
-            dd($e);
+        //    dd($e);
             return false;
         }
     }

@@ -39,20 +39,20 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->renderable(function (Exception $exception, $request) {
-            dd($exception);
+            // dd($exception);
 
-            Helpers::createErrorLogs($exception, $request->request_id);
+            // Helpers::createErrorLogs($exception, $request->request_id);
 
         });
         $this->renderable(function (QueryException $exception, $request) {
-            dd($exception);
+            // dd($exception);
 
-           Helpers::createErrorLogs($exception, $request->request_id);
+        //    Helpers::createErrorLogs($exception, $request->request_id);
 
         });
         $this->renderable(function (Error $error, $request) {
-            dd($error);
-            Helpers::createErrorLogs($error, $request->request_id);
+            // dd($error);
+            // Helpers::createErrorLogs($error, $request->request_id);
 
         });
 
