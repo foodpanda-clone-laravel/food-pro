@@ -47,7 +47,7 @@ class RestaurantService
             return $restaurant; // Return the restored restaurant details if needed
         } catch (\Exception $e) {
               dd($e);
-            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Could not restore restaurant');
+            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -62,7 +62,7 @@ class RestaurantService
 
         try {
             $user = Auth::user();
-    
+
             // Find the restaurant request by user's email
             $restaurantRequest = RestaurantRequest::where('email', $user->email)->first();
 

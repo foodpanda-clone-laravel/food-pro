@@ -8,9 +8,9 @@ use App\Http\Controllers\Customer\OrderController;
 
 // Publicly accessible routes
 Route::controller(CustomerController::class)->group(function () {
-  Route::get(PermissionVariables::$searchRestaurant['path'], 'viewAllRestaurants');
-  Route::get(PermissionVariables::$viewAllRestaurants['path'], 'searchRestaurant');
-  Route::get(PermissionVariables::$viewMenus['path'], '$viewMenus');
+    Route::get(PermissionVariables::$viewAllRestaurants['path'], 'viewAllRestaurants');
+  Route::get(PermissionVariables::$searchRestaurant['path'], 'searchRestaurant');
+  Route::get(PermissionVariables::$viewMenus['path'], 'viewMenus');
   Route::get(PermissionVariables::$viewDeals['path'], 'viewDeals');
 });
 

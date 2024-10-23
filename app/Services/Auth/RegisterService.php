@@ -44,45 +44,6 @@ class RegisterService implements RegisterServiceInterface
         return $user;
     }
 
-    public function createRestaurantWithOwner($data)
-    {
-        try {
-            DB::beginTransaction();
-            $userDTO = new UserDTO($data);
-            $user = User::create($userDTO->toArray());
-            $permissions = $this->assignRoleWithDirectPermissions($user, 'Restaurant Owner');
-            $data['user_id']= $user->id;
-            $restaurantOwnerDTO = new RestaurantOwnerDTO($data);
-            $owner = RestaurantOwner::create($restaurantOwnerDTO->toArray());
-            $data['owner_id'] = $owner->id;
-            $logoPath = $data['logo_path']->store('logos', 'public'); // Save file to 'storage/app/public/logos'
-            $data['logo_path'] = $logoPath;
-
-            $restaurantDTO = new RestaurantDTO($data);
-            $restaurant = Restaurant::create($restaurantDTO->toArray());
-            $data['restaurant_id'] = $restaurant->id;
-            // Create the Branch
-
-            $branchDTO = new BranchDTO($data);
-            $branch = Branch::create($branchDTO->toArray());
-
-            // Commit the transaction if all queries are successful
-            DB::commit();
-        } catch (QueryException $e) {
-            DB::rollBack();
-
-            logger()->error('Error in creating restaurant and owner: ' . $e->getMessage(), [
-                'data' => $data,
-            ]);
-            return false;
-        }
-        return [
-            'Restaurant_Owner' => $owner,
-            'restaurant' => $restaurant,
-            'user' => $user,
-            'branch' => $branch,
-        ];
-    }
     protected function createCustomer($data)
     {
         $customerDTO = new CustomerDTO($data);
@@ -113,21 +74,19 @@ class RegisterService implements RegisterServiceInterface
 public function submitRestaurantRequest($data){
 
     try {
+        DB::beginTransaction();
         $imagePath = $data['logo_path']->store('RestaurantLogos', 'public'); // Save file to 'storage/app/public/logos'
 
         $data['logo_path'] = $imagePath;
         $form = new RestaurantRequestDTO($data);
         $form = RestaurantRequest::create($form->toArray());
 
-
-
         SendRequestReceivedMailJob::dispatch($data['email'], $data['first_name']);
-
-
+        DB::commit();
         return $form;
     } catch (\Exception $e) {
-
-        throw new HttpException(Response::HTTP_BAD_REQUEST, $e->getMessage());
+        DB::rollBack();
+        dd($e);
     }
 
 

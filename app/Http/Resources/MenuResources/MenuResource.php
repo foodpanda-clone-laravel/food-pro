@@ -11,16 +11,21 @@ class MenuResource extends JsonResource
     public function toArray($request)
     {
         // Generate the logo URL using the Storage::url() function
-
+        if($request->user()){
+            $favorites = $request->user()->customer->favourites->pluck('restaurant_id')->toArray();
+        }
+        $favorites = null;
         return [
             'restaurant' => [
                 'id' => $this->id,
                 'name' => $this->name,
                 'business_type' => $this->business_type,
+                'is_favorite'=>$favorites?in_array($this->id, $favorites):false,
+                'image' => $this->logo_path,
+
                 'cuisine' => $this->cuisine,
-                'average_rating' => $this->ratings->avg('stars') ?? 0,
+                'average_rating' => round($this->ratings->avg('stars'), 1) ?? 0,
                 'feedbacks' => $this->ratings->toArray(),
-                'logo_url' => rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($this->logo_path), '/'),
                 'opening_time' => $this->opening_time,
                 'closing_time' => $this->closing_time,
                 'branch_address' => optional($this->branches->first())->address ?? 'N/A',
@@ -36,8 +41,6 @@ class MenuResource extends JsonResource
                                 return [
                                     'id' => $choice->id,
                                     'name' => $choice->name,
-                                    'additional_price' => $choice->additional_price,
-                                    'size_price' => $choice->size_price,
                                     'price' => $choice->price,
                                 ];
                             });
@@ -45,6 +48,9 @@ class MenuResource extends JsonResource
                                 'id' => $assignedChoiceGroup->id,
                                 'menu_item_id' => $assignedChoiceGroup->menu_item_id,
                                 'choice_group_id' => $assignedChoiceGroup->choice_group_id,
+                                'choice_group_name' => $assignedChoiceGroup->choiceGroup->name,
+                                'is_required'=> $assignedChoiceGroup->choiceGroup->is_required,
+                                'choice_type'=>$assignedChoiceGroup->choiceGroup->choice_type,
                                 'created_at' => $assignedChoiceGroup->created_at,
                                 'updated_at' => $assignedChoiceGroup->updated_at,
                                 'choices' => $choices->toArray(), // Now choices will be associative
@@ -56,7 +62,7 @@ class MenuResource extends JsonResource
                             'choice_groups' => $choiceGroups->toArray(), // Now choice groups will be associative
                             'price' => $menuItem->price,
                             'description' => $menuItem->description,
-                            'image_url' => $menuItem->image_file ? Storage::url($menuItem->image_file) : null, // Generate the URL for the menu item image
+                            'image_url' => $menuItem->image_path
                         ];
                     })->toArray(),
                 ];

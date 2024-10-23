@@ -3,24 +3,21 @@
 namespace App\Http\Resources\Restaurant;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class RestaurantResource extends JsonResource
 {
     public function toArray($request)
     {
-        //        $logoPath = env('APP_URL').Storage::url($this->logo_path);
-        $logoPath = rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($this->logo_path), '/');
-        // Get the first deal and calculate discount
+
         $deal = $this->deals->first();
         $discount = $deal ? $deal->discount : 0;
-
         $averageRating = round($this->ratings->avg('stars'), 2) ?? 0;
         return [
             'id' => $this->id,
-            'image' => rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($this->logo_path), '/'),
+            'image' => $this->logo_path,
             'name' => $this->name,
-
             'cuisine' => $this->cuisine,
             'rating' => $averageRating,
             'discount' => $discount,

@@ -36,14 +36,7 @@ class AdminService implements AdminServiceInterface
         $user->givePermissionTo($permissionIds);
         return $permissions;
     }
-    public function viewRestaurantRevenues(){
-
-    }
-    // filter restaurants by cuisine
-    // restaurants with pending, rejected, deactivated
     public function viewRestaurantApplications(){
-
-
         try{
             $requests= RestaurantRequest::all();
             return [
@@ -106,8 +99,8 @@ class AdminService implements AdminServiceInterface
             $data=$request->toArray();
             $data['password']=Random::generate(8);
             $temporarayPassword= $data['password'];
-    
-    
+
+
             DB::beginTransaction();
 
             if($request->status == 'approved'){

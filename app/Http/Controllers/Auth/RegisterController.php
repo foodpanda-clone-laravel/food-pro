@@ -23,32 +23,20 @@ class RegisterController extends Controller
         $this->registerService= $registerService;
     }
 
-    public function registerRestaurantWithOwner(RegisterRestaurantWithOwnerRequest $request)
-    {
 
-
-        $result = $this->registerService->createRestaurantWithOwner($request);
-        if($result){
-            return Helpers::sendSuccessResponse(Response::HTTP_CREATED, 'Restaurant and owner registered successfully', $result);
-        }
-        else{
-            return false;
-        }
-
-    }
     public function signup(RegisterUserRequest $request){
         $result = $this->registerService->register($request);
         if($result){
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'User signed up successfully');
         }
         else{
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'could not signup');
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
 
     public function submitRestaurantRequest(RestaurantSubmissionRequest $request){
-        
+
         $result = $this->registerService->submitRestaurantRequest($request);
 
 

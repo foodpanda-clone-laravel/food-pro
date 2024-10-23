@@ -2,12 +2,13 @@
 
 namespace App\Services\Menu;
 
+use App\DTO\ChoiceGroup\AssignedChoiceGroupDTO;
 use App\DTO\ChoiceGroup\ChoiceGroupDTO;
 use App\DTO\ChoiceGroup\ChoiceItemsDTO;
 use App\Interfaces\ChoiceGroupServiceInterface;
-use App\Models\Menu\AssignedChoiceGroup;
-use App\Models\Menu\Choice;
-use App\Models\Menu\ChoiceGroup;
+use App\Models\ChoiceGroup\ChoiceGroup;
+use App\Models\ChoiceGroup\AssignedChoiceGroup;
+use App\Models\ChoiceGroup\Choice;
 use Illuminate\Support\Facades\DB;
 
 class ChoiceGroupService implements ChoiceGroupServiceInterface
@@ -15,7 +16,7 @@ class ChoiceGroupService implements ChoiceGroupServiceInterface
 
     public function addChoiceGroup($data){
         $restaurant = MenuBaseService::getRestaurant();
-        $data['restaurant_id']=$restaurant->id;
+        $data->restaurant_id=$restaurant->id;
         $choiceGroupDTO = new ChoiceGroupDTO($data);
         $choiceGroup= ChoiceGroup::create($choiceGroupDTO->toArray());
         return $choiceGroup->toArray();
@@ -41,21 +42,22 @@ class ChoiceGroupService implements ChoiceGroupServiceInterface
     public function assignChoiceGroup($data){
         try{
             $restaurant = MenuBaseService::getRestaurant();
-            return AssignedChoiceGroup::create($data);
+            return AssignedChoiceGroup::create((new AssignedChoiceGroupDTO($data))->toArray());
         }
         catch(\Exception $e){
+            dd($e->getMessage());
             return false;
         }
     }
-    public function createChoiceGroupWithChoices($data){
+    public function createChoiceGroupWithChoices( $data){
         try{
             DB::beginTransaction();
             $restaurant = MenuBaseService::getRestaurant();
             $restaurantId = $restaurant->id;
             // get restaurant owner id and add choice group
             $choiceGroup = $this->addChoiceGroup($data);
-            $data['choice_group_id']=$choiceGroup['id'];
-            $choices = json_decode($data['choices'], true);
+            $data->choice_group_id=$choiceGroup['id'];
+            $choices = json_decode($data->choices, true);
             foreach($choices as $choice){
                 $choice['choice_group_id']=$choiceGroup['id'];
                 $choice['choice_type']=$data['choice_type'];
@@ -67,13 +69,15 @@ class ChoiceGroupService implements ChoiceGroupServiceInterface
         }
         catch(\Exception $e){
             DB::rollBack();
+
+            dd($e);
             return false;
         }
     }
 
     public function getAllChoiceGroupsByRestaurant(){
         $restaurant = MenuBaseService::getRestaurant();
-        return $restaurant->load(['choiceGroups.choices', 'choiceGroups.addons']);
+        return $restaurant->load(['choiceGroups.choices']);
     }
     public function deleteChoiceGroup($data){
         try{

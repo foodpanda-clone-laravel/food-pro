@@ -17,7 +17,14 @@ class Helpers{
         }else{
             $response['errors']=$data;
         }
-        return response()->json($response, $status);
+
+        if($headers){
+            return response()->json($response, $status)->withHeaders($headers);
+        }
+        else{
+            return response()->json($response, $status);
+
+        }
     }
 
     /**
@@ -29,20 +36,16 @@ class Helpers{
      */
     public static function sendFailureResponse(int $headerCode, string $functionName, $e)
     {
+
         return [
           'header_code' => $headerCode,
           'message'=> Response::$statusTexts[$headerCode],
           'body' => $e->getMessage(),
         ];
-        // return response()->json([
-        //     'status'=>$status,
-        //     'message'=>$message,
-        //     'data'=>$data
-        // ]);
-
     }
-    public static function createErrorLogs($exception, $requestId){
-        $errorLogDto = new ErrorLogDTO($exception, $requestId);
-        ErrorLog::create($errorLogDto->toArray());
+    public static function createErrorLogs($exception, $functionName)
+    {
+        $errorLog = new ErrorLogDTO($exception, $functionName);
+        ErrorLogDTO::create($errorLog->toArray());
     }
 }

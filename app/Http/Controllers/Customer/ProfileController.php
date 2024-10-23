@@ -27,7 +27,7 @@ class ProfileController extends Controller
     {
         $result = $this->customerProfileService->changePassword($request);
         if (!$result) {
-            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'invalid old password');
+            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST);
 
         } else {
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'changed password successfully');
@@ -37,11 +37,9 @@ class ProfileController extends Controller
 
     public function editProfile(UpdateProfileRequest $request)
     {
-        $userId = auth()->user()->id;
 
-        $this->customerProfileService->updateProfile($userId, $request);
+        $updatedUser = $this->customerProfileService->updateProfile($request->all());
 
-        $updatedUser = User::with('customer')->find($userId);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Profile updated successfully', $updatedUser);
     }
@@ -60,7 +58,7 @@ class ProfileController extends Controller
 
         // Ensure either address or delivery_address is present
         if (is_null($data['address']) && is_null($data['delivery_address'])) {
-            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Either address or delivery address must be provided.');
+            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST);
         }
 
         $customerDTO = new CustomerDTO($data);
