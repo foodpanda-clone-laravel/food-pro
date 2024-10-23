@@ -2,16 +2,12 @@
 
 namespace App\Http\Controllers\Restaurant;
 
-use App\Helpers\Helpers;
-use App\Http\Controllers\Controller;
-use App\Http\Resources\Revenue\RevenueResource;
-use App\Models\Orders\Order;
-use App\Services\Revenue\RevenueService;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use App\Helpers\Helpers;
+use App\Http\Controllers\Controller;
+use App\Services\Revenue\RevenueService;
+
 
 class RevenueController extends Controller
 {

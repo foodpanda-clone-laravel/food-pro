@@ -17,16 +17,6 @@ class RestaurantController extends Controller
         $this->restaurantService = $restaurantService;
     }
 
-    // public function viewRestaurantById()
-    // {
-    //     try {
-    //         $restaurantDetails = $this->restaurantService->getRestaurantWithDetails();
-    //         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant details retrieved successfully', $restaurantDetails);
-    //     } catch (\Exception $e) {
-    //         Helpers::createErrorLogs($e, request()->id);
-    //         return Helpers::sendFailureResponse(500, 'Failed to retrieve restaurant details');
-    //     }
-    // }
     public function deleteRestaurant()
 {
     try {
