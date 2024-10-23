@@ -3,7 +3,7 @@
 use App\Http\Controllers\Customer\CustomerController;
 use App\Http\Controllers\Customer\OrderController;
 use Illuminate\Support\Facades\Route;
-use \App\Http\Controllers\Customer\ProfileController;
+use App\Http\Controllers\Customer\ProfileController;
 Route::controller(OrderController::class)->group(function () {
    Route::get('/checkout-order-summary', 'checkout');
    Route::post('/checkout', 'createOrder');

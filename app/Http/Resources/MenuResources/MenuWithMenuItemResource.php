@@ -23,7 +23,7 @@ class MenuWithMenuItemResource extends JsonResource
                 'name' => $this->name,
                 'price' => $this->price,
                 'description' => $this->description,
-                'image_file' => rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($this->image_file), '/'),
+                'image_file' => $this->image_path,
                 'deleted_at' => $this->deleted_at,
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at,

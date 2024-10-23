@@ -4,7 +4,7 @@ namespace App\Http\Requests\MenuRequest;
 
 
 use App\Http\Requests\BaseRequest;
-use App\Rules\ValidateChoiceGroupsRule;
+use App\Rules\UpdateChoicesValidationRule;
 
 class UpdateChoiceGroupRequest extends BaseRequest
 {
@@ -21,7 +21,7 @@ class UpdateChoiceGroupRequest extends BaseRequest
             'name'=>'sometimes|string',
             'choice_type'=>'sometimes|string',
             'is_required'=>'sometimes|boolean',
-            'choices'=>['required','json', new ValidateChoiceGroupsRule($this->input('id'))],
+            'choices'=>['required','json', new UpdateChoicesValidationRule($this->input('id'))],
             'new_choices'=>'sometimes|json'
         ];
     }

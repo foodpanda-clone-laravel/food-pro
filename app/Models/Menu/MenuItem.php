@@ -4,13 +4,16 @@ namespace App\Models\Menu;
 
 use App\Models\ChoiceGroup\AssignedChoiceGroup;
 use App\Models\ChoiceGroup\ChoiceGroup;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class MenuItem extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use SoftDeletes;
 
     protected $guarded = [];
 
@@ -25,5 +28,11 @@ class MenuItem extends Model
     }
     public function AssignedChoiceGroups(){
         return $this->hasMany(AssignedChoiceGroup::class);
+    }
+    protected function imagePath(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($this->attributes['image_path']), '/')
+        );
     }
 }

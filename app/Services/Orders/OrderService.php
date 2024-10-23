@@ -27,7 +27,7 @@ class OrderService
         return app(Pipeline::class)
             ->send($query)
             ->through([
-                \App\Pipelines\Filters\StatusFilter::class,
+                \App\Pipelines\Filters\ViewRestaurantsFilter\StatusFilter::class,
                 \App\Pipelines\Filters\OrderTypeFilter::class,
             ])
             ->thenReturn()
