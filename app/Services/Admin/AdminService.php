@@ -39,19 +39,30 @@ class AdminService implements AdminServiceInterface
     public function viewRestaurantApplications(){
         try{
             $requests= RestaurantRequest::all();
-            return $requests;
+            return [
+                'header_code' => Response::HTTP_OK,
+                'message'=> 'All Restaurants',
+                'body' => $requests
+            ];
         }catch (Exception $e){
-            throw new Exception($e->getMessage());
-         }
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR , __FUNCTION__,$e);
+
+              }
 
 
     }
     public function viewAllRestaurants(){
         try{
             $restaurants= Restaurant::all();
-            return $restaurants;
-        }catch (Exception $e){
-            throw new Exception($e->getMessage());
+            return [
+                'header_code' => Response::HTTP_OK,
+                'message'=> 'All Restaurants',
+                'body' => $restaurants
+            ];
+                }
+            catch (Exception $e){
+
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR , __FUNCTION__,$e);
         }
 
     }
@@ -63,10 +74,16 @@ class AdminService implements AdminServiceInterface
 
         $request->update($data);
 
-        return $request;
-        }catch (Exception $e){
-            throw new Exception($e->getMessage());
-        }
+        return [
+            'header_code' => Response::HTTP_OK,
+            'message'=> 'All Restaurants',
+            'body' => $request
+        ];
+            }
+        catch (Exception $e){
+
+        return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR , __FUNCTION__,$e);
+    }
 
 
     }
@@ -121,17 +138,22 @@ class AdminService implements AdminServiceInterface
             DB::commit();
 
             return [
-                'User' => $user,
-                'password' => $temporarayPassword,
-                'Restaurant_Owner' => $owner,
-                'restaurant' => $restaurant,
-                'branch' => $branch
+                'header_code' => Response::HTTP_OK,
+                'message' => 'Accepted Restaurant',
+                'body' => [
+                    'restaurants' => $restaurant,
+                    'user' => $user,
+                    'temporary_password' => $temporarayPassword,
+                    'restaurant_owner' => $owner,
+                    'restaurant' => $restaurant,
+                    'branch' => $branch,
+                ],
             ];
 
         } catch (Exception $e) {
             DB::rollBack();
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR , __FUNCTION__,$e);
 
-            throw new Exception($e->getMessage());
 
         }
     }
@@ -140,8 +162,9 @@ class AdminService implements AdminServiceInterface
 
         try{
         $request = RestaurantRequest::findorfail($request_id);
-        if(!$request->status == 'pending'){
-            throw new Exception('The restaurant is already rejected or approved');
+        
+        if ($request->status !== 'pending') {
+            throw new Exception('The restaurant is already rejected.');
         }
         $request->update([
             'status' => 'declined',
@@ -150,17 +173,22 @@ class AdminService implements AdminServiceInterface
         SendRejectedMailJob::dispatch($request->email, $request->name);
 
 
-        return $request;
+        return [
+            'header_code' => Response::HTTP_OK,
+            'message'=> 'Rejected Restaurant',
+            'body' => $request
+        ];
 
     }catch (Exception $e){
-        throw new Exception($e->getMessage());
+
+        return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR , __FUNCTION__,$e);
     }
 }
 
 public function viewAllOrders(){
     try{
         $query = DB::table('users as u')
-        ->join('orders as o', 'u.id', '=', 'o.user_id')
+        ->join('orderss as o', 'u.id', '=', 'o.user_id')
         ->join('restaurants as r', 'r.id', '=', 'o.restaurant_id')
         ->leftJoin('customers as c', 'u.id', '=', 'c.user_id')  // Use left join here
         ->select(
@@ -195,10 +223,15 @@ public function viewOrderDetails($order_id){
 
     try{
         $order=Order::findorfail($order_id);
-        return $order;
-    }catch (Exception $e){
+        return [
+            'header_code' => Response::HTTP_OK,
+            'message'=> 'Order with its details',
+            'body' => $order
+        ];   
+     }
+     catch (Exception $e){
 
-        throw new Exception($e->getMessage());
+        return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR , __FUNCTION__,$e);
     }
 
 
@@ -211,17 +244,34 @@ public function viewDeactivatedRestaurants()
         // Retrieve only soft-deleted restaurants
         $restaurants = Restaurant::onlyTrashed()->get();
 
-        return $restaurants;
-    } catch (\Exception $e) {
-        throw new Exception($e->getMessage());}
+        return [
+            'header_code' => Response::HTTP_OK,
+            'message'=> 'Deactivated Restaurants',
+            'body' => $restaurants
+        ];
+
+    }
+
+    catch (Exception $e){
+        return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR , __FUNCTION__,$e);
+
+    }
 }
 public function activateRestaurant($restaurant_id){
     try{
         $restaurant = Restaurant::onlyTrashed()->findorfail($restaurant_id);
         $restaurant->restore();
-        return $restaurant;
-    }catch (Exception $e){
-        throw new Exception($e->getMessage());
+        return [
+            'header_code' => Response::HTTP_OK,
+            'message'=> 'Activated Restaurant',
+            'body' => $restaurant
+        ];
+
+    }
+
+    catch (Exception $e){
+        return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR , __FUNCTION__,$e);
+
     }
 }
 
@@ -229,26 +279,40 @@ public function deactivateRestaurant($restaurant_id){
     try{
         $restaurant = Restaurant::findorfail($restaurant_id);
         $restaurant->delete();
-        return $restaurant;
-    }catch (Exception $e){
-        throw new Exception($e->getMessage());
+        return [
+            'header_code' => Response::HTTP_OK,
+            'message'=> 'Deactivated Restaurant',
+            'body' => $restaurant
+        ];
+
+    }
+
+    catch (Exception $e){
+        return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR , __FUNCTION__,$e);
+
     }
 }
 
 public function showRestaurants(){
     try{
         $results = Restaurant::join('branches as b', 'restaurants.id', '=', 'b.restaurant_id')
-        ->Leftjoin('ratings as ra', 'restaurants.id', '=', 'ra.restaurant_id')
+        ->leftJoin('ratings as ra', 'restaurants.id', '=', 'ra.restaurant_id')
         ->select(
+            'restaurants.logo_path',
             'restaurants.name',
             'b.delivery_time',
-            DB::raw('ROUND(AVG(ra.stars), 1) as avg_rating')
+            DB::raw('ROUND(AVG(ra.stars), 1) as avg_rating'),
+            DB::raw('COUNT(ra.id) as review_count')
         )
-        ->groupBy('restaurants.id', 'restaurants.name', 'b.delivery_time')
+        ->groupBy('restaurants.id', 'restaurants.name', 'b.delivery_time', 'restaurants.logo_path')
         ->get();
-    return $results;
+        return [
+            'header_code' => Response::HTTP_OK,
+            'message'=> 'All Restaurants',
+            'body' => $results
+        ];
     }catch (Exception $e){
-        throw new Exception($e->getMessage());
+        return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR , __FUNCTION__,$e);
     }
 }
 }

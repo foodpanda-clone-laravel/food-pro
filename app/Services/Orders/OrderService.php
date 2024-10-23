@@ -7,6 +7,7 @@ use App\Models\Restaurant\Restaurant;
 use App\Models\User\RestaurantOwner;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class OrderService
 {
