@@ -46,6 +46,6 @@ class Helpers{
     public static function createErrorLogs($exception, $functionName)
     {
         $errorLog = new ErrorLogDTO($exception, $functionName);
-        ErrorLogDTO::create($errorLog->toArray());
+        ErrorLog::create($errorLog->toArray());
     }
 }
