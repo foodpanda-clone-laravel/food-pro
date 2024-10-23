@@ -183,10 +183,17 @@ public function viewAllOrders(){
         )
         ->get();
 
-       
-        // return $e->getMessage();
+        return [
+            'header_code' => Response::HTTP_OK,
+            'message'=> 'All Orders',
+            'body' => $query
+        ];
 
-        // throw new Exception($e->getMessage());
+    }
+
+    catch (Exception $e){
+        return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR , __FUNCTION__,$e);
+
     }
 }
 
