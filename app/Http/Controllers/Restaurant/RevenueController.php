@@ -30,3 +30,4 @@ class RevenueController extends Controller
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'my revenue', $result);
     }
    
+}

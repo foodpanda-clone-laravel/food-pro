@@ -18,10 +18,8 @@ class RestaurantService
     public function getRestaurantOwner()
     {
         $user = Auth::user();
-        // Find the restaurant owner
         $owner = RestaurantOwner::where('user_id', $user->id)->firstOrFail();
 
-        // Find the restaurant associated with the owner
         $restaurant = Restaurant::where('owner_id', $owner->id)->firstOrFail();
 
         return $restaurant;
@@ -97,8 +95,11 @@ class RestaurantService
             // Update the restaurant request with the remaining validated data (excluding 'contact')
             $restaurantRequest->update($data);
 
-            return $user;
+            
 
+            $restaurantRequest->phone_number = $user->phone_number;
+
+            return $restaurantRequest;
         }} catch (\Exception $e) {
             // Handle the exception, log it, and return a meaningful response
             dd($e);
@@ -110,8 +111,14 @@ class RestaurantService
 
         try{
         $user=Auth::user();
-        $restaurant_details= RestaurantRequest::where('email',$user->email)->first();
-        return $restaurant_details;
+
+        $restaurantDetails = DB::table('restaurant_requests')
+        ->join('users', 'restaurant_requests.email', '=', 'users.email')
+        ->select('restaurant_requests.*', 'users.phone_number') // Select all columns from restaurant_requests and phone_number from users
+        ->where('restaurant_requests.email', $user->email)
+        ->first();
+        
+        return $restaurantDetails;
         }
         catch(Exception $e){
 

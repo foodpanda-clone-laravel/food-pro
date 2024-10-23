@@ -28,7 +28,9 @@ class OrderDashboardController extends Controller
                 return [
                     'menu_item_id' => $item->menu_item_id,
                     'quantity' => $item->quantity,
-                    'image_file' => $item->menuItem->image_file ?? null, // Accessing image_file from menu_item
+                    'image_file' => $item->menuItem->image_file ?? null, 
+                    'menu_item_name' => $item->menuItem->name ?? null, // Include the 'name' field from menu_items
+
                 ];
             });
 
