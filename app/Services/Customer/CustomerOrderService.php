@@ -34,7 +34,6 @@ class CustomerOrderService extends CustomerService implements CustomerOrderServi
         $total = $itemsTotal->sum('total_price');
 
         // get restaurant for the order
-
         $restaurant =  CartItem::with('restaurant')
             ->select('restaurant_id')
             ->groupBy('restaurant_id')

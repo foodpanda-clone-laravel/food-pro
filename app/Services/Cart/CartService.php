@@ -23,53 +23,58 @@ class CartService implements CartServiceInterface
          * and add the choice
          */
     public function calculateItemsTotal(){
+        try{
+            $eachItemsTotal = CartItem::with(['menuItem', 'choice'])
+                ->select(
+                    'menu_item_id',
+                    'quantity',
+                    'choice_group_id',
+                    'choice_id'
+                )
+                ->where('session_id', $this->shoppingSession->id)
+                ->get()
+                ->map(function ($cartItem) {
+                    // Calculate total_price and choice_names for each cart item
+                    $menuItem = $cartItem->menuItem;
+                    $choice = $cartItem->choice??null;
+                    $totalPrice = $menuItem->price * $cartItem->quantity;
 
-        $eachItemsTotal = CartItem::with(['menuItem', 'choice'])
-            ->select(
-                'menu_item_id',
-                'quantity',
-                'choice_group_id',
-                'choice_id'
-            )
-            ->where('session_id', $this->shoppingSession->id)
-            ->get()
-            ->map(function ($cartItem) {
-                // Calculate total_price and choice_names for each cart item
-                $menuItem = $cartItem->menuItem;
-                $choice = $cartItem->choice??null;
-                $totalPrice = $menuItem->price * $cartItem->quantity;
+                    if ($choice)
+                    {
+                        if($cartItem->ChoiceGroup->choice_type=='size'){
+                            $totalPrice = $choice->price * $cartItem->quantity;
+                        }
+                        else{
+                            $totalPrice += $choice->price * $cartItem->quantity; // Add choice price to total
+                        }
+                        $choiceNames = $choice->name;
 
-                if ($choice)
-                {
-                    if($cartItem->ChoiceGroup->choice_type=='size'){
-                        $totalPrice = $choice->price * $cartItem->quantity;
+
                     }
-                    else{
-                        $totalPrice += $choice->price * $cartItem->quantity; // Add choice price to total
+                    else {
+                        $choiceNames = null;
                     }
-                    $choiceNames = $choice->name;
 
+                    return [
+                        'menu_item_id' => $cartItem->menu_item_id,
+                        'menu_item_name' => $menuItem->name,
+                        'quantity' => $cartItem->quantity,
+                        'price' => $menuItem->price,
+                        'total_price' => $totalPrice,
+                        'choice_names' => $choiceNames,
+                        'choice_id'=>$choice->id,
+                        'choice_group_id'=>$choice->ChoiceGroup->id,
+                        'choice_type'=>$choice->ChoiceGroup->choice_type,
 
-                }
-                else {
-                    $choiceNames = null;
-                }
+                    ];
+                });
+            return $eachItemsTotal;
 
-                return [
-                    'menu_item_id' => $cartItem->menu_item_id,
-                    'menu_item_name' => $menuItem->name,
-                    'quantity' => $cartItem->quantity,
-                    'price' => $menuItem->price,
-                    'total_price' => $totalPrice,
-                    'choice_names' => $choiceNames,
-                    'choice_id'=>$choice->id,
-                    'choice_group_id'=>$choice->ChoiceGroup->id,
-                    'choice_type'=>$choice->ChoiceGroup->choice_type,
-
-                ];
-            });
-        return $eachItemsTotal;
-    }
+        }
+catch(\Exception $e){
+            dd($e);
+}
+        }
 
     public function addToCart($data){
         $sessionId = ShoppingSessionService::getShoppingSession();

@@ -100,7 +100,6 @@ class CustomerService implements CustomerServiceInterface
   {
     $user = auth()->user();
     $customer = $user->customer;
-
     $exists = Favourite::where('customer_id', $customer->id)
       ->where('restaurant_id', $data->restaurant_id)
       ->exists();

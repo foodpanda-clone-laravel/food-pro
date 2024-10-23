@@ -23,7 +23,6 @@ class RevenueController extends Controller
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'revenue', $result);
     }
 
-    // restaurant owner dashboard
     public function viewMyRevenue(Request $request)
     {
 

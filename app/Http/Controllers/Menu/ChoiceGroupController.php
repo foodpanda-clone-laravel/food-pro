@@ -43,7 +43,7 @@ class ChoiceGroupController extends Controller
         }
     }
     public function deleteChoiceGroup(RequireChoiceGroupIdRequest $request){
-        $result = $this->choiceGroupService->deleteChoiceGroup($request->all());
+        $result = $this->choiceGroupService->deleteChoiceGroup($request);
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'deleted choice group successfully');
     }
     public function assignChoiceGroup(Request $request){
