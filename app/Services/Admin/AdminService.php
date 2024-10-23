@@ -34,14 +34,7 @@ class AdminService implements AdminServiceInterface
         $user->givePermissionTo($permissionIds);
         return $permissions;
     }
-    public function viewRestaurantRevenues(){
-
-    }
-    // filter restaurants by cuisine
-    // restaurants with pending, rejected, deactivated
     public function viewRestaurantApplications(){
-
-
         try{
             $requests= RestaurantRequest::all();
             return $requests;
@@ -68,52 +61,30 @@ class AdminService implements AdminServiceInterface
     }
 
     public function approveRequest($request_id){
-
-    // Find the student by ID
-        $request = RestaurantRequest::findorfail($request_id);
-
-
-        $data=$request->toArray();
-        $data['password']=Random::generate(8);
-        $temporarayPassword= $data['password'];
-
-
-        DB::beginTransaction();
-
-
         try {
-
+            DB::beginTransaction();
+            $request = RestaurantRequest::findorfail($request_id);
+            $data=$request->toArray();
+            $data['password']=Random::generate(8);
+            $temporarayPassword= $data['password'];
             if($request->status == 'approved'){
                 throw new Exception('The restaurant is already approved.');
-
-
             }
-
-
             $request->update([
                 'status' => 'approved',
             ]);
-
             $userDTO = new UserDTO($data);
             $user = User::create($userDTO->toArray());
             $permissions = $this->assignRoleWithDirectPermissions($user, 'Restaurant Owner');
-
-
             $data['user_id'] = $user->id;
-
             $restaurantOwnerDTO = new RestaurantOwnerDTO($data);
             $owner = RestaurantOwner::create($restaurantOwnerDTO->toArray());
-
             $data['owner_id'] = $owner->id;
-
             $restaurantDTO = new RestaurantDTO($data);
             $restaurant = Restaurant::create($restaurantDTO->toArray());
-
             $data['restaurant_id'] = $restaurant->id;
-
             $branchDTO = new BranchDTO($data);
             $branch = Branch::create($branchDTO->toArray());
-
             SendAcceptedRequestMailJob::dispatch($user->first_name, $temporarayPassword,  $restaurant->name, $user->email);
             DB::commit();
 

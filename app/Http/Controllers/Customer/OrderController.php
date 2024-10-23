@@ -9,6 +9,7 @@ use App\Http\Resources\CartResources\CartSummaryResource;
 use App\Http\Resources\Order\OrderResource;
 use App\Services\Customer\CustomerOrderService;
 use Symfony\Component\HttpFoundation\Response;
+use GuzzleHttp\Psr7\Request;
 
 class OrderController extends CustomerController
 {
@@ -31,12 +32,13 @@ class OrderController extends CustomerController
         return Helpers::sendFailureResponse(Response::HTTP_NOT_FOUND, 'No active order found');
     }
 
-    public function viewOrderDetails(ViewOrderDetailsRequest $request)
+    public function viewOrderDetails($orderId)
     {
-        $orderDetails = $this->customerService->getOrderDetails($request);
+        $orderDetails = $this->customerService->getOrderDetails($orderId);
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order details retrieved successfully', $orderDetails);
     }
+
 
     public function checkout(CustomerOrderService $customerOrderService)
     {

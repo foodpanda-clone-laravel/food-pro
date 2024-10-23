@@ -41,7 +41,7 @@ class User extends Authenticatable implements JWTSubject
     // Relationships
     public function customer()
     {
-        return $this->hasOne(Customer::class, 'user_id');
+        return $this->hasOne(Customer::class);
     }
 
     public function restaurantOwner()

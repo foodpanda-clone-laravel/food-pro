@@ -67,7 +67,21 @@ class Restaurant extends Model
     protected function logoPath(): Attribute
     {
         return Attribute::make(
-            get: fn () => rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($this->attributes['logo_path']), '/')
+            get: fn () => rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url('logos/' .$this->attributes['logo_path']), '/')
+        );
+    }
+    protected function openingTime(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => \Carbon\Carbon::createFromFormat('H:i:s', $this->attributes['opening_time'])->format('h:i A')
+        );
+    }
+
+    // Accessor for closing time in 12-hour format
+    protected function closingTime(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => \Carbon\Carbon::createFromFormat('H:i:s', $this->attributes['closing_time'])->format('h:i A')
         );
     }
 }

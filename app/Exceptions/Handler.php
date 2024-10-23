@@ -39,20 +39,23 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->renderable(function (Exception $exception, $request) {
+//            Helpers::createErrorLogs($exception, $request->request_id);
             dd($exception);
-
-            Helpers::createErrorLogs($exception, $request->request_id);
+            return response()->json(['internal server error'], 500);
 
         });
         $this->renderable(function (QueryException $exception, $request) {
-            dd($exception);
 
-           Helpers::createErrorLogs($exception, $request->request_id);
+//           Helpers::createErrorLogs($exception, $request->request_id);
+            dd($exception);
+            return response()->json(['internal server error'], 500);
+
 
         });
         $this->renderable(function (Error $error, $request) {
+//            Helpers::createErrorLogs($error, $request->request_id);
             dd($error);
-            Helpers::createErrorLogs($error, $request->request_id);
+            return response()->json(['internal server error'], 500);
 
         });
 

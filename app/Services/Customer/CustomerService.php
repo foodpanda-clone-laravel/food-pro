@@ -148,20 +148,26 @@ class CustomerService implements CustomerServiceInterface
     return $activeOrder;
   }
 
-  public function getOrderDetails($data)
+  public function getOrderDetails($orderId)
   {
-    $user = auth()->user();
-    $customer = $user->customer;
+      try{
+          $user = auth()->user();
+          $customer = $user->customer;
 
-    $order = Order::where('id', $data->order_id)
-      ->where('user_id', $customer->user_id)
-      ->with([
-        'orderItems.menuItem',
-        'restaurant',
-        'branch',
-      ])->firstOrFail();
+          $order = Order::where('id', $orderId)
+              ->where('user_id', $customer->user_id)
+              ->with([
+                  'orderItems.menuItem',
+                  'restaurant',
+                  'branch',
+              ])->firstOrFail();
+          return new OrderDetailsResource($order);
 
-    return new OrderDetailsResource($order);
+      }
+      catch(\Exception $e){
+          dd($e->getMessage());
+          return false;
+        }
   }
 
   // public function submitFeedback($customerId, $data)
@@ -189,9 +195,6 @@ class CustomerService implements CustomerServiceInterface
           if (!$customer) {
               throw new \Exception("Customer record not found for the logged-in user.");
           }
-
-          $order = Order::findOrFail($data->order_id);
-
           $feedback = Rating::create((new RatingDTO($data))->toArray());
 
           // Return the feedback response using FeedbackResource
@@ -199,6 +202,7 @@ class CustomerService implements CustomerServiceInterface
 
       }
       catch(\Exception $e){
+          dd($e);
           return false;
       }
     }

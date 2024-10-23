@@ -8,15 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RestaurantSubmissionRequest extends BaseRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
+
 
     /**
      * Get the validation rules that apply to the request.
@@ -26,14 +18,14 @@ class RestaurantSubmissionRequest extends BaseRequest
     public function rules()
     {
         return [
-            'cnic' => 'required|string|digits:13|unique:restaurant_owners,cnic',
+            'cnic' => 'required|string|digits:13|unique:restaurant_requests,cnic',
             'bank_name' => 'required|string|max:255',
-            'restaurant_name' => 'required|string|max:255|unique:restaurants,name',
+            'restaurant_name' => 'required|string|max:255|unique:restaurant_requests,restaurant_name',
             'iban' => 'required|string|max:34',
             'account_owner_title' => 'required|string|max:255',
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email',
+            'email' => 'required|string|email|max:255|unique:restaurant_requests,email',
             'address' => 'required|string|max:255',
             'postal_code' => 'required|string|max:20',
             'city' => 'required|string|max:255',

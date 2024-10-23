@@ -11,12 +11,15 @@ class MenuResource extends JsonResource
     public function toArray($request)
     {
         // Generate the logo URL using the Storage::url() function
+        $favorites = $request->user()->customer->favourites->pluck('restaurant_id')->toArray();
 
         return [
             'restaurant' => [
                 'id' => $this->id,
                 'name' => $this->name,
                 'business_type' => $this->business_type,
+                'is_favorite'=>in_array($this->id, $favorites),
+
                 'cuisine' => $this->cuisine,
                 'average_rating' => round($this->ratings->avg('stars'), 1) ?? 0,
                 'feedbacks' => $this->ratings->toArray(),
@@ -57,7 +60,7 @@ class MenuResource extends JsonResource
                             'choice_groups' => $choiceGroups->toArray(), // Now choice groups will be associative
                             'price' => $menuItem->price,
                             'description' => $menuItem->description,
-                            'image_url' => $this->image_path
+                            'image_url' => $menuItem->image_path
                         ];
                     })->toArray(),
                 ];

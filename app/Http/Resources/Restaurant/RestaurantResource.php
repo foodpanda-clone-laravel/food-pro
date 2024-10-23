@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Restaurant;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class RestaurantResource extends JsonResource
@@ -12,7 +13,6 @@ class RestaurantResource extends JsonResource
 
         $deal = $this->deals->first();
         $discount = $deal ? $deal->discount : 0;
-
         $averageRating = round($this->ratings->avg('stars'), 2) ?? 0;
         return [
             'id' => $this->id,
