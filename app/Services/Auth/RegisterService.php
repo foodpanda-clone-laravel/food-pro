@@ -110,7 +110,7 @@ class RegisterService implements RegisterServiceInterface
     }
 }
 
-public function submitRestaurantRequest(array $data){
+public function submitRestaurantRequest($data){
 
     try {
         $imagePath = $data['logo_path']->store('RestaurantLogos', 'public'); // Save file to 'storage/app/public/logos'

@@ -84,5 +84,9 @@ class AdminController extends Controller
         $result= $this->adminService->activateRestaurant($restaurant_id);
         return Helpers::sendSuccessResponse(Response::HTTP_OK,'Restaurant activated', $result);
     }
+    public function showRestaurants(){
+        $result= $this->adminService->showRestaurants();
+        return Helpers::sendSuccessResponse(Response::HTTP_OK,' Restaurants', $result);
+    }
 
 }

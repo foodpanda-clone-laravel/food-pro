@@ -46,42 +46,50 @@ class AdminService implements AdminServiceInterface
             $requests= RestaurantRequest::all();
             return $requests;
         }catch (Exception $e){
-            dd($e);
+            throw new Exception($e->getMessage());
          }
 
 
     }
     public function viewAllRestaurants(){
-        $restaurants= Restaurant::all();
-        return $restaurants;
+        try{
+            $restaurants= Restaurant::all();
+            return $restaurants;
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
+        }
 
     }
     public function updateRestaurantApplication(array $data,$request_id){
+
+        try{
 
         $request = RestaurantRequest::findorfail($request_id);
 
         $request->update($data);
 
         return $request;
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
+        }
 
 
     }
 
     public function approveRequest($request_id){
 
-    // Find the student by ID
-        $request = RestaurantRequest::findorfail($request_id);
-
-
-        $data=$request->toArray();
-        $data['password']=Random::generate(8);
-        $temporarayPassword= $data['password'];
-
-
-        DB::beginTransaction();
 
 
         try {
+            $request = RestaurantRequest::findorfail($request_id);
+
+
+            $data=$request->toArray();
+            $data['password']=Random::generate(8);
+            $temporarayPassword= $data['password'];
+    
+    
+            DB::beginTransaction();
 
             if($request->status == 'approved'){
                 throw new Exception('The restaurant is already approved.');
@@ -128,7 +136,8 @@ class AdminService implements AdminServiceInterface
         } catch (Exception $e) {
             DB::rollBack();
 
-            dd($e);
+            throw new Exception($e->getMessage());
+
         }
     }
 
@@ -149,7 +158,7 @@ class AdminService implements AdminServiceInterface
         return $request;
 
     }catch (Exception $e){
-        dd($e);
+        throw new Exception($e->getMessage());
     }
 }
 
@@ -158,9 +167,11 @@ public function viewAllOrders(){
 
         $query = DB::table('users as u')
         ->join('orders as o', 'u.id', '=', 'o.user_id')
+        ->join('restaurants as r', 'r.id', '=', 'o.restaurant_id')
         ->leftJoin('customers as c', 'u.id', '=', 'c.user_id')  // Use left join here
         ->select(
             'o.id',
+            'r.name as restaurant_name',
             'u.first_name',
             'u.phone_number',
             'o.total_amount',
@@ -178,7 +189,8 @@ public function viewAllOrders(){
     }
 
     catch (Exception $e){
-        dd($e);
+
+        throw new Exception($e->getMessage());
     }
 }
 
@@ -189,7 +201,8 @@ public function viewOrderDetails($order_id){
         $order=Order::findorfail($order_id);
         return $order;
     }catch (Exception $e){
-        dd($e);
+
+        throw new Exception($e->getMessage());
     }
 
 
@@ -202,10 +215,9 @@ public function viewDeactivatedRestaurants()
         // Retrieve only soft-deleted restaurants
         $restaurants = Restaurant::onlyTrashed()->get();
 
-        return response()->json($restaurants, 200);
+        return $restaurants;
     } catch (\Exception $e) {
-        return response()->json(['error' => 'Failed to fetch deactivated restaurants.'], 500);
-    }
+        throw new Exception($e->getMessage());}
 }
 public function activateRestaurant($restaurant_id){
     try{
@@ -213,7 +225,7 @@ public function activateRestaurant($restaurant_id){
         $restaurant->restore();
         return $restaurant;
     }catch (Exception $e){
-        dd($e);
+        throw new Exception($e->getMessage());
     }
 }
 
@@ -223,7 +235,24 @@ public function deactivateRestaurant($restaurant_id){
         $restaurant->delete();
         return $restaurant;
     }catch (Exception $e){
-        dd($e);
+        throw new Exception($e->getMessage());
+    }
+}
+
+public function showRestaurants(){
+    try{
+        $results = Restaurant::join('branches as b', 'restaurants.id', '=', 'b.restaurant_id')
+        ->Leftjoin('ratings as ra', 'restaurants.id', '=', 'ra.restaurant_id')
+        ->select(
+            'restaurants.name',
+            'b.delivery_time',
+            DB::raw('ROUND(AVG(ra.stars), 1) as avg_rating')
+        )
+        ->groupBy('restaurants.id', 'restaurants.name', 'b.delivery_time')
+        ->get();
+    return $results;
+    }catch (Exception $e){
+        throw new Exception($e->getMessage());
     }
 }
 }
