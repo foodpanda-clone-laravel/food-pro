@@ -29,7 +29,7 @@ class RegisterController extends Controller
 
         $result = $this->registerService->createRestaurantWithOwner($request);
         if($result){
-            return Helpers::sendSuccessResponse(201, 'Restaurant and owner registered successfully', $result);
+            return Helpers::sendSuccessResponse(Response::HTTP_CREATED, 'Restaurant and owner registered successfully', $result);
         }
         else{
             return false;
@@ -39,10 +39,10 @@ class RegisterController extends Controller
     public function signup(RegisterUserRequest $request){
         $result = $this->registerService->register($request);
         if($result){
-            return Helpers::sendSuccessResponse(200, 'User signed up successfully');
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'User signed up successfully');
         }
         else{
-            return Helpers::sendFailureResponse(400, 'could not signup');
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'could not signup');
         }
     }
 

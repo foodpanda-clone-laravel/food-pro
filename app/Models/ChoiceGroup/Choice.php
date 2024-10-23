@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\Menu;
+namespace App\Models\ChoiceGroup;
 
 use App\Models\Cart\CartItem;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

@@ -4,39 +4,30 @@ namespace App\Services\Customer;
 
 use App\DTO\User\CustomerDTO;
 use App\Helpers\Helpers;
+use App\Http\Resources\Customer\FeedbackResource;
+use App\Http\Resources\Customer\OrderDetailsResource;
+use App\Http\Resources\Customer\DealResource;
 use App\Http\Resources\MenuResources\MenuResource;
 use App\Http\Resources\Order\OrderResource;
+use App\Http\Resources\Customer\FavoriteRestaurantsResource;
 use App\Http\Resources\Restaurant\RestaurantResource;
 use App\Interfaces\Customer\CustomerServiceInterface;
 use App\Models\Customer\Favourite;
 use App\Models\Customer\Reward;
 use App\Models\Menu\Deal\Deal;
 use App\Models\Orders\Order;
-use App\Models\Restaurant\Rating;
+use App\Models\Rating\Rating;
 use App\Models\Restaurant\Restaurant;
 use App\Models\User\Customer;
 use App\Models\User\User;
 use App\Pipelines\FilterPipeline;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\Response;
 
 class CustomerService implements CustomerServiceInterface
 {
 
-  public function updateProfile($userId, $validatedData)
-  {
-    $user = User::findOrFail($userId);
-    $user->update($validatedData);
-
-    // If there are any customer-specific fields (like address)
-    $customerFields = array_intersect_key($validatedData, array_flip(['address', 'delivery_address', 'payment_method']));
-
-    if (!empty($customerFields)) {
-      $customer = Customer::where('user_id', $userId)->firstOrFail();
-      $customer->update($customerFields);
-    }
-  }
   public function getOrderHistory()
   {
     $user = auth()->user();
@@ -55,7 +46,6 @@ class CustomerService implements CustomerServiceInterface
     $restaurant = Restaurant::with([
       'menus.menuItems'
     ])->findOrFail($restaurantId);
-
     return new MenuResource($restaurant);
   }
 
@@ -74,22 +64,9 @@ class CustomerService implements CustomerServiceInterface
 
     $restaurants = Restaurant::whereIn('id', $favoriteRestaurantIds)
       ->with('ratings')
-      ->get()
-      ->map(function ($restaurant) {
-        $averageRating = $restaurant->ratings->avg('stars') ?? 0;
+      ->get();
 
-        return [
-          'id' => $restaurant->id,
-          'name' => $restaurant->name,
-          'logo_path' => $restaurant->logo_path,
-          'cuisine' => $restaurant->cuisine,
-          'opening_time' => $restaurant->opening_time,
-          'closing_time' => $restaurant->closing_time,
-          'average_rating' => round($averageRating, 2),
-        ];
-      });
-
-    return $restaurants;
+    return FavoriteRestaurantsResource::collection($restaurants);
   }
 
   public function getRewards()
@@ -117,30 +94,6 @@ class CustomerService implements CustomerServiceInterface
     return $points * 0.01;
   }
 
-  public function updateCustomerInfo($customerId, CustomerDTO $customerDTO)
-  {
-    $customer = Customer::findOrFail($customerId);
-
-    if ($customerDTO->address) {
-      $customer->address = $customerDTO->address;
-    }
-    if ($customerDTO->delivery_address) {
-      $customer->delivery_address = $customerDTO->delivery_address;
-    }
-    if ($customerDTO->favorites !== null) {
-      $customer->favorites = is_array($customerDTO->favorites) ? implode(',', $customerDTO->favorites) : $customerDTO->favorites;
-    }
-
-    $customer->save();
-  }
-
-  public function getProfile($userId)
-  {
-    return Customer::with('user:id,first_name,last_name,phone_number,email,email_verified_at,created_at,updated_at')
-      ->where('user_id', $userId)
-      ->firstOrFail();
-  }
-
   public function addFavoriteRestaurant($restaurantId)
   {
     $user = auth()->user();
@@ -159,7 +112,6 @@ class CustomerService implements CustomerServiceInterface
 
     return $this->getFavoriteItems();
   }
-
   public function removeFavoriteRestaurant($restaurantId)
   {
     $user = auth()->user();
@@ -186,7 +138,6 @@ class CustomerService implements CustomerServiceInterface
   }
 
   public function getOrderDetails($orderId)
-
   {
     $user = auth()->user();
     $customer = $user->customer;
@@ -202,21 +153,21 @@ class CustomerService implements CustomerServiceInterface
     return new OrderDetailsResource($order);
   }
 
-  public function submitFeedback($customerId, $data)
-  {
-    $user = auth()->user();
-    $customer = $user->customer;
+  // public function submitFeedback($customerId, $data)
+  // {
+  //   $user = auth()->user();
+  //   $customer = $user->customer;
 
-    $order = Order::where('id', $orderId)
-      ->where('user_id', $customer->user_id)
-      ->with([
-        'orderItems.menuItem',
-        'restaurant',
-        'branch',
-      ])->firstOrFail();
+  //   $order = Order::where('id', $orderId)
+  //     ->where('user_id', $customer->user_id)
+  //     ->with([
+  //       'orderItems.menuItem',
+  //       'restaurant',
+  //       'branch',
+  //     ])->firstOrFail();
 
-    return new OrderDetailsResource($order);
-  }
+  //   return new OrderDetailsResource($order);
+  // }
 
   public function submitFeedback($data)
   {
@@ -255,36 +206,14 @@ class CustomerService implements CustomerServiceInterface
   {
     $deals = Deal::with([
       'restaurant:id,name,logo_path,cuisine',
+      'restaurant.ratings' // Load ratings through the restaurant
     ])
       ->select('id', 'name', 'restaurant_id', 'branch_id', 'discount')
-      ->get()
-      ->map(function ($deal) {
+      ->get();
 
-        $averageRating = Rating::where('restaurant_id', $deal->restaurant_id)
-          ->select(DB::raw('AVG(stars) as average_rating'))
-          ->groupBy('restaurant_id')
-          ->pluck('average_rating')
-          ->first() ?? 0;
-
-        $restaurantLogoUrl = $deal->restaurant && $deal->restaurant->logo_path
-          ? Storage::url($deal->restaurant->logo_path)
-          : null;
-
-        return [
-          'id' => $deal->id,
-          'name' => $deal->name,
-          'restaurant_id' => $deal->restaurant_id,
-          'branch_id' => $deal->branch_id,
-          'discount' => $deal->discount,
-          'average_rating' => round($averageRating, 2),
-          'restaurant_name' => optional($deal->restaurant)->name ?? 'Unknown',
-          'restaurant_logo' => $restaurantLogoUrl ?? 'N/A',
-          'restaurant_cuisine' => optional($deal->restaurant)->cuisine ?? 'N/A',
-        ];
-      });
-
-    return $deals;
+    return DealResource::collection($deals);
   }
+
 
 
 }
