@@ -195,7 +195,7 @@ class AdminService implements AdminServiceInterface
 public function viewAllOrders(){
     try{
         $query = DB::table('users as u')
-        ->join('orderss as o', 'u.id', '=', 'o.user_id')
+        ->join('orders as o', 'u.id', '=', 'o.user_id')
         ->join('restaurants as r', 'r.id', '=', 'o.restaurant_id')
         ->leftJoin('customers as c', 'u.id', '=', 'c.user_id')  // Use left join here
         ->select(
