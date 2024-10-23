@@ -81,7 +81,7 @@ class ChoiceGroupService implements ChoiceGroupServiceInterface
     }
     public function deleteChoiceGroup($data){
         try{
-            $choiceGroup = ChoiceGroup::where('id', $data['id']);
+            $choiceGroup = ChoiceGroup::where('id', $data->id);
             $choiceGroup->delete();
             return true;
         }

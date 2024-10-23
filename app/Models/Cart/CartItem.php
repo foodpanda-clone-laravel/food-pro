@@ -23,14 +23,14 @@ class CartItem extends Model
 
     public function menuItem()
     {
-        return $this->belongsTo(MenuItem::class);
+        return $this->belongsTo(MenuItem::class, 'menu_item_id');
     }
     public function choiceGroup(){
         return $this->belongsTo(ChoiceGroup::class);
 
     }
     public function choice(){
-        return $this->belongsTo(wChoice::class, 'choice_id');
+        return $this->belongsTo(Choice::class, 'choice_id');
     }
     public function restaurant(){
         return $this->belongsTo(Restaurant::class, 'restaurant_id');

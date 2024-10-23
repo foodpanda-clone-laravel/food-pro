@@ -60,9 +60,10 @@ class CustomerProfileService implements CustomerProfileServiceInterface
   }
 
 
-  public function getProfile($userId)
-  {
-    return Customer::with('user:id,first_name,last_name,phone_number,email,email_verified_at,created_at,updated_at')
+  public function getProfile()
+  {$userId = auth()->user()->id;
+
+      return Customer::with('user:id,first_name,last_name,phone_number,email,email_verified_at,created_at,updated_at')
       ->where('user_id', $userId)
       ->firstOrFail();
   }

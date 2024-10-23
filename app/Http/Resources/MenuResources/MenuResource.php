@@ -20,8 +20,9 @@ class MenuResource extends JsonResource
                 'id' => $this->id,
                 'name' => $this->name,
                 'business_type' => $this->business_type,
-                'is_favorite'=>$favorites?in_array($this->id, $favorites):false,
                 'image' => $this->logo_path,
+
+                'is_favorite'=>$favorites?in_array($this->id, $favorites):false,
 
                 'cuisine' => $this->cuisine,
                 'average_rating' => round($this->ratings->avg('stars'), 1) ?? 0,

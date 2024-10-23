@@ -77,7 +77,6 @@ class Restaurant extends Model
         );
     }
 
-    // Accessor for closing time in 12-hour format
     protected function closingTime(): Attribute
     {
         return Attribute::make(

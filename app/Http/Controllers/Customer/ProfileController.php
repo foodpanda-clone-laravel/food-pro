@@ -51,9 +51,9 @@ class ProfileController extends Controller
 
         $data = [
             'user_id' => $customerId,
-            'address' => $validatedData['address'] ?? null,
-            'delivery_address' => $isDefaultAddress ? null : ($validatedData['delivery_address'] ?? null),
-            'favorites' => $validatedData['favorites'] ?? null
+            'address' => $request->address ?? null,
+            'delivery_address' => $isDefaultAddress ? null : ($request->delivery_address ?? null),
+            'favorites' => $request->favorites ?? null
         ];
 
         // Ensure either address or delivery_address is present
@@ -71,8 +71,7 @@ class ProfileController extends Controller
 
     public function viewProfile()
     {
-        $userId = auth()->user()->id;
-        $customer = $this->customerProfileService->getProfile($userId);
+        $customer = $this->customerProfileService->getProfile();
 
         return Helpers::sendSuccessResponse(
             Response::HTTP_OK,
