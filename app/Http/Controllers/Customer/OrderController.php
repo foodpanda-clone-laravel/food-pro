@@ -7,6 +7,7 @@ use App\Http\Requests\CartRequests\CheckoutRequest;
 use App\Http\Requests\OrderRequests\ViewOrderDetailsRequest;
 use App\Http\Resources\CartResources\CartSummaryResource;
 use App\Http\Resources\Order\OrderResource;
+use App\Models\Cart\CartItem;
 use App\Services\Customer\CustomerOrderService;
 use Symfony\Component\HttpFoundation\Response;
 use GuzzleHttp\Psr7\Request;
@@ -53,7 +54,7 @@ class OrderController extends CustomerController
         if ($result) {
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order created successfully', $result);
         } else {
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR);
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR,__FUNCTION__, $result);
         }
 
     }

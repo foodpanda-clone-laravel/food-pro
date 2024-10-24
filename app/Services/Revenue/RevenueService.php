@@ -3,6 +3,7 @@
 namespace App\Services\Revenue;
 
 use App\Helpers\Helpers;
+use App\Http\Resources\Revenue\RevenueResource;
 use App\Interfaces\RevenueServiceInterface;
 use App\Models\Orders\Order;
 use Carbon\Carbon;

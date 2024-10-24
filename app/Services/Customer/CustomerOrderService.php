@@ -30,37 +30,49 @@ class CustomerOrderService extends CustomerService implements CustomerOrderServi
     }
     public function checkout()
     {
-        $itemsTotal = $this->cartService->calculateItemsTotal();
-        $total = $itemsTotal->sum('total_price');
+        try{
 
-        // get restaurant for the order
-        $restaurant =  CartItem::with('restaurant')
-            ->select('restaurant_id')
-            ->groupBy('restaurant_id')
-            ->first()
-            ->restaurant;
-        // as for now we have only one branch so we are searching for branch with given restaurant id
-        $branch= $restaurant->branches->first();
-        return [
-            'total' => $total,
-            'items_total' => $itemsTotal,
-            'branch' => $branch,
-            'restaurant' => $restaurant,
-            'customer' => $this->customer
-        ];
+            $itemsTotal = $this->cartService->calculateItemsTotal();
+            $total = $itemsTotal->sum('total_price');
+            // get restaurant for the order
+            $restaurant =  CartItem::with('restaurant')
+                ->select('restaurant_id')
+                ->groupBy('restaurant_id')
+                ->first()
+                ->restaurant;
+            // as for now we have only one branch so we are searching for branch with given restaurant id
+            $branch= $restaurant->branches->first();
+            return [
+                'total' => $total,
+                'items_total' => $itemsTotal,
+                'branch' => $branch,
+                'restaurant' => $restaurant,
+                'customer' => $this->customer
+            ];
+        }
+        catch(\Exception $e){
+            return $e;
+        }
     }
 
 
     protected function createOrderItems($orderItems, $order){
-        $orderedItems = [];
+        try{
 
-        foreach($orderItems as $orderItem){
-            $orderItem['id']=$order->id;
-            $orderItemDTO = new OrderItemDTO($orderItem);
-            $orderItem = OrderItem::create($orderItemDTO->toArray());
-            $orderedItems[] = $orderItem;
+            $orderedItems = [];
+
+            foreach($orderItems as $orderItem){
+                $orderItem['id']=$order->id;
+                $orderItemDTO = new OrderItemDTO($orderItem);
+                $orderItem = OrderItem::create($orderItemDTO->toArray());
+                $orderedItems[] = $orderItem;
+            }
+            return $orderedItems;
+
         }
-        return $orderedItems;
+        catch(\Exception $e){
+            Helpers::sendFailureResponse(Response::HTTP_UNPROCESSABLE_ENTITY, __FUNCTION__, $e);
+        }
     }
     protected function createPaymentForOrder($order){
         $paymentDTO = new  PaymentDTO($order->toArray());
@@ -83,7 +95,7 @@ class CustomerOrderService extends CustomerService implements CustomerOrderServi
         }
         catch(\Exception $e){
             DB::rollBack();
-            return false;
+            return $e;
         }
 
     }

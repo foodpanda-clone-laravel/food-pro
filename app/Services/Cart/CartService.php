@@ -3,9 +3,12 @@
 namespace App\Services\Cart;
 
 use App\DTO\Cart\CartItemDTO;
+use App\Helpers\Helpers;
 use App\Interfaces\CartServiceInterface;
 use App\Models\Cart\CartItem;
+use App\Models\Restaurant\Restaurant;
 use Illuminate\Support\Facades\DB;
+use Symfony\Component\HttpFoundation\Response;
 
 class CartService implements CartServiceInterface
 {
@@ -72,7 +75,8 @@ class CartService implements CartServiceInterface
 
         }
 catch(\Exception $e){
-            dd($e);
+
+    Helpers::sendFailureResponse(Response::HTTP_UNPROCESSABLE_ENTITY, __FUNCTION__, $e);
 }
         }
 

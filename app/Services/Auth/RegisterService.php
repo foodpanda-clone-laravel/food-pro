@@ -2,29 +2,19 @@
 
 namespace App\Services\Auth;
 
-use App\DTO\Restaurant\BranchDTO;
-use App\DTO\Restaurant\RestaurantDTO;
 use App\DTO\Restaurant\RestaurantRequestDTO;
 use App\DTO\User\CustomerDTO;
-use App\DTO\User\RestaurantOwnerDTO;
 use App\DTO\User\UserDTO;
 use App\Interfaces\Auth\RegisterServiceInterface;
 use App\Jobs\SendRequestReceivedMailJob;
-use App\Mail\RequestRecievedMail;
-use App\Models\Restaurant\Branch;
-use App\Models\Restaurant\Restaurant;
 use App\Models\Restaurant\RestaurantRequest;
 use App\Models\User\Customer;
-use App\Models\User\RestaurantOwner;
 use App\Models\User\User;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-
+use App\Helpers\Helpers;
 class RegisterService implements RegisterServiceInterface
 {
 // here wer are creating user two times instead of repeating code we can create a protected function
@@ -75,8 +65,7 @@ public function submitRestaurantRequest($data){
 
     try {
         DB::beginTransaction();
-        $imagePath = $data['logo_path']->store('RestaurantLogos', 'public'); // Save file to 'storage/app/public/logos'
-
+        $imagePath = $data->logo_path->store('RestaurantLogos', 'public'); // Save file to 'storage/app/public/logos'
         $data['logo_path'] = $imagePath;
         $form = new RestaurantRequestDTO($data);
         $form = RestaurantRequest::create($form->toArray());
@@ -86,7 +75,7 @@ public function submitRestaurantRequest($data){
         return $form;
     } catch (\Exception $e) {
         DB::rollBack();
-        dd($e);
+        Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR,__FUNCTION__,$e);
     }
 
 

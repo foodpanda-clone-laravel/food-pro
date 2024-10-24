@@ -34,18 +34,22 @@ class Helpers{
      *
      * in case of failure response send it to error logs
      */
-    public static function sendFailureResponse(int $headerCode, string $functionName, $e)
+    public static function sendFailureResponse(int $headerCode,string $functionName=null, $e=null)
     {
 
-        return [
-          'header_code' => $headerCode,
-          'message'=> Response::$statusTexts[$headerCode],
-          'body' => $e->getMessage(),
-        ];
+        return response()->json([
+            'header_code' => $headerCode,
+            'message'=> Response::$statusTexts[$headerCode],
+            'body' => $e?$e->getMessage():null,
+
+        ]);
+        if($e){
+            self::createErrorLogs($e, $functionName);
+        }
     }
     public static function createErrorLogs($exception, $functionName)
     {
         $errorLog = new ErrorLogDTO($exception, $functionName);
-        ErrorLogDTO::create($errorLog->toArray());
+        ErrorLog::create($errorLog->toArray());
     }
 }
