@@ -51,7 +51,7 @@ class UserController extends Controller
 
 
 
-            return Helpers::sendFailureResponse(401, 'Invalid Credentials');
+            return Helpers::sendFailureResponse(Response::HTTP_UNAUTHORIZED);
 
 
         }

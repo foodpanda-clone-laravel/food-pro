@@ -19,13 +19,16 @@ use App\Http\Controllers\Auth\RegisterController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-require __DIR__ . '/restaurant/restaurantapi.php';
-require __DIR__ . '/order/orderapi.php';
-require __DIR__ . '/Customer/customerapi.php';
-require __DIR__ . '/hibacustomerRoutes/customer.php';
+Route::middleware(['api'])->group(function () {
 
-require __DIR__ . '/Admin/admin.php';
-require __DIR__ . '/Menu/Menu.php';
+    require __DIR__ . '/restaurant/restaurantapi.php';
+    require __DIR__ . '/order/orderapi.php';
+    require __DIR__ . '/Customer/customerapi.php';
+    require __DIR__ . '/hibacustomerRoutes/customer.php';
+
+    require __DIR__ . '/Admin/admin.php';
+    require __DIR__ . '/Menu/Menu.php';
+});
 
 Route::post(PermissionVariables::$register['path'],[RegisterController::class, 'signup']);
 Route::post(PermissionVariables::$registerBusiness['path'], [RegisterController::class, 'registerRestaurantWithOwner']);
@@ -36,7 +39,11 @@ Route::controller(CartController::class)->group(function () {
 
     //Route::post('/reset-password', 'submitResetPasswordForm')->name('password.update');
 
-
+Route::middleware('api')->group(function () {
+    Route::get('/example', function(){
+        return 'example';
+    });
+});
 Route::controller(UserController::class)->group(function () {
     Route::post('login', 'login');
     Route::post('logout', 'logout');
@@ -52,6 +59,5 @@ Route::controller(ForgotPasswordController::class)->group(function () {
 });
 
 Route::post(PermissionVariables::$submitRestaurantRequest['path'], [RegisterController::class, 'submitRestaurantRequest']);
-
 
 
