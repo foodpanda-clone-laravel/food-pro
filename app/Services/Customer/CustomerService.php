@@ -33,13 +33,10 @@ class CustomerService implements CustomerServiceInterface
   public function getOrderHistory()
   {
     $user = auth()->user();
-    $customer = $user->customer;
-
-    $orders = Order::where('user_id', $customer->user_id)
+    $orders = Order::where('user_id', $user->id)
       ->where('status', 'delivered')
       ->with(['orderItems.menuItem', 'restaurant', 'branch', 'rating'])
       ->get();
-
     return OrderResource::collection($orders)->additional(['showRating' => true]);
   }
 
@@ -142,7 +139,7 @@ class CustomerService implements CustomerServiceInterface
           $customer = $user->customer;
 
           $order = Order::where('id', $orderId)
-              ->where('user_id', $customer->user_id)
+              ->where('user_id', $user->id)
               ->with([
                   'orderItems.menuItem',
                   'restaurant',
