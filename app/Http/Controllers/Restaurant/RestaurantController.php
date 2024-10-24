@@ -17,16 +17,6 @@ class RestaurantController extends Controller
         $this->restaurantService = $restaurantService;
     }
 
-    // public function viewRestaurantById()
-    // {
-    //     try {
-    //         $restaurantDetails = $this->restaurantService->getRestaurantWithDetails();
-    //         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant details retrieved successfully', $restaurantDetails);
-    //     } catch (\Exception $e) {
-    //         Helpers::createErrorLogs($e, request()->id);
-    //         return Helpers::sendFailureResponse(500, 'Failed to retrieve restaurant details');
-    //     }
-    // }
     public function deleteRestaurant()
 {
     try {
@@ -34,7 +24,7 @@ class RestaurantController extends Controller
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant deleted successfully');
     } catch (\Exception $e) {
-        return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Could not delete restaurant');
+        return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST);
     }
 }
 
@@ -49,9 +39,17 @@ class RestaurantController extends Controller
 
     public function updateRestaurant(UpdateRestaurantRequest $request)
     {
-             $this->restaurantService->updateRestaurant($request);
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant updated successfully');
+        $data = $request->validated();
+
+             $result=$this->restaurantService->updateRestaurant($data);
+            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant updated successfully',$result);
 
     }
+    public function showRestaurantDeatils(){
 
+        $result = $this->restaurantService->showRestaurantDeatils();
+        return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Details of owner', $result);
     }
+}
+
+

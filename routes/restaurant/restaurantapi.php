@@ -5,9 +5,9 @@ use App\Http\Controllers\Menu\ChoiceGroupController;
 use App\Http\Controllers\Rating\RatingsController;
 use App\Http\Controllers\Restaurant\RestaurantController;
 use Illuminate\Support\Facades\Route;
-use \App\Http\Controllers\Menu\MenuControllerV2;
-use \App\Http\Controllers\Restaurant\RevenueController;
-Route::group(['middleware' => 'request.logs',], function () {
+use App\Http\Controllers\Restaurant\RevenueController;
+Route::middleware([ 'jwt', 'routes.permissions'])->group(function () {
+
     Route::controller(ChoiceGroupController::class)->group(function () {
         Route::get(PermissionVariables::$menuChoiceGroup['path'], 'getChoiceGroupById');
         Route::post(PermissionVariables::$menuAssignChoiceGroup['path'], 'assignChoiceGroup');
@@ -32,8 +32,11 @@ Route::group(['middleware' => 'request.logs',], function () {
 Route::group(['middleware' => 'api',], function () {
     Route::get(PermissionVariables::$viewRestaurant['path'], [RestaurantController::class, 'viewRestaurantById']);
     Route::delete(PermissionVariables::$deactivateRestaurant['path'], [RestaurantController::class, 'deleteRestaurant']);
-    Route::post(PermissionVariables::$updateRestaurant['path'], [RestaurantController::class, 'updateRestaurant']);
+    //Route::post(PermissionVariables::$updateRestaurant['path'], [RestaurantController::class, 'updateRestaurant']);
     Route::post(PermissionVariables::$restoreRestaurant['path'], [RestaurantController::class, 'restoreRestaurant']);
+    Route::get(PermissionVariables::$showRestaurantDetails['path'], [RestaurantController::class, 'showRestaurantDeatils']);
+    Route::post(PermissionVariables::$updateRestaurantDetails['path'], [RestaurantController::class, 'updateRestaurant']);
+
 
 });
 });
@@ -43,7 +46,7 @@ Route::group(['middleware' => 'api',], function () {
  * an example code to follow
  *  https://laraveldaily.com/post/laravel-routes-split-into-separate-files
  */
-// Route::middleware(['request.logs', 'jwt'])->group(function () {
+// Route::middleware([ 'jwt'])->group(function () {
 // });
 Route::get('/hello', function(){
     return 'hello';

@@ -4,12 +4,12 @@ namespace App\Pipelines\Filters;
 
 use Closure;
 
-class StatusFilter
+class OrderTypeFilter
 {
     public function handle($query, Closure $next)
     {
-        if (request()->has('status')) {
-            $query->where('status', request()->status);
+        if (request()->has('order_type')) {
+            $query->where('order_type', request()->order_type);
         }
 
         return $next($query);

@@ -2,11 +2,10 @@
 
 namespace App\Services\Auth;
 
-use App\Mail\TwoFactorAuthMail;
+use App\Jobs\SendTwoFactorAuthMail;
 use App\Services\Cart\ShoppingSessionService;
 use Exception;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Mail;
 use PragmaRX\Google2FAQRCode\Google2FA;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -55,13 +54,16 @@ class UserService extends ShoppingSessionService
 
 
         catch (\Exception $e){
-            dd($e);
+        //    dd($e);
             return false;
         }
     }
     public function logoutUser()
     {
         try {
+            $user = Auth::user();
+            $user->is_2fa_verified = false;
+            $user->save();
             JWTAuth::invalidate(JWTAuth::getToken());
             return true;
         } catch (\Exception $e) {
@@ -106,7 +108,8 @@ class UserService extends ShoppingSessionService
         // Store the secret key in the user's record
         $user->update(['google2fa_secret' => $secretKey]);
         $inlineUrl = $google2fa->getQRCodeInline('Food-pro', $user->email, $secretKey);
-        Mail::to($user->email)->send(new TwoFactorAuthMail($secretKey, $inlineUrl));
+        SendTwoFactorAuthMail::dispatch($user->email,$secretKey, $inlineUrl);
+
         return [
             'firstLogin' => true,
             'message' => 'QR code sent to your email for 2FA setup.',
@@ -147,8 +150,6 @@ class UserService extends ShoppingSessionService
                 : null;
         }
     }
-    public function setPasswordAtFirstLogin($data){
 
-    }
 
 }

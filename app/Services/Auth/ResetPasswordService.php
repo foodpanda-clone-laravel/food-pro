@@ -2,34 +2,42 @@
 
 namespace App\Services\Auth;
 use App\Helpers\Helpers;
+use App\Http\Requests\AuthRequests\ForgotPasswordRequest;
 use App\Http\Requests\AuthRequests\ResetPasswordRequest;
 use Illuminate\Support\Facades\Password;
 
 use App\Interfaces\ResetPasswordServiceInterface;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\Response;
 
 class ResetPasswordService implements ResetPasswordServiceInterface
 {
 
     public function submitForgotPasswordForm($data){
-        $email = $data['email'];
-        $status=  Password::sendResetLink(
-                ['email'=>$email]
-            );
-        return $status === Password::RESET_LINK_SENT;
+
+        $status = Password::sendResetLink(
+            $data
+        );
+        return $status === Password::RESET_LINK_SENT
+            ? Helpers::sendSuccessResponse(Response::HTTP_OK, 'Success')
+            :Helpers::sendFailureResponse(Response::HTTP_UNAUTHORIZED);
+
     }
-    public function resetPassword($data){
+    public function submitResetPasswordForm($data){
+
         $status = Password::reset(
             $data,
             function ($user, $password) {
                 $user->forceFill([
                     'password' => bcrypt($password)
                 ])->setRememberToken(Str::random(60));
-                $user->save();
 
+                $user->save();
             }
         );
-        return $status === Password::PASSWORD_RESET;
+        return $status === Password::PASSWORD_RESET
+            ? Helpers::sendSuccessResponse(Response::HTTP_OK, 'password reset successfully')
+            : Helpers::sendFailureResponse(Response::HTTP_UNAUTHORIZED);
 
     }
 }

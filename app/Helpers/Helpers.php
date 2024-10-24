@@ -2,23 +2,29 @@
 namespace App\Helpers;
 use App\DTO\Log\ErrorLogDTO;
 use App\Models\Logs\ErrorLog;
+use Illuminate\Http\Response;
 
 class Helpers{
 
     public static function sendSuccessResponse(int $status, string $message, $data=[], $headers=null)
     {
-        if($headers){
-            return response()->json([
-                'status'=>$status,
-                'message'=>$message,
-                'data'=>$data
-            ], $status)->withHeaders($headers);
-        }
-        return response()->json([
+        $response = [
             'status'=>$status,
             'message'=>$message,
-            'data'=>$data
-        ], $status);
+        ];
+        if($status >=200 && $status < 399){
+            $response['data']=$data;
+        }else{
+            $response['errors']=$data;
+        }
+
+        if($headers){
+            return response()->json($response, $status)->withHeaders($headers);
+        }
+        else{
+            return response()->json($response, $status);
+
+        }
     }
 
     /**
@@ -28,17 +34,22 @@ class Helpers{
      *
      * in case of failure response send it to error logs
      */
-    public static function sendFailureResponse(int $status, string $message, $data=[])
+    public static function sendFailureResponse(int $headerCode,string $functionName=null, $e=null)
     {
-        return response()->json([
-            'status'=>$status,
-            'message'=>$message,
-            'data'=>$data
-        ]);
 
+        return response()->json([
+            'header_code' => $headerCode,
+            'message'=> Response::$statusTexts[$headerCode],
+            'body' => $e?$e->getMessage():null,
+
+        ]);
+        if($e){
+            self::createErrorLogs($e, $functionName);
+        }
     }
-    public static function createErrorLogs($exception, $requestId){
-        $errorLogDto = new ErrorLogDTO($exception, $requestId);
-        ErrorLog::create($errorLogDto->toArray());
+    public static function createErrorLogs($exception, $functionName)
+    {
+        $errorLog = new ErrorLogDTO($exception, $functionName);
+        ErrorLog::create($errorLog->toArray());
     }
 }

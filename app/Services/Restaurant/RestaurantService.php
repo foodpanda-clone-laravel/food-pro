@@ -10,16 +10,16 @@ use App\Models\Restaurant\Branch;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User\RestaurantOwner;
 use App\Models\Restaurant\Restaurant;
+use App\Models\Restaurant\RestaurantRequest;
+use Exception;
 
 class RestaurantService
 {
     public function getRestaurantOwner()
     {
         $user = Auth::user();
-        // Find the restaurant owner
         $owner = RestaurantOwner::where('user_id', $user->id)->firstOrFail();
 
-        // Find the restaurant associated with the owner
         $restaurant = Restaurant::where('owner_id', $owner->id)->firstOrFail();
 
         return $restaurant;
@@ -45,7 +45,7 @@ class RestaurantService
             return $restaurant; // Return the restored restaurant details if needed
         } catch (\Exception $e) {
               dd($e);
-            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Could not restore restaurant');
+            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST);
         }
     }
 
@@ -54,33 +54,77 @@ class RestaurantService
      * @param array $data
      * @return mixed
      */
-    public function updateRestaurant(array $data)
+    public function updateRestaurant( $data)
     {
 
 
         try {
+            $user = Auth::user();
 
-            $restaurant = $this->getRestaurantOwner();
-            $branch= Branch::where('restaurant_id',$restaurant->id)->first();
+            // Find the restaurant request by user's email
+            $restaurantRequest = RestaurantRequest::where('email', $user->email)->first();
 
-            $restaurant->update([
-                'name' => $data['restaurant_name'] ?? $restaurant->name,
-                'opening_time' => $data['opening_time'] ?? $restaurant->opening_time,
-                'closing_time' => $data['closing_time'] ?? $restaurant->closing_time,
-                'logo_path' => $data['logo_path'] ?? $restaurant->logo_path,
-            ]);
+        if ($restaurantRequest) {
+            // Extract the validated data from the request object
 
-            if (isset($data['address'])) {
+            // Check if the request has 'first_name', 'last_name', or 'phone_number' and update the user model
+            $userData = [];
 
-                $branch->update([
-                    'address' => $data['address'],
-                ]);
-
+            if (isset($data['first_name'])) {
+                $userData['first_name'] = $data['first_name'];
             }
 
-            return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Restaurant successfully updated');
-        } catch (\Exception $e) {
-            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Could not update restaurant');
+            if (isset($data['last_name'])) {
+                $userData['last_name'] = $data['last_name'];
+            }
+
+            if (isset($data['phone_number'])) {
+                $userData['phone_number'] = $data['phone_number'];
+            }
+
+            // Update user table if any of the fields are present
+            if (!empty($userData)) {
+                $user->update($userData);
+            }
+
+            // Remove 'contact' from the data before updating the restaurant request
+            if (isset($data['phone_number'])) {
+                unset($data['phone_number']);
+            }
+
+            // Update the restaurant request with the remaining validated data (excluding 'contact')
+            $restaurantRequest->update($data);
+
+            
+
+            $restaurantRequest->phone_number = $user->phone_number;
+
+            return $restaurantRequest;
+        }} catch (\Exception $e) {
+            // Handle the exception, log it, and return a meaningful response
+            dd($e);
+                        return false;
         }
+    }
+
+    public function showRestaurantDeatils(){
+
+        try{
+        $user=Auth::user();
+
+        $restaurantDetails = DB::table('restaurant_requests')
+        ->join('users', 'restaurant_requests.email', '=', 'users.email')
+        ->select('restaurant_requests.*', 'users.phone_number') // Select all columns from restaurant_requests and phone_number from users
+        ->where('restaurant_requests.email', $user->email)
+        ->first();
+        
+        return $restaurantDetails;
+        }
+        catch(Exception $e){
+
+            dd($e);
+        }
+
+
     }
 }

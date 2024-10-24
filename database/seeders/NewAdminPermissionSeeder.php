@@ -2,11 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Contracts\Permission;
-use Spatie\Permission\Contracts\Role;
-
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 class NewAdminPermissionSeeder extends Seeder
 {
     /**
@@ -23,14 +21,14 @@ class NewAdminPermissionSeeder extends Seeder
            'user can view all orders',
            'user can view deactivated restaurants',
 
-            
+
             ];
 
         foreach ($adminPermissions as $permission) {
 
             $permission = Permission::firstOrCreate(['name' => $permission]);
             $role->givePermissionTo($permission);
-            
+
             }
 
     }

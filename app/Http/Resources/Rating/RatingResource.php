@@ -29,7 +29,7 @@ class RatingResource extends JsonResource
                 'menu_items' => $this->order->orderItems->map(function ($orderItem) {
                     return [
                         'id' => $orderItem->menuItem->id,
-                        'image_file' =>rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($orderItem->menuItem->image_file), '/') ,
+                        'image_file' =>$orderItem->menuItem->image_path,
                     ];
                 }),
             ],

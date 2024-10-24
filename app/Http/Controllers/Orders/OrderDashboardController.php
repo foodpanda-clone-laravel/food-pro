@@ -8,6 +8,7 @@ use App\Http\Requests\OrderRequests\UpdateOrderStatusRequest;
 use App\Services\Orders\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class OrderDashboardController extends Controller
 {
@@ -27,7 +28,9 @@ class OrderDashboardController extends Controller
                 return [
                     'menu_item_id' => $item->menu_item_id,
                     'quantity' => $item->quantity,
-                    'image_file' => $item->menuItem->image_file ?? null, // Accessing image_file from menu_item
+                    'image_file' => $item->menuItem->image_file ?? null, 
+                    'menu_item_name' => $item->menuItem->name ?? null, // Include the 'name' field from menu_items
+
                 ];
             });
 
@@ -71,7 +74,7 @@ class OrderDashboardController extends Controller
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order canceled successfully', $order);
         }
 
-        return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST, 'Invalid status');
+        return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST);
     }
 
 }

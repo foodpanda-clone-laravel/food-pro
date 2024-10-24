@@ -8,8 +8,8 @@ class PaymentDTO extends BaseDTO
 {
 
     public function __construct(array $data) {
-        $this->amount = $data['amount'];
+        $this->amount = $data['total_amount'];
         $this->user_id = $data['user_id'];
-        $this->order_id = $data['order_id'];
+        $this->order_id = $data['id'];
     }
 }

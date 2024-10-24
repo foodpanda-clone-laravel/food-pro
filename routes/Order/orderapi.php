@@ -7,7 +7,8 @@ use App\Http\Controllers\Orders\OrderDashboardController;
 use App\Http\Middleware\APIRequestLogsMiddleware;
 
 use Illuminate\Support\Facades\Route;
-Route::middleware('request.logs')->group(function () {
+Route::middleware([ 'jwt', 'routes.permissions'])->group(function () {
+
 
 Route::controller(CartController::class)->group(function () {
     Route::post(PermissionVariables::$addToCart['path'], 'addToCart');
@@ -20,7 +21,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get(PermissionVariables::$viewRestaurantOrders['path'], [OrderDashboardController::class, 'index']);
     Route::post(PermissionVariables::$updateOrderStatus['path'], [OrderDashboardController::class, 'updateOrderStatus']);
 });
-Route::middleware('request.logs')->group(function () {
     Route::controller(CartController::class)->group(function () {
         Route::post(PermissionVariables::$addToCart['path'], 'addToCart');
         Route::get(PermissionVariables::$viewCart['path'], 'viewCart');
@@ -35,4 +35,4 @@ Route::middleware('request.logs')->group(function () {
 
 
     });
-});
+

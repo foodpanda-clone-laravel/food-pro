@@ -7,6 +7,7 @@ use App\Models\Restaurant\Restaurant;
 use App\Models\User\RestaurantOwner;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class OrderService
 {
@@ -26,7 +27,7 @@ class OrderService
         return app(Pipeline::class)
             ->send($query)
             ->through([
-                \App\Pipelines\Filters\StatusFilter::class,
+                \App\Pipelines\Filters\ViewRestaurantsFilter\StatusFilter::class,
                 \App\Pipelines\Filters\OrderTypeFilter::class,
             ])
             ->thenReturn()
@@ -41,7 +42,7 @@ class OrderService
         $order->status = 'delivered';
         $order->save();
 
-        Log::info('Order confirmed', ['order_id' => $orderId]);
+      //  Log::info('Order confirmed', ['order_id' => $orderId]);
 
         return $order;
     }
