@@ -27,8 +27,8 @@ class OrderService
         return app(Pipeline::class)
             ->send($query)
             ->through([
-                \App\Pipelines\Filters\ViewRestaurantsFilter\StatusFilter::class,
-                \App\Pipelines\Filters\OrderTypeFilter::class,
+                \App\Pipelines\Filters\OrderDashboardFilter\StatusFilter::class,
+                \App\Pipelines\Filters\OrderDashboardFilter\OrderTypeFilter::class,
             ])
             ->thenReturn()
             ->get(); // Fetch all orders as a collection

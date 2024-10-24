@@ -21,17 +21,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get(PermissionVariables::$viewRestaurantOrders['path'], [OrderDashboardController::class, 'index']);
     Route::post(PermissionVariables::$updateOrderStatus['path'], [OrderDashboardController::class, 'updateOrderStatus']);
 });
-    Route::controller(CartController::class)->group(function () {
-        Route::post(PermissionVariables::$addToCart['path'], 'addToCart');
-        Route::get(PermissionVariables::$viewCart['path'], 'viewCart');
-        Route::get(PermissionVariables::$updateCart['path'], 'updateCart');
-        Route::get(PermissionVariables::$cartItemsTotal['path'],'calculateItemsTotal');
-        Route::get(PermissionVariables::$cartTotal['path'], 'calculateCartTotal');
-    });
-    Route::middleware('auth:api')->group(function () {
-        Route::get(PermissionVariables::$viewRestaurantOrders['path'], [OrderDashboardController::class, 'index']);
-        Route::post(PermissionVariables::$updateOrderStatus['path'], [OrderDashboardController::class, 'updateOrderStatus']);
-     });
+
 
 
     });
