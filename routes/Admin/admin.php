@@ -14,7 +14,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::get(PermissionVariables::$viewAllOrders['path'], 'viewAllOrders');
     Route::get(PermissionVariables::$viewOrderDetails['path'], 'viewOrderDetails');
 
-    Route::get(PermissionVariables::$viewDeactivatedRestaurants['path'], 'viewDeactivatedRestaurants');
+        Route::get(PermissionVariables::$viewDeactivatedRestaurants['path'], 'viewDeactivatedRestaurants');
 
    // Route::get('show-deactivated-restaurants', 'viewDeactivatedRestaurants');
     Route::post(PermissionVariables::$AdmindeactivateRestaurant['path'], 'deactivateRestaurant');

@@ -44,7 +44,7 @@ class RatingService implements RatingServiceInterface
 
             ->through([
 
-                \App\Pipelines\RestaurantReviewsFilter\FilterReviewsByRestaurantName::class,
+                \App\Pipelines\Filters\RestaurantReviewsFilter\FilterReviewsByRestaurantName::class,
 
             ])
 

@@ -15,8 +15,7 @@ class CartSummaryResource extends JsonResource
      */
     public function toArray($request)
     {
-        $this->user = $this->customer->user;
-
+        $this->user = Auth::user();
         return [
             'order_details' => [
                 'items' => $this->items_total, // Assuming itemsTotal is accessible from the resource

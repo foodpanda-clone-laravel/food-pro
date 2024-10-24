@@ -20,12 +20,11 @@ class PermissionsMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
+
         $authUser = Auth::user();
-//        if (!$authUser) {
-//            return Helpers:: sendFailureResponse( 403, 'Unauthorized user', []);
-//              }
-
-
+        if (!$authUser) {
+            return Helpers:: sendFailureResponse( 403, 'Unauthorized user', []);
+              }
         $authUserPermissions = $authUser->getAllPermissions()->pluck('name')->toArray();
         $path = str_replace('api', '', $request->path());
 
@@ -84,15 +83,34 @@ class PermissionsMiddleware
             PermissionVariables::$viewAllOrders,
             PermissionVariables::$viewOrderDetails,
             PermissionVariables::$viewDeactivatedRestaurants,
-            PermissionVariables::$AdmindeactivateRestaurant,
+            //public customer routes
+            PermissionVariables::$searchRestaurant,
+            PermissionVariables::$viewAllRestaurants,
+            PermissionVariables::$viewMenus,
+            PermissionVariables::$viewDeals,
 
+            //private cutomer routes
+            PermissionVariables::$favoriteItems,
+            PermissionVariables::$viewRewards,
+            PermissionVariables::$usePointsAtCheckout,
+            PermissionVariables::$addFavoriteRestaurant,
+            PermissionVariables::$removeFavoriteRestaurant,
+            PermissionVariables::$editProfile,
+            PermissionVariables::$updateCustomerAddress,
+            PermissionVariables::$viewProfile,
+            PermissionVariables::$myOrderHistory,
+            PermissionVariables::$activeOrder,
+            PermissionVariables::$viewCustomerOrderDetails,
+            PermissionVariables::$submitFeedback,
+            PermissionVariables::$AdmindeactivateRestaurant,
+            PermissionVariables::$AdminactivateRestaurant,
         ];
 
 
         foreach ($allPermissionVariables as $permissionArray) {
             if ($permissionArray['path'] === $path) {
                 if (!in_array($permissionArray['permission'], $authUserPermissions)) {
-                    return Helpers::sendFailureResponse(Response::HTTP_FORBIDDEN, Response::HTTP_FORBIDDEN, []);
+                    return Helpers::sendFailureResponse(Response::HTTP_FORBIDDEN, __FUNCTION__);
                 }
             }
         }
