@@ -30,7 +30,7 @@ class PermissionVariables
         'path' => '/reset-password',
     ];
     public static array $submitRestaurantRequest = [
-        'path' => '/submit-restaurant-request',
+        'path' => '/register-business',
     ];
 
     //restaurant.api Routes
@@ -130,7 +130,7 @@ class PermissionVariables
 
     //Menu routes
     public static array $createMenu = [
-        'path' => '/create/{branch_id}',
+        'path' => '/create-menu/{branch_id}',
         'permission' => 'user can create menu item'
 
 

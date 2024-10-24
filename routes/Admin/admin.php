@@ -20,4 +20,5 @@ Route::controller(AdminController::class)->group(function () {
     Route::post(PermissionVariables::$AdmindeactivateRestaurant['path'], 'deactivateRestaurant');
     Route::post(PermissionVariables::$AdminactivateRestaurant['path'], 'activateRestaurant');
     
+    Route::get('show-restaurants', 'showRestaurants');
  });  

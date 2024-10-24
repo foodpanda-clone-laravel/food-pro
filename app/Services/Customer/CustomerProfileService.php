@@ -28,16 +28,16 @@ class CustomerProfileService implements CustomerProfileServiceInterface
         }
     }
 
-  public function updateProfile($userId, $validatedData)
+  public function updateProfile($validatedData)
   {
-    $user = User::findOrFail($userId);
+    $user = Auth::user();
     $user->update($validatedData);
 
     // If there are any customer-specific fields (like address)
     $customerFields = array_intersect_key($validatedData, array_flip(['address', 'delivery_address', 'payment_method']));
 
     if (!empty($customerFields)) {
-      $customer = Customer::where('user_id', $userId)->firstOrFail();
+      $customer = $user->customer;
       $customer->update($customerFields);
     }
   }
@@ -60,9 +60,10 @@ class CustomerProfileService implements CustomerProfileServiceInterface
   }
 
 
-  public function getProfile($userId)
-  {
-    return Customer::with('user:id,first_name,last_name,phone_number,email,email_verified_at,created_at,updated_at')
+  public function getProfile()
+  {$userId = auth()->user()->id;
+
+      return Customer::with('user:id,first_name,last_name,phone_number,email,email_verified_at,created_at,updated_at')
       ->where('user_id', $userId)
       ->firstOrFail();
   }

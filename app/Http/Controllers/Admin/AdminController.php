@@ -26,7 +26,7 @@ class AdminController extends Controller
 
         $result= $this->adminService->viewRestaurantApplications();
 
-        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Restaurant applications', $result);
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
 
     }
 
@@ -34,55 +34,59 @@ class AdminController extends Controller
     public function approveRequest($request_id){
         $result= $this->adminService->approveRequest($request_id);
 
-        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Your request has been approved', $result);
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
 
     }
     public function rejectRequest($request_id){
         $result= $this->adminService->rejectRequest($request_id);
 
-        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Your request has been rejected', $result);
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
 
     }
 
     public function viewAllRestaurants(){
         $result= $this->adminService->viewAllRestaurants();
 
-        return Helpers::sendSuccessResponse(Response::HTTP_OK,'All restaurants', $result);
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
 
     }
 
     public function updateRestaurantApplication(UpdateApplicationRequest $request,$request_id){
         $result= $this->adminService->updateRestaurantApplication($request->all(),$request_id);
 
-        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Your request has been updated', $result);
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
 }
     public function viewAllOrders(){
         $result= $this->adminService->viewAllOrders();
 
-        return Helpers::sendSuccessResponse(Response::HTTP_OK,'All orders', $result);
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
 
 
 }
     public function viewOrderDetails($order_id){
         $result= $this->adminService->viewOrderDetails($order_id);
 
-        return Helpers::sendSuccessResponse(Response::HTTP_OK,'All orders', $result);
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
 
     }
     public function viewDeactivatedRestaurants(){
         $result= $this->adminService->viewDeactivatedRestaurants();
 
-        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Deactivated restaurants', $result);
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
 
     }
 
     public function deactivateRestaurant($restaurant_id){
         $result= $this->adminService->deactivateRestaurant($restaurant_id);
-        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Restaurant deactivated', $result);
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
     }
     public function activateRestaurant($restaurant_id){
         $result= $this->adminService->activateRestaurant($restaurant_id);
-        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Restaurant activated', $result);
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
+    }
+    public function showRestaurants(){
+        $result= $this->adminService->showRestaurants();
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
     }
 
 }

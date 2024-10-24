@@ -34,27 +34,15 @@ class Handler extends ExceptionHandler
     /**
      * Register the exception handling callbacks for the application.
      *
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function register()
+    public function render($request , Throwable $exception)
     {
-        $this->renderable(function (Exception $exception, $request) {
-            // dd($exception);
+        Helpers::createErrorLogs($exception, __FUNCTION__);
+        return response()->json(
+            Helpers::sendFailureResponse(500, __FUNCTION__,$exception)
+        );
 
-            // Helpers::createErrorLogs($exception, $request->request_id);
-
-        });
-        $this->renderable(function (QueryException $exception, $request) {
-            // dd($exception);
-
-        //    Helpers::createErrorLogs($exception, $request->request_id);
-
-        });
-        $this->renderable(function (Error $error, $request) {
-            // dd($error);
-            // Helpers::createErrorLogs($error, $request->request_id);
-
-        });
 
     }
 }

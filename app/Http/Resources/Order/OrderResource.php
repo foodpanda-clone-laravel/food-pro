@@ -33,7 +33,7 @@ class OrderResource extends JsonResource
                 'addon_price' => $orderItem->addon_price,
                 'total_price' => $orderItem->total_price,
                 'addon_name' => $orderItem->addon_name,
-                'menu_item_image' => $orderItem->menuItem->image_file ?? 'N/A',
+                'menu_item_image' => $orderItem->menuItem->image_path ?? 'N/A',
             ]),
         ];
 

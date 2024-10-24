@@ -10,13 +10,17 @@ class OrderItemDTO extends BaseDTO
     public function __construct(array $data) {
         $this->order_id = $data['id'];
         $this->menu_item_id = $data['menu_item_id'];
+        $this->choice_id = $data['choice_id'];
         $this->quantity = $data['quantity'];
         $this->item_price = $data['price'];
-        $this->addon_price =  $data['total_price']- $data['price'];
         $this->total_price = $data['total_price'];
         $this->addon_name = $data['choice_names']??null;
-//        $this->discount = $data['discount']??null;
-        //// if discount then  $this->total_price =($data['total_price']) -$data['total_price']*$this->discount -
+        if($data['choice_type']=='size'){
+            $this->size_price = $data['price'];
+        }
+        else{
+            $this->addon_price = $data['total_price']- $data['price'];
+        }
     }
 }
 
