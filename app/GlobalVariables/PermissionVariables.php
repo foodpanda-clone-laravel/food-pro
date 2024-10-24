@@ -252,6 +252,27 @@ class PermissionVariables
 
     ];
 
+    public static array $AdmindeactivateRestaurant = [
+        'path' => '/deactive-restaurant/{restaurant_id}',
+        'permission' => 'user can delete restaurant',
+
+
+    ];
+
+
+    public static array $AdminactivateRestaurant = [
+        'path' => '/activate-restaurant/{restaurant_id}',
+        'permission' =>  'user can restore restaurant',
+
+
+    ];
+
+    
+
+    
+
+
+
     //Customer Routes
 
     //public
