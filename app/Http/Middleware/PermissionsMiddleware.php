@@ -102,6 +102,8 @@ class PermissionsMiddleware
             PermissionVariables::$activeOrder,
             PermissionVariables::$viewCustomerOrderDetails,
             PermissionVariables::$submitFeedback,
+            PermissionVariables::$AdmindeactivateRestaurant,
+            PermissionVariables::$AdminactivateRestaurant,
         ];
 
 
