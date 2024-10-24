@@ -84,6 +84,7 @@ class PermissionsMiddleware
             PermissionVariables::$viewAllOrders,
             PermissionVariables::$viewOrderDetails,
             PermissionVariables::$viewDeactivatedRestaurants,
+            PermissionVariables::$AdmindeactivateRestaurant,
 
         ];
 
