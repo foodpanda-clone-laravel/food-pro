@@ -95,7 +95,7 @@ class RestaurantService
             // Update the restaurant request with the remaining validated data (excluding 'contact')
             $restaurantRequest->update($data);
 
-            
+
 
             $restaurantRequest->phone_number = $user->phone_number;
 
@@ -117,7 +117,7 @@ class RestaurantService
         ->select('restaurant_requests.*', 'users.phone_number') // Select all columns from restaurant_requests and phone_number from users
         ->where('restaurant_requests.email', $user->email)
         ->first();
-        
+
         return $restaurantDetails;
         }
         catch(Exception $e){

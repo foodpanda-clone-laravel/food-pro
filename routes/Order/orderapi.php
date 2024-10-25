@@ -21,8 +21,5 @@ Route::middleware('auth:api')->group(function () {
     Route::get(PermissionVariables::$viewRestaurantOrders['path'], [OrderDashboardController::class, 'index']);
     Route::post(PermissionVariables::$updateOrderStatus['path'], [OrderDashboardController::class, 'updateOrderStatus']);
 });
-
-
-
     });
 
