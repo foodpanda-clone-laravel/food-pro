@@ -5,6 +5,7 @@ use App\GlobalVariables\PermissionVariables;
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Contracts\Permission;
+Route::middleware([ 'jwt', 'routes.permissions'])->group(function () {
 
 Route::controller(AdminController::class)->group(function () {
     Route::get(PermissionVariables::$viewRestaurantApplications['path'], 'viewRestaurantApplications');
@@ -14,7 +15,7 @@ Route::controller(AdminController::class)->group(function () {
     Route::get(PermissionVariables::$viewAllOrders['path'], 'viewAllOrders');
     Route::get(PermissionVariables::$viewOrderDetails['path'], 'viewOrderDetails');
 
-        Route::get(PermissionVariables::$viewDeactivatedRestaurants['path'], 'viewDeactivatedRestaurants');
+    Route::get(PermissionVariables::$viewDeactivatedRestaurants['path'], 'viewDeactivatedRestaurants');
 
    // Route::get('show-deactivated-restaurants', 'viewDeactivatedRestaurants');
     Route::post(PermissionVariables::$AdmindeactivateRestaurant['path'], 'deactivateRestaurant');
@@ -22,3 +23,5 @@ Route::controller(AdminController::class)->group(function () {
     
     Route::get('show-restaurants', 'showRestaurants');
  });  
+
+});

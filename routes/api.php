@@ -45,7 +45,7 @@ Route::middleware('api')->group(function () {
     });
 });
 Route::controller(UserController::class)->group(function () {
-    Route::post('login', 'login');
+    Route::post('login', 'login')->middleware('throttle:5,1');;
     Route::post('logout', 'logout');
 
     Route::post('loginV2', 'loginV2');
@@ -58,6 +58,6 @@ Route::controller(ForgotPasswordController::class)->group(function () {
     Route::post(PermissionVariables::$resetPassword['path'], 'submitResetPasswordForm')->name('password.update');
 });
 
-Route::post(PermissionVariables::$submitRestaurantRequest['path'], [RegisterController::class, 'submitRestaurantRequest']);
+Route::post(PermissionVariables::$submitRestaurantRequest['path'], [RegisterController::class, 'submitRestaurantRequest'])->middleware('throttle:5,1');
 
 
