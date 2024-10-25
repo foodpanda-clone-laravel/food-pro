@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Pipelines\Filters;
+namespace App\Pipelines\Filters\ViewRestaurantsFilter;
 
 use Closure;
 

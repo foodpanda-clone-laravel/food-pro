@@ -36,14 +36,7 @@ class AdminService implements AdminServiceInterface
         $user->givePermissionTo($permissionIds);
         return $permissions;
     }
-    public function viewRestaurantRevenues(){
-
-    }
-    // filter restaurants by cuisine
-    // restaurants with pending, rejected, deactivated
     public function viewRestaurantApplications(){
-
-
         try{
             $requests= RestaurantRequest::all();
             return [
@@ -102,12 +95,11 @@ class AdminService implements AdminServiceInterface
         try {
             $request = RestaurantRequest::findorfail($request_id);
 
-
             $data=$request->toArray();
             $data['password']=Random::generate(8);
             $temporarayPassword= $data['password'];
-    
-    
+
+
             DB::beginTransaction();
 
             if($request->status == 'approved'){
@@ -125,7 +117,6 @@ class AdminService implements AdminServiceInterface
             $user = User::create($userDTO->toArray());
             $permissions = $this->assignRoleWithDirectPermissions($user, 'Restaurant Owner');
 
-
             $data['user_id'] = $user->id;
 
             $restaurantOwnerDTO = new RestaurantOwnerDTO($data);
@@ -134,6 +125,7 @@ class AdminService implements AdminServiceInterface
             $data['owner_id'] = $owner->id;
 
             $restaurantDTO = new RestaurantDTO($data);
+
             $restaurant = Restaurant::create($restaurantDTO->toArray());
 
             $data['restaurant_id'] = $restaurant->id;
@@ -169,7 +161,7 @@ class AdminService implements AdminServiceInterface
 
         try{
         $request = RestaurantRequest::findorfail($request_id);
-        
+
         if ($request->status !== 'pending') {
             throw new Exception('The restaurant is already rejected.');
         }
@@ -234,7 +226,7 @@ public function viewOrderDetails($order_id){
             'header_code' => Response::HTTP_OK,
             'message'=> 'Order with its details',
             'body' => $order
-        ];   
+        ];
      }
      catch (Exception $e){
 

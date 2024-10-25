@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Rating;
 use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RestaurantRequests\ViewRatingsRequest;
-use App\Models\Rating\Rating;
 use App\Services\Rating\RatingService;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class RatingsController extends Controller

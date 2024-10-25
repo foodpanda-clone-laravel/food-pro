@@ -3,7 +3,7 @@
 namespace App\Http\Resources\Rating;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Authw;
 
 class RatingResource extends JsonResource
 {
@@ -15,13 +15,14 @@ class RatingResource extends JsonResource
      */
     public function toArray($request)
     {
+        $user = Auth::user();
         return [
             'id' => $this->id,
             'feedback' => $this->feedback,
             'stars' => $this->stars,
             'user' => [
-                'first_name' => $this->user->first_name,
-                'last_name' => $this->user->last_name,
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
             ],
             'order' => [
                 'id' => $this->order->id,
@@ -29,7 +30,7 @@ class RatingResource extends JsonResource
                 'menu_items' => $this->order->orderItems->map(function ($orderItem) {
                     return [
                         'id' => $orderItem->menuItem->id,
-                        'image_file' =>rtrim(env('APP_URL'), '/') . '/' . ltrim(Storage::url($orderItem->menuItem->image_file), '/') ,
+                        'image_file' =>$orderItem->menuItem->image_path,
                     ];
                 }),
             ],

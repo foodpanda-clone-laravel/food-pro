@@ -27,7 +27,7 @@ class RegisterRestaurantWithOwnerRequest extends BaseRequest
             'postal_code' => 'required|string|max:20',
             'city' => 'required|string|max:255',
             'opening_time' => ['required', new ValidateTimeRule()],
-            'closing_time' => ['required', new ValidateTimeRule(),'after:opening_time'],
+            'closing_time' => ['required', new ValidateTimeRule()],
             'cuisine' => 'required|string|max:255',
             'business_type' => 'required|string|max:255',
             'logo_path' => 'image|mimes:jpeg,png,jpg,svg|max:2048',

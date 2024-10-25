@@ -7,6 +7,7 @@ use App\Models\Restaurant\Restaurant;
 use App\Models\User\RestaurantOwner;
 use Illuminate\Pipeline\Pipeline;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class OrderService
 {
@@ -26,8 +27,8 @@ class OrderService
         return app(Pipeline::class)
             ->send($query)
             ->through([
-                \App\Pipelines\Filters\StatusFilter::class,
-                \App\Pipelines\Filters\OrderTypeFilter::class,
+                \App\Pipelines\Filters\OrderDashboardFilter\StatusFilter::class,
+                \App\Pipelines\Filters\OrderDashboardFilter\OrderTypeFilter::class,
             ])
             ->thenReturn()
             ->get(); // Fetch all orders as a collection

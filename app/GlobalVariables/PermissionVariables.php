@@ -30,7 +30,7 @@ class PermissionVariables
         'path' => '/reset-password',
     ];
     public static array $submitRestaurantRequest = [
-        'path' => '/submit-restaurant-request',
+        'path' => '/register-business',
     ];
 
     //restaurant.api Routes
@@ -96,7 +96,8 @@ class PermissionVariables
 
     //Orders routes
     public static array $addToCart = [
-        'path' => '/add-to-cart'
+        'path' => '/add-to-cart',
+        'permission'=>'user can create order'
     ];
 
     public static array $viewCart = [
@@ -130,7 +131,7 @@ class PermissionVariables
 
     //Menu routes
     public static array $createMenu = [
-        'path' => '/create/{branch_id}',
+        'path' => '/create-menu/{branch_id}',
         'permission' => 'user can create menu item'
 
 
@@ -251,6 +252,27 @@ class PermissionVariables
 
     ];
 
+    public static array $AdmindeactivateRestaurant = [
+        'path' => '/deactive-restaurant/{restaurant_id}',
+        'permission' => 'user can delete restaurant',
+
+
+    ];
+
+
+    public static array $AdminactivateRestaurant = [
+        'path' => '/activate-restaurant/{restaurant_id}',
+        'permission' =>  'user can restore restaurant',
+
+
+    ];
+
+    
+
+    
+
+
+
     //Customer Routes
 
     //public
@@ -272,57 +294,57 @@ class PermissionVariables
 
     //private
     public static array $favoriteItems = [
-        'path' => '/customers/favorites',
+        'path' => '/favorites',
         'permission' => 'user can view favorites',
     ];
 
     public static array $viewRewards = [
-        'path' => '/customers/rewards',
+        'path' => '/rewards',
         'permission' => 'user can view rewards and badges',
     ];
 
     public static array $usePointsAtCheckout = [
-        'path' => '/customers/use-points',
+        'path' => '/use-points',
         'permission' => 'user can convert points to money',
     ];
 
     public static array $addFavoriteRestaurant = [
-        'path' => '/customers/add-favorite-restaurant',
+        'path' => '/add-favorite-restaurant',
         'permission' => 'user can add to favorites',
     ];
 
     public static array $removeFavoriteRestaurant = [
-        'path' => '/customers/del-favorite-restaurant',
+        'path' => '/del-favorite-restaurant',
         'permission' => 'user can remove favorites',
     ];
 
     public static array $submitFeedback = [
-        'path' => '/customers/feedback',
+        'path' => '/feedback',
         'permission' => 'user can rate orders',
     ];
 
     public static array $editProfile = [
-        'path' => '/customers/edit-profile',
+        'path' => '/edit-profile',
         'permission' => 'user can edit profile',
     ];
 
     public static array $updateCustomerAddress = [
-        'path' => '/customers/update-address',
+        'path' => '/update-address',
         'permission' => 'user can update address',
     ];
 
     public static array $viewProfile = [
-        'path' => '/customers/profile',
+        'path' => '/profile',
         'permission' => 'user can view profile',
     ];
 
-    public static array $orderHistory = [
-        'path' => '/orders/history',
+    public static array $myOrderHistory = [
+        'path' => '/history',
         'permission' => 'user can view order history',
     ];
 
     public static array $activeOrder = [
-        'path' => '/orders/active-order',
+        'path' => '/active-order',
         'permission' => 'user can view order',
     ];
 

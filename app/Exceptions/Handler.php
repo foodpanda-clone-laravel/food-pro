@@ -34,14 +34,14 @@ class Handler extends ExceptionHandler
     /**
      * Register the exception handling callbacks for the application.
      *
-     * @return void
+     * @return \Illuminate\Http\JsonResponse
      */
     public function render($request , Throwable $exception)
     {
         return response()->json(
             Helpers::sendFailureResponse(500, __FUNCTION__,$exception)
         );
-      
+
 
     }
 }

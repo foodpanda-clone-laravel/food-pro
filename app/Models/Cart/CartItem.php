@@ -2,8 +2,8 @@
 
 namespace App\Models\Cart;
 
-use App\Models\Menu\Choice;
-use App\Models\Menu\ChoiceGroup;
+use App\Models\ChoiceGroup\Choice;
+use App\Models\ChoiceGroup\ChoiceGroup;
 use App\Models\Menu\MenuItem;
 use App\Models\Restaurant\Restaurant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,7 +23,7 @@ class CartItem extends Model
 
     public function menuItem()
     {
-        return $this->belongsTo(MenuItem::class);
+        return $this->belongsTo(MenuItem::class, 'menu_item_id');
     }
     public function choiceGroup(){
         return $this->belongsTo(ChoiceGroup::class);

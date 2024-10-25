@@ -8,19 +8,20 @@ use App\Http\Controllers\Customer\OrderController;
 
 // Publicly accessible routes
 Route::controller(CustomerController::class)->group(function () {
-  Route::get(PermissionVariables::$searchRestaurant['path'], 'viewAllRestaurants');
-  Route::get(PermissionVariables::$viewAllRestaurants['path'], 'searchRestaurant');
-  Route::get(PermissionVariables::$viewMenus['path'], '$viewMenus');
+    Route::get(PermissionVariables::$viewAllRestaurants['path'], 'viewAllRestaurants');
+  Route::get(PermissionVariables::$searchRestaurant['path'], 'searchRestaurant');
+  Route::get(PermissionVariables::$viewMenus['path'], 'viewMenus');
   Route::get(PermissionVariables::$viewDeals['path'], 'viewDeals');
 });
 
 
-// Protected routes
-Route::middleware(['request.logs', 'jwt', 'routes.permissions'])->group(function () {
 
+// Protected routes
+Route::middleware(['jwt', 'routes.permissions'])->group(function () {
   // Customer-related routes
   Route::prefix('customers')->group(function () {
     Route::controller(CustomerController::class)->group(function () {
+
       Route::get(PermissionVariables::$favoriteItems['path'], 'favoriteItems');
       Route::get(PermissionVariables::$viewRewards['path'], 'viewRewards');
       Route::post(PermissionVariables::$usePointsAtCheckout['path'], 'usePointsAtCheckout');
@@ -38,7 +39,7 @@ Route::middleware(['request.logs', 'jwt', 'routes.permissions'])->group(function
   // Order-related routes
   Route::prefix('orders')->group(function () {
     Route::controller(OrderController::class)->group(function () {
-      Route::get(PermissionVariables::$orderHistory['path'], 'orderHistory');
+      Route::get(PermissionVariables::$myOrderHistory['path'], 'orderHistory');
       Route::get(PermissionVariables::$activeOrder['path'], 'activeOrder');
       Route::get(PermissionVariables::$viewCustomerOrderDetails['path'], 'viewOrderDetails');
     });

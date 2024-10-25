@@ -44,14 +44,13 @@ class RatingService implements RatingServiceInterface
 
             ->through([
 
-                \App\Pipelines\RestaurantReviewsFilter\FilterReviewsByRestaurantName::class,
+                \App\Pipelines\Filters\RestaurantReviewsFilter\FilterReviewsByRestaurantName::class,
 
             ])
 
             ->thenReturn()
 
             ->get(); // Fetch all ratings as a collection
-
 
         $restaurants = Restaurant::select('id', 'name')->get();
 

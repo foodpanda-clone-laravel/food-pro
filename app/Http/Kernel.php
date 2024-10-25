@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\PermissionsMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use PragmaRX\Google2FAQRCode\Google2FA;
 
@@ -44,13 +45,14 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            \App\Http\Middleware\APIRequestLogsMiddleware::class,
+
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             'throttle:api',
 
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
 
-            \App\Http\Middleware\APIRequestLogsMiddleware::class
         ],
     ];
 
@@ -62,7 +64,7 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $routeMiddleware = [
-        'request.logs' => \App\Http\Middleware\APIRequestLogsMiddleware::class,
+//        'request.logs' => \App\Http\Middleware\APIRequestLogsMiddleware::class,
 
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
@@ -83,16 +85,16 @@ class Kernel extends HttpKernel
 
 
     ];
-    protected $middlewareAliases = [
-        'request.logs' => \App\Http\Middleware\APIRequestLogsMiddleware::class,
-    ];
-    protected $middlewarePriority = [
-        // Adjust priority here if needed
-        \App\Http\Middleware\APIRequestLogsMiddleware::class,
-        \App\Http\Middleware\JwtMiddleware::class,
-        \App\Http\Middleware\PermissionsMiddleware::class,
-
-
-    ];
+//    protected $middlewareAliases = [
+//        'request.logs' => \App\Http\Middleware\APIRequestLogsMiddleware::class,
+//    ];
+//    protected $middlewarePriority = [
+//        // Adjust priority here if needed
+//        \App\Http\Middleware\APIRequestLogsMiddleware::class,
+//        \App\Http\Middleware\JwtMiddleware::class,
+//        \App\Http\Middleware\PermissionsMiddleware::class,
+//
+//
+//    ];
 
 }

@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Customer;
 
 use App\Helpers\Helpers;
 use App\Http\Requests\CartRequests\CheckoutRequest;
+use App\Http\Requests\OrderRequests\ViewOrderDetailsRequest;
 use App\Http\Resources\CartResources\CartSummaryResource;
 use App\Http\Resources\Order\OrderResource;
+use App\Models\Cart\CartItem;
 use App\Services\Customer\CustomerOrderService;
 use Symfony\Component\HttpFoundation\Response;
+use GuzzleHttp\Psr7\Request;
 
 class OrderController extends CustomerController
 {
@@ -27,7 +30,7 @@ class OrderController extends CustomerController
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Active order retrieved successfully', new OrderResource($activeOrder));
         }
 
-        return Helpers::sendFailureResponse(Response::HTTP_NOT_FOUND, 'No active order found');
+        return Helpers::sendFailureResponse(Response::HTTP_NOT_FOUND);
     }
 
     public function viewOrderDetails($orderId)
@@ -36,6 +39,7 @@ class OrderController extends CustomerController
 
         return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order details retrieved successfully', $orderDetails);
     }
+
 
     public function checkout(CustomerOrderService $customerOrderService)
     {
@@ -50,7 +54,7 @@ class OrderController extends CustomerController
         if ($result) {
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Order created successfully', $result);
         } else {
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, 'Could not process your order');
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR,__FUNCTION__, $result);
         }
 
     }
