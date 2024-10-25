@@ -93,11 +93,13 @@ class RestaurantService
             if (isset($data['phone_number'])) {
                 unset($data['phone_number']);
             }
-
-            // Update the restaurant request with the remaining validated data (excluding 'contact')
             $restaurantRequest->update($data);
 
-            return $user;
+
+            // Update the restaurant request with the remaining validated data (excluding 'contact')\ $response = $restaurantRequest->toArray(); 
+            $response = $restaurantRequest->toArray(); 
+            $response['phone_number'] = $user->phone_number;
+            return $response;
 
         }} catch (\Exception $e) {
             // Handle the exception, log it, and return a meaningful response
