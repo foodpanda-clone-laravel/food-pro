@@ -4,9 +4,6 @@ use App\Helpers\Helpers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MenuRequest\AddMenuItemRequest;
 use App\Http\Requests\MenuRequest\CreateMenuRequest;
-use App\Http\Requests\MenuRequest\StoreChoicesRequest;
-use App\Http\Requests\MenuRequest\UpdateChoiceRequest;
-use App\Http\Requests\MenuRequest\UpdateChoicesRequest;
 use App\Http\Requests\MenuRequest\UpdateMenuItemRequest;
 use App\Http\Requests\MenuRequest\UpdateMenuRequest;
 use App\Http\Resources\MenuResources\MenuWithMenuItemResource;
@@ -29,17 +26,14 @@ class MenuController extends Controller
     public function createMenu(CreateMenuRequest $request,$branch_id)
     {
         $result=$this->menuService->createMenu($request->all(),$branch_id);
-        if($result['success']){
-            return Helpers::sendSuccessResponse(Response::HTTP_OK,'Menu created successfully',$result['menu']);
-        }else{
-            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST);
-        }
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
+
     }
 
 
     public function addMenuItem(AddMenuItemRequest $request,$menu_id){
         $result=$this->menuService->addMenuItem($request->all(),$menu_id);
-        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Food item created successfully',$result);
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
     }
 
 
@@ -61,10 +55,8 @@ class MenuController extends Controller
     public function updateMenu(UpdateMenuRequest $request,$menu_id)
     {
         $result=$this->menuService->updateMenu($menu_id,$request->only(['name']));
-        if($result['success']){
-            return Helpers::sendSuccessResponse(Response::HTTP_OK,'Menu updated successfully',$result['menu']);
-        }
-        else{ return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST);}
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
+
     }
 
 
@@ -74,11 +66,8 @@ class MenuController extends Controller
     public function updateMenuItem(UpdateMenuItemRequest $request,$menu_item_id)
     {
         $result=$this->menuService->updateMenuItem($menu_item_id,$request->validated());
-        if($result['success']){
-            return Helpers::sendSuccessResponse(Response::HTTP_OK,'Menu item updated successfully',$result['menu_item']);
-        }else{
-            return Helpers::sendFailureResponse(Response::HTTP_BAD_REQUEST);
-        }
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
+
     }
 
 
@@ -96,23 +85,16 @@ class MenuController extends Controller
 
     public function menuWithItemCount(){
         $menuCount=$this->menuService->menuWithItemCount();
-        return $menuCount;
+        return $menuCount['body'];
     }
 
 
-
-
-    public function getChoices()
-    {
-        $result=$this->menuService->getChoices();
-        return $result;
-    }
 
     public function getChoicesWithMenuItem($menu_item_id)
     {
         $result=$this->menuService->getChoicesWithMenuItem($menu_item_id);
 
-        return Helpers::sendSuccessResponse(Response::HTTP_OK,'Menu item retrieved successfully',$result);
+        return Helpers::sendSuccessResponse($result['header_code'],$result['message'], $result['body']);
 
 
     }
