@@ -37,7 +37,7 @@ Route::group(['middleware' => 'api',], function () {
    // Route::get(PermissionVariables::$showRestaurantDetails['path'], [RestaurantController::class, 'showRestaurantDeatils']);
     Route::post(PermissionVariables::$updateRestaurantDetails['path'], [RestaurantController::class, 'updateRestaurant']);
     Route::get('/restaurant-details',[RestaurantController::class,'showRestaurantDeatils']);
-
+//
 
 });
 });
