@@ -34,10 +34,10 @@ class PermissionVariables
     ];
 
     //restaurant.api Routes
-    public static array $showRestaurantDetails = [
-        'path' => '/restaurant-details',
-       // 'permission' => 'user can create menu item'
-    ];
+    // public static array $showRestaurantDetails = [
+    //     'path' => '/restaurant-details',
+    //    'permission' => 'user can view restaurants'
+    // ];
     public static array $menuChoiceGroup = [
         'path' => 'menu/choice-group',
         'permission' => 'user can create menu item'
