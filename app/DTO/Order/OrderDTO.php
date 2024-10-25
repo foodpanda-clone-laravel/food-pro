@@ -13,7 +13,7 @@ class OrderDTO extends BaseDTO
         $this->restaurant_id = $data->restaurant->id;
         $this->branch_id =$data->restaurant->branches->first()->id;
         $this->total_amount = $data->total;
-        $this->status = 'delivered';
+        $this->status = 'in_progress';
         $this->order_type = 'delivery';
         $this->delivery_charges = $data->restaurant->branches->first()->delivery_fee;
         $this->estimated_delivery_time = now()->addMinutes(15);
