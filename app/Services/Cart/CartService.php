@@ -88,6 +88,7 @@ catch(\Exception $e){
 
         if(!isset($data['variations'])){
             $cartItemDTO = new CartItemDTO($data);
+            $cartItem = CartItem::create($cartItemDTO->toArray());
             return $cartItemDTO;
         }
         else{
@@ -95,6 +96,7 @@ catch(\Exception $e){
             foreach ($data['variations'] as $variation) {
                 $variationData = array_merge($data, $variation);
                 $cartItemDTO = new CartItemDTO($variationData);
+                $cartItem = CartItem::create($cartItemDTO->toArray());
             }
             return new AddToCartResource($cartItemDTO);
         }

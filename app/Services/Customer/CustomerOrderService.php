@@ -10,12 +10,12 @@ use App\Models\Cart\CartItem;
 use App\Models\Orders\Order;
 use App\Models\Orders\OrderItem;
 use App\Models\Orders\Payment;
-use App\Models\Restaurant\Branch;
 use App\Services\Cart\CartService;
 use App\Services\Cart\ShoppingSessionService;
+use \Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use App\Helpers\Helpers;
 class CustomerOrderService extends CustomerService implements CustomerOrderServiceInterface
 {
     protected $cartService;
@@ -83,10 +83,12 @@ class CustomerOrderService extends CustomerService implements CustomerOrderServi
         try{
             DB::beginTransaction();
             $orderSummary = $this->checkout();
+            dd($orderSummary);
             $orderDTO = new OrderDTO((object)$orderSummary, $address);
             $order = Order::create($orderDTO->toArray());
             $orderItems = $orderSummary['items_total'];
             $orderItems = json_decode(json_encode($orderItems),true);
+            dd($orderItems);
             $orderedItems = $this->createOrderItems($orderItems, $order);
             $this->createPaymentForOrder($order);
             $this->shoppingSessionService::deleteShoppingSession();
@@ -95,7 +97,7 @@ class CustomerOrderService extends CustomerService implements CustomerOrderServi
         }
         catch(\Exception $e){
             DB::rollBack();
-            return $e;
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, __FUNCTION__, $e);
         }
 
     }

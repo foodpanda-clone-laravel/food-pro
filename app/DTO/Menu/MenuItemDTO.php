@@ -23,7 +23,7 @@ class MenuItemDTO extends BaseDTO
         $this->price = $data["price"];
         $this->description = $data["description"] ?? null;
         $this->image_path = $data["image_path"] ?? null;
-        $this->serving_size = $data['serving_size'];
+        $this->serving_size = $data['serving_size']??'1 person';
 
     }
 }
