@@ -4,6 +4,8 @@ namespace App\Services\Cart;
 
 use App\DTO\Cart\CartItemDTO;
 use App\Helpers\Helpers;
+use App\Http\Requests\CartRequests\AddToCartRequest;
+use App\Http\Resources\CartResources\AddToCartResource;
 use App\Interfaces\CartServiceInterface;
 use App\Models\Cart\CartItem;
 use App\Models\Restaurant\Restaurant;
@@ -81,13 +83,13 @@ catch(\Exception $e){
         }
 
     public function addToCart($data){
-        $sessionId = ShoppingSessionService::getShoppingSession();
+        $sessionId = $this->shoppingSession;
         $data['session_id'] = $sessionId->id;
 
         if(!isset($data['variations'])){
             $cartItemDTO = new CartItemDTO($data);
             $cartItem = CartItem::create($cartItemDTO->toArray());
-            return $cartItem;
+            return $cartItemDTO;
         }
         else{
             $data['variations'] = json_decode($data['variations'], true);
@@ -96,7 +98,7 @@ catch(\Exception $e){
                 $cartItemDTO = new CartItemDTO($variationData);
                 $cartItem = CartItem::create($cartItemDTO->toArray());
             }
-            return $cartItem;
+            return new AddToCartResource($cartItemDTO);
         }
     }
 

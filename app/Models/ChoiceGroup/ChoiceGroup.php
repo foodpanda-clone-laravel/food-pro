@@ -11,9 +11,6 @@ class ChoiceGroup extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    protected $casts = [
-        'is_required'=>'boolean'
-    ];
 
     public function menuItem(){
         return $this->belongsTo(MenuItem::class);

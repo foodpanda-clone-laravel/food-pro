@@ -10,11 +10,12 @@ class MenuResource extends JsonResource
 {
     public function toArray($request)
     {
-        // Generate the logo URL using the Storage::url() function
-        if($request->user()){
+        if($request->user()->customer){
             $favorites = $request->user()->customer->favourites->pluck('restaurant_id')->toArray();
         }
-        $favorites = null;
+        else{
+            $favorites = null;
+        }
         return [
             'restaurant' => [
                 'id' => $this->id,

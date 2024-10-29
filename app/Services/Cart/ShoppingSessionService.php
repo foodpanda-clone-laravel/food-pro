@@ -13,6 +13,7 @@ class ShoppingSessionService implements ShoppingSessionServiceInterface
     public static function getShoppingSession(){
         $user = Auth::user();
         $shoppingSession =$user->shoppingSession;
+
         if(!$shoppingSession){
             $sessionDTO = new ShoppingSessionDTO(['user_id'=>$user->id]);
             $shoppingSession = ShoppingSession::create($sessionDTO->toArray());

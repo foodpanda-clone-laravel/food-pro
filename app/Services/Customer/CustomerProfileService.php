@@ -28,20 +28,19 @@ class CustomerProfileService implements CustomerProfileServiceInterface
         }
     }
 
-  public function updateProfile($validatedData)
-  {
-    $user = Auth::user();
-    $user->update($validatedData);
+    public function updateProfile($data)
+    {
+        $user = Auth::user();
+        $user->update($data);
 
-    // If there are any customer-specific fields (like address)
-    $customerFields = array_intersect_key($validatedData, array_flip(['address', 'delivery_address', 'payment_method']));
+        // If there are any customer-specific fields (like address)
+        $customerFields = array_intersect_key($data, array_flip(['address', 'delivery_address', 'payment_method']));
 
-    if (!empty($customerFields)) {
-      $customer = $user->customer;
-      $customer->update($customerFields);
+        if (!empty($customerFields)) {
+            $customer = $user->customer;
+            $customer->update($customerFields);
+        }
     }
-  }
-
   public function updateCustomerInfo($customerId, CustomerDTO $customerDTO)
   {
     $customer = Customer::findOrFail($customerId);

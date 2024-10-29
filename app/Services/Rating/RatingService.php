@@ -4,7 +4,7 @@ namespace App\Services\Rating;
 
 use App\Http\Requests\RestaurantRequests\ViewRatingsRequest;
 use App\Http\Resources\Rating\RatingResource;
-use App\Http\Resources\Rating\RestaurantOwnerRatingResource;
+use App\Http\Resources\Rating\RestauranteOwnerRatingResource;
 use App\Interfaces\RatingServiceInterface;
 use App\Models\Rating\Rating;
 use App\Models\Restaurant\Restaurant;

@@ -3,7 +3,7 @@
 namespace App\Http\Resources\Rating;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Authw;
+use Illuminate\Support\Facades\Auth;
 
 class RatingResource extends JsonResource
 {

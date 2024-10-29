@@ -18,7 +18,7 @@ class CartController extends Controller
     public function addToCart(AddToCartRequest $request){
         $result = $this->cartService->addToCart($request->all());
         if(!$result){
-            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR);
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, __FUNCTION__);
         }
         else{
             return Helpers::sendSuccessResponse(Response::HTTP_OK, 'Added to cart successfully', $result);

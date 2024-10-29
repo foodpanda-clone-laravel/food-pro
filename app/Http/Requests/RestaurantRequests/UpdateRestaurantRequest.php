@@ -36,6 +36,7 @@ class UpdateRestaurantRequest extends BaseRequest
             'cuisine' => 'nullable|string|max:100',
             'phone_number' => 'nullable',
             'restaurant_name' => 'nullable|string|max:255',
+            'logo_path'=>'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ];
     }
 }

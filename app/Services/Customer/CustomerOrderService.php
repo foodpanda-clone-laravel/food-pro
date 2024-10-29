@@ -10,12 +10,12 @@ use App\Models\Cart\CartItem;
 use App\Models\Orders\Order;
 use App\Models\Orders\OrderItem;
 use App\Models\Orders\Payment;
-use App\Models\Restaurant\Branch;
 use App\Services\Cart\CartService;
 use App\Services\Cart\ShoppingSessionService;
+use \Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use App\Helpers\Helpers;
 class CustomerOrderService extends CustomerService implements CustomerOrderServiceInterface
 {
     protected $cartService;
@@ -95,7 +95,7 @@ class CustomerOrderService extends CustomerService implements CustomerOrderServi
         }
         catch(\Exception $e){
             DB::rollBack();
-            return $e;
+            return Helpers::sendFailureResponse(Response::HTTP_INTERNAL_SERVER_ERROR, __FUNCTION__, $e);
         }
 
     }
