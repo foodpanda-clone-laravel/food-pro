@@ -34,10 +34,10 @@ class PermissionVariables
     ];
 
     //restaurant.api Routes
-    public static array $showRestaurantDetails = [
-        'path' => '/restaurant-details',
-       // 'permission' => 'user can create menu item'
-    ];
+    // public static array $showRestaurantDetails = [
+    //     'path' => '/restaurant-details',
+    //    'permission' => 'user can view restaurants'
+    // ];
     public static array $menuChoiceGroup = [
         'path' => 'menu/choice-group',
         'permission' => 'user can create menu item'
@@ -251,6 +251,27 @@ class PermissionVariables
         'permission' => 'user can view deactivated restaurant',
 
     ];
+
+    public static array $AdmindeactivateRestaurant = [
+        'path' => '/deactive-restaurant/{restaurant_id}',
+        'permission' => 'user can delete restaurant',
+
+
+    ];
+
+
+    public static array $AdminactivateRestaurant = [
+        'path' => '/activate-restaurant/{restaurant_id}',
+        'permission' =>  'user can restore restaurant',
+
+
+    ];
+
+    
+
+    
+
+
 
     //Customer Routes
 

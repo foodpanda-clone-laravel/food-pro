@@ -34,9 +34,10 @@ Route::group(['middleware' => 'api',], function () {
     Route::delete(PermissionVariables::$deactivateRestaurant['path'], [RestaurantController::class, 'deleteRestaurant']);
     //Route::post(PermissionVariables::$updateRestaurant['path'], [RestaurantController::class, 'updateRestaurant']);
     Route::post(PermissionVariables::$restoreRestaurant['path'], [RestaurantController::class, 'restoreRestaurant']);
-    Route::get(PermissionVariables::$showRestaurantDetails['path'], [RestaurantController::class, 'showRestaurantDeatils']);
+   // Route::get(PermissionVariables::$showRestaurantDetails['path'], [RestaurantController::class, 'showRestaurantDeatils']);
     Route::post(PermissionVariables::$updateRestaurantDetails['path'], [RestaurantController::class, 'updateRestaurant']);
-
+    Route::get('/restaurant-details',[RestaurantController::class,'showRestaurantDeatils']);
+//
 
 });
 });

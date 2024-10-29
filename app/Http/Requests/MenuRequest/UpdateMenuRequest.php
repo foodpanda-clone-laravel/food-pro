@@ -4,7 +4,7 @@ namespace App\Http\Requests\MenuRequest;
 use App\Http\Requests\BaseRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class wUpdateMenuRequest extends BaseRequest
+class UpdateMenuRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.

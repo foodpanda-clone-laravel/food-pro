@@ -51,7 +51,10 @@ class UserController extends Controller
 
 
 
-            return Helpers::sendFailureResponse(Response::HTTP_UNAUTHORIZED);
+
+            return Helpers::sendFailureResponse(401, 'Invalid Credentials');
+
+
 
 
         }
@@ -101,14 +104,8 @@ class UserController extends Controller
 
         if (isset($result['error'])) {
 
-            return Helpers::sendFailureResponse(
-
-                $result['error'] === 'Invalid credentials' ? 401 : 400,
-
-                $result['error']
-
-            );
-
+            $statusCode = $result['error'] === 'Invalid credentials' ? 401 : 400;
+        return Helpers::sendSuccessResponse($statusCode, $result['error']);
         }
 
         if (isset($result['firstLogin']) && $result['firstLogin']) {

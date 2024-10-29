@@ -91,8 +91,6 @@ class RestaurantService
             if (isset($data['phone_number'])) {
                 unset($data['phone_number']);
             }
-
-            // Update the restaurant request with the remaining validated data (excluding 'contact')
             $restaurantRequest->update($data);
 
 
@@ -122,7 +120,7 @@ class RestaurantService
         }
         catch(Exception $e){
 
-            dd($e);
+           // dd($e);
         }
 
 

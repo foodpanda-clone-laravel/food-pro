@@ -39,7 +39,7 @@ class PermissionsMiddleware
             PermissionVariables::$submitRestaurantRequest,
 
             //restaurants.api routes
-            PermissionVariables::$showRestaurantDetails,
+          //  PermissionVariables::$showRestaurantDetails,
             PermissionVariables::$menuChoiceGroup,
             PermissionVariables::$menuAssignChoiceGroup,
             PermissionVariables::$viewChoiceGroup,
@@ -102,6 +102,8 @@ class PermissionsMiddleware
             PermissionVariables::$activeOrder,
             PermissionVariables::$viewCustomerOrderDetails,
             PermissionVariables::$submitFeedback,
+            PermissionVariables::$AdmindeactivateRestaurant,
+            PermissionVariables::$AdminactivateRestaurant,
         ];
 
 
