@@ -83,12 +83,10 @@ class CustomerOrderService extends CustomerService implements CustomerOrderServi
         try{
             DB::beginTransaction();
             $orderSummary = $this->checkout();
-            dd($orderSummary);
             $orderDTO = new OrderDTO((object)$orderSummary, $address);
             $order = Order::create($orderDTO->toArray());
             $orderItems = $orderSummary['items_total'];
             $orderItems = json_decode(json_encode($orderItems),true);
-            dd($orderItems);
             $orderedItems = $this->createOrderItems($orderItems, $order);
             $this->createPaymentForOrder($order);
             $this->shoppingSessionService::deleteShoppingSession();
